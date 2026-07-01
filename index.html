@@ -8,161 +8,114 @@
 <title>สแกนเช็ค</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:sans-serif;background:#F3F0FA;min-height:100vh;padding-bottom:32px}
-
-header{background:#3A1F6E;padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+body{font-family:sans-serif;background:#F3F0FA;min-height:100vh;padding-bottom:40px}
+header{background:#3A1F6E;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
 header h1{color:#fff;font-size:17px;font-weight:700}
 header span{color:rgba(255,255,255,.6);font-size:12px}
-
 .wrap{max-width:480px;margin:0 auto;padding:14px}
-
 .card{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 .card-title{font-size:13px;font-weight:700;color:#5B3FA6;margin-bottom:14px}
-
-/* ── preview รูป ── */
-#preview-wrap{width:100%;min-height:160px;background:#f0eeff;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+#preview-wrap{width:100%;min-height:160px;background:#f0eeff;border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 #preview-img{width:100%;max-height:280px;object-fit:contain;display:none}
-#preview-placeholder{text-align:center;color:#9E8DC7;padding:24px}
-#preview-placeholder .icon{font-size:48px;margin-bottom:8px}
-#preview-placeholder p{font-size:13px}
-
-/* ── ปุ่มเลือกรูป ── */
+#preview-ph{text-align:center;color:#9E8DC7;padding:24px}
+#preview-ph .ic{font-size:48px;margin-bottom:8px}
+#preview-ph p{font-size:13px}
 .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-.btn-cam {background:#3A1F6E;color:#fff;border:none;border-radius:10px;
-  padding:16px 8px;font-size:15px;font-weight:700;cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;gap:4px;font-family:sans-serif}
-.btn-cam .icon{font-size:28px}
-.btn-cam .label{font-size:13px}
-.btn-gal{background:#EDE9F8;color:#3A1F6E;border:none;border-radius:10px;
-  padding:16px 8px;font-size:15px;font-weight:700;cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;gap:4px;font-family:sans-serif}
-.btn-gal .icon{font-size:28px}
-.btn-gal .label{font-size:13px}
+.btn-cam{background:#3A1F6E;color:#fff;border:none;border-radius:10px;padding:16px 8px;font-size:15px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:sans-serif;width:100%}
+.btn-gal{background:#EDE9F8;color:#3A1F6E;border:none;border-radius:10px;padding:16px 8px;font-size:15px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:sans-serif;width:100%}
+.btn-cam .ic,.btn-gal .ic{font-size:28px}
 button:active{opacity:.8;transform:scale(.97)}
-
-/* ── ปุ่มหลัก ── */
-.btn-full{width:100%;padding:15px;border:none;border-radius:10px;
-  font-size:16px;font-weight:700;cursor:pointer;font-family:sans-serif;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  margin-top:10px;transition:opacity .15s}
+.btn-full{width:100%;padding:15px;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;font-family:sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px}
 .btn-full:disabled{opacity:.45;cursor:not-allowed}
-.btn-ocr {background:#0E7C6B;color:#fff}
+.btn-ocr{background:#0E7C6B;color:#fff}
 .btn-save{background:#1A56A0;color:#fff}
-.btn-new {background:#eee;color:#555;font-size:14px;padding:12px}
-
-/* ── form ── */
+.btn-new{background:#eee;color:#555;font-size:14px;padding:12px}
 .field{margin-bottom:10px}
-.field label{display:block;font-size:11px;color:#888;font-weight:700;
-  text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
-.field input{width:100%;padding:12px;border:1.5px solid #e0d9f5;border-radius:8px;
-  font-size:15px;font-family:sans-serif;color:#222}
+.field label{display:block;font-size:11px;color:#888;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.field input{width:100%;padding:12px;border:1.5px solid #e0d9f5;border-radius:8px;font-size:15px;font-family:sans-serif;color:#222}
 .field input:focus{outline:none;border-color:#5B3FA6}
 .field input:disabled{background:#f9f9f9;color:#aaa}
-
-.badge{display:inline-flex;align-items:center;gap:6px;
-  padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;margin-bottom:12px}
-.high  {background:#C8E6C9;color:#1B5E20}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;margin-bottom:12px}
+.high{background:#C8E6C9;color:#1B5E20}
 .medium{background:#FFE0B2;color:#E65100}
-.low   {background:#FFCDD2;color:#B71C1C}
-
+.low{background:#FFCDD2;color:#B71C1C}
 .fname-box{background:#EDE9F8;border-radius:8px;padding:10px 12px;margin-top:8px}
 .fname-lbl{font-size:10px;color:#5B3FA6;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
 .fname-val{font-size:14px;color:#3A1F6E;font-weight:700;word-break:break-all;margin-top:3px}
-
-/* ── status ── */
-.status{border-radius:10px;padding:12px 14px;font-size:13px;margin-top:8px;line-height:1.5}
+.status{border-radius:10px;padding:12px 14px;font-size:13px;margin-top:10px;line-height:1.6}
 .s-load{background:#EDE9F8;color:#3A1F6E}
-.s-ok  {background:#C8E6C9;color:#1B5E20}
-.s-err {background:#FFCDD2;color:#B71C1C}
-
-/* ── สำเร็จ ── */
+.s-ok{background:#C8E6C9;color:#1B5E20}
+.s-err{background:#FFCDD2;color:#B71C1C}
 .done-box{text-align:center;padding:24px 16px}
-.done-box .icon{font-size:60px;margin-bottom:12px}
+.done-box .ic{font-size:60px;margin-bottom:12px}
 .done-box h2{color:#1B5E20;font-size:20px;margin-bottom:8px}
 .done-box p{color:#555;font-size:14px;line-height:1.7;white-space:pre-line}
-.done-link{display:block;background:#e8f0fb;color:#1A56A0;border-radius:8px;
-  padding:10px 14px;margin-top:14px;text-decoration:none;font-size:13px;word-break:break-all}
-
-/* spinner */
-.spin{width:16px;height:16px;min-width:16px;border:2.5px solid rgba(255,255,255,.3);
-  border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
+.done-link{display:block;background:#e8f0fb;color:#1A56A0;border-radius:8px;padding:10px 14px;margin-top:14px;text-decoration:none;font-size:13px;word-break:break-all}
+.spin{width:16px;height:16px;min-width:16px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:inline-block}
 @keyframes sp{to{transform:rotate(360deg)}}
-
-/* hidden */
 input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 </style>
 </head>
 <body>
-
 <header>
   <h1>📷 สแกนเช็คสั่งจ่าย</h1>
   <span id="step-lbl">ขั้นตอน 1/3</span>
 </header>
-
 <div class="wrap">
 
-<!-- STEP 1: เลือกรูป -->
+<!-- STEP 1 -->
 <div id="s1">
   <div class="card">
     <div class="card-title">📸 ถ่ายหรือเลือกรูปหน้าเช็ค</div>
-
     <div id="preview-wrap">
-      <div id="preview-placeholder">
-        <div class="icon">📄</div>
-        <p>ยังไม่มีรูป<br>กดปุ่มด้านล่างเพื่อเริ่ม</p>
+      <div id="preview-ph">
+        <div class="ic">📄</div>
+        <p>กดปุ่มด้านล่างเพื่อเริ่ม</p>
       </div>
       <img id="preview-img" alt="รูปเช็ค">
     </div>
-
-    <!-- ปุ่ม 2 ปุ่ม แยก input คนละตัว -->
     <div class="btn-row">
       <button class="btn-cam" onclick="document.getElementById('inp-cam').click()">
-        <span class="icon">📷</span>
-        <span class="label">ถ่ายรูป</span>
+        <span class="ic">📷</span><span>ถ่ายรูป</span>
       </button>
       <button class="btn-gal" onclick="document.getElementById('inp-gal').click()">
-        <span class="icon">🖼️</span>
-        <span class="label">คลังรูปภาพ</span>
+        <span class="ic">🖼️</span><span>คลังรูป</span>
       </button>
     </div>
-
-    <!-- input แยกกันชัดเจน -->
-    <!-- capture=environment = เปิดกล้องหลังทันที -->
     <input id="inp-cam" type="file" accept="image/*" capture="environment" onchange="onImg(this)">
-    <!-- ไม่มี capture = เปิดแกลเลอรี -->
     <input id="inp-gal" type="file" accept="image/*" onchange="onImg(this)">
   </div>
-
   <button class="btn-full btn-ocr" id="btn-ocr" onclick="runOCR()" style="display:none">
     🔍 อ่านข้อมูลเช็ค
   </button>
+  <div id="st1"></div>
 </div>
 
-<!-- STEP 2: ตรวจสอบ -->
+<!-- STEP 2 -->
 <div id="s2" style="display:none">
   <div class="card">
     <div class="card-title">📋 ตรวจสอบข้อมูลก่อนบันทึก</div>
     <div id="badge-wrap"></div>
-    <div class="field"><label>เลขที่เช็ค</label>        <input id="f1" type="tel"  placeholder="เช่น 43986730"></div>
-    <div class="field"><label>ธนาคาร</label>             <input id="f2" type="text" placeholder="เช่น ทหารไทยธนชาต"></div>
+    <div class="field"><label>เลขที่เช็ค</label><input id="f1" type="tel" placeholder="เช่น 43986730"></div>
+    <div class="field"><label>ธนาคาร</label><input id="f2" type="text" placeholder="เช่น ทหารไทยธนชาต"></div>
     <div class="field"><label>วันที่ (DD/MM/YYYY)</label><input id="f3" type="text" placeholder="เช่น 09/01/2565"></div>
-    <div class="field"><label>จำนวนเงิน (บาท)</label>   <input id="f4" type="tel"  placeholder="เช่น 48109.68"></div>
-    <div class="field"><label>ผู้รับเงิน</label>         <input id="f5" type="text"></div>
+    <div class="field"><label>จำนวนเงิน (บาท)</label><input id="f4" type="tel" placeholder="เช่น 48109.68"></div>
+    <div class="field"><label>ผู้รับเงิน</label><input id="f5" type="text"></div>
     <div class="fname-box">
       <div class="fname-lbl">ชื่อไฟล์ที่จะบันทึก</div>
       <div class="fname-val" id="fname">—</div>
     </div>
   </div>
   <button class="btn-full btn-save" id="btn-save" onclick="doSave()">☁️ บันทึกขึ้น Google Drive</button>
-  <button class="btn-full btn-new"  onclick="resetAll()">← ถ่ายใหม่</button>
+  <button class="btn-full btn-new" onclick="resetAll()">← ถ่ายใหม่</button>
+  <div id="st2"></div>
 </div>
 
-<!-- STEP 3: สำเร็จ -->
+<!-- STEP 3 -->
 <div id="s3" style="display:none">
   <div class="card">
     <div class="done-box">
-      <div class="icon">✅</div>
+      <div class="ic">✅</div>
       <h2>บันทึกสำเร็จ</h2>
       <p id="done-msg"></p>
       <a id="done-url" class="done-link" href="#" target="_blank">📂 เปิดไฟล์ใน Google Drive</a>
@@ -171,98 +124,42 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events
   <button class="btn-full btn-ocr" onclick="resetAll()">📷 สแกนเช็คใบต่อไป</button>
 </div>
 
-<div id="status-wrap"></div>
-
-</div><!-- /wrap -->
+</div>
 
 <script>
-// ── ใส่ URL Apps Script ที่นี่ ──────────────────────────
-var SCRIPT_URL = "https://script.google.com/macros/s/AKfycb.../exec";
-// ────────────────────────────────────────────────────────
+// ── ใส่ URL Apps Script ──────────────────────────────
+var SCRIPT_URL = "วาง URL ของ Google Apps Script ที่นี่";
+// ────────────────────────────────────────────────────
 
 var b64 = "", mime = "image/jpeg";
 
-// ── เมื่อเลือกรูป ──
 function onImg(inp) {
-  var f = inp.files[0];
-  if (!f) return;
+  var f = inp.files[0]; if (!f) return;
   mime = f.type || "image/jpeg";
   var r = new FileReader();
   r.onload = function(e) {
     b64 = e.target.result.split(",")[1];
-    // แสดง preview
     var img = document.getElementById("preview-img");
     img.src = e.target.result;
     img.style.display = "block";
-    document.getElementById("preview-placeholder").style.display = "none";
-    // แสดงปุ่ม OCR
+    document.getElementById("preview-ph").style.display = "none";
     document.getElementById("btn-ocr").style.display = "flex";
-    setStatus("", "");
-    // reset ค่าเดิม
     document.getElementById("s2").style.display = "none";
+    setStatus("st1","","");
   };
   r.readAsDataURL(f);
 }
 
-// ── OCR ──
-async function runOCR() {
-  if (!b64) { setStatus("กรุณาเลือกรูปก่อน", "err"); return; }
+function runOCR() {
+  if (!b64) { setStatus("st1","กรุณาเลือกรูปก่อน","err"); return; }
   var btn = document.getElementById("btn-ocr");
   btn.disabled = true;
-  btn.innerHTML = '<div class="spin"></div> กำลังอ่านด้วย AI...';
-  setStatus("🔍 Claude AI กำลังวิเคราะห์รูปเช็ค...", "load");
-
-  try {
-    var res = await fetch(SCRIPT_URL, {
-      method : "POST",
-      body   : JSON.stringify({ action:"ocr", image:b64, mime:mime }),
-      headers: { "Content-Type":"application/json" }
-    });
-    var data = await res.json();
-    btn.disabled = false;
-    btn.innerHTML = "🔍 อ่านข้อมูลเช็ค";
-    if (!data.success) { setStatus("❌ " + (data.error || "อ่านไม่ได้ ลองใหม่"), "err"); return; }
-    fillForm(data);
-  } catch(e) {
-    btn.disabled = false;
-    btn.innerHTML = "🔍 อ่านข้อมูลเช็ค";
-    setStatus("❌ เชื่อมต่อไม่ได้: " + e.message, "err");
-  }
+  btn.innerHTML = '<span class="spin"></span> กำลังอ่าน AI...';
+  setStatus("st1","🔍 กำลังส่งรูปให้ Claude วิเคราะห์...","load");
+  callScript({ action:"ocr", image:b64, mime:mime }, "ocr");
 }
 
-// ── กรอกฟอร์ม ──
-function fillForm(d) {
-  document.getElementById("f1").value = d.check_no || "";
-  document.getElementById("f2").value = d.bank     || "";
-  document.getElementById("f3").value = d.date     || "";
-  document.getElementById("f4").value = d.amount   || "";
-  document.getElementById("f5").value = d.payee    || "";
-  updateFname();
-
-  var conf = d.confidence || "medium";
-  var lbl  = { high:"✅ มั่นใจสูง", medium:"⚠️ ปานกลาง — โปรดตรวจสอบ", low:"❌ ต่ำ — กรุณาแก้ไขก่อน" };
-  document.getElementById("badge-wrap").innerHTML =
-    '<div class="badge ' + conf + '">' + (lbl[conf]||conf) + '</div>';
-
-  document.getElementById("s1").style.display = "none";
-  document.getElementById("s2").style.display = "block";
-  document.getElementById("step-lbl").textContent = "ขั้นตอน 2/3";
-  setStatus("", "");
-  window.scrollTo(0, 0);
-}
-
-function updateFname() {
-  var no = document.getElementById("f1").value.trim();
-  var bk = document.getElementById("f2").value.trim();
-  document.getElementById("fname").textContent =
-    (no && bk) ? no + "_" + bk + ".pdf" : (no ? no + ".pdf" : "—");
-}
-["f1","f2"].forEach(function(id){
-  document.getElementById(id).addEventListener("input", updateFname);
-});
-
-// ── บันทึก ──
-async function doSave() {
+function doSave() {
   var cd = {
     check_no : document.getElementById("f1").value.trim(),
     bank     : document.getElementById("f2").value.trim(),
@@ -271,70 +168,133 @@ async function doSave() {
     payee    : document.getElementById("f5").value.trim(),
     filename : document.getElementById("fname").textContent
   };
-  if (!cd.check_no || !cd.bank) {
-    setStatus("❌ กรุณากรอกเลขที่เช็คและธนาคารก่อน", "err"); return;
-  }
+  if (!cd.check_no || !cd.bank) { setStatus("st2","❌ กรุณากรอกเลขที่เช็คและธนาคาร","err"); return; }
   var btn = document.getElementById("btn-save");
   btn.disabled = true;
-  btn.innerHTML = '<div class="spin"></div> กำลังอัพโหลด...';
-  setStatus("☁️ กำลังบันทึก " + cd.filename + "...", "load");
+  btn.innerHTML = '<span class="spin"></span> กำลังอัพโหลด...';
+  setStatus("st2","☁️ กำลังบันทึก " + cd.filename + "...","load");
+  callScript({ action:"save", image:b64, mime:mime, data:cd }, "save");
+}
 
-  try {
-    var res = await fetch(SCRIPT_URL, {
-      method : "POST",
-      body   : JSON.stringify({ action:"save", image:b64, mime:mime, data:cd }),
-      headers: { "Content-Type":"application/json" }
-    });
-    var result = await res.json();
-    btn.disabled = false;
-    btn.innerHTML = "☁️ บันทึกขึ้น Google Drive";
-    if (!result.success) { setStatus("❌ " + (result.error||"บันทึกไม่สำเร็จ"), "err"); return; }
+// ── ส่งข้อมูลไป Apps Script ──
+// ใช้ text/plain เพื่อหลีกเลี่ยง CORS preflight
+function callScript(payload, action) {
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", SCRIPT_URL, true);
+  xhr.setRequestHeader("Content-Type", "text/plain;charset=utf-8");
+  xhr.timeout = 60000; // 60 วินาที
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState !== 4) return;
+    if (xhr.status === 0) {
+      // status 0 = CORS blocked หรือ network error → ลอง GET แทน
+      callScriptViaGet(payload, action);
+      return;
+    }
+    try {
+      var data = JSON.parse(xhr.responseText);
+      handleResponse(data, action);
+    } catch(e) {
+      onError(action, "parse error");
+    }
+  };
+  xhr.ontimeout = function() { onError(action, "หมดเวลา — ลองใหม่อีกครั้ง"); };
+  xhr.send(JSON.stringify(payload));
+}
 
-    document.getElementById("s2").style.display   = "none";
-    document.getElementById("s3").style.display   = "block";
-    document.getElementById("step-lbl").textContent = "ขั้นตอน 3/3";
-    document.getElementById("done-msg").textContent =
-      result.filename + "\n" + (result.linked ? "✓ อัพเดท Link ใน Sheet แล้ว" : "(ไม่พบเลขที่เช็คใน Sheet)");
-    document.getElementById("done-url").href = result.fileUrl || "#";
-    setStatus("", "");
-    window.scrollTo(0, 0);
-  } catch(e) {
-    btn.disabled = false;
-    btn.innerHTML = "☁️ บันทึกขึ้น Google Drive";
-    setStatus("❌ " + e.message, "err");
+// ── Fallback: ส่งผ่าน GET + query string (สำหรับ OCR เล็กๆ) ──
+function callScriptViaGet(payload, action) {
+  // สำหรับ OCR ไม่สามารถส่งรูปผ่าน GET ได้ → แจ้ง error พร้อมวิธีแก้
+  if (action === "ocr" || action === "save") {
+    onError(action,
+      "CORS blocked — กรุณาตรวจสอบ:\n" +
+      "1. Apps Script Deploy เป็น 'Anyone' แล้วหรือยัง\n" +
+      "2. คัดลอก URL Deploy ใหม่ล่าสุด\n" +
+      "3. ลอง Deploy → New Version อีกครั้ง"
+    );
   }
 }
 
-// ── reset ──
-function resetAll() {
-  b64 = ""; mime = "image/jpeg";
-  document.getElementById("s1").style.display = "block";
-  document.getElementById("s2").style.display = "none";
-  document.getElementById("s3").style.display = "none";
-  document.getElementById("preview-img").style.display = "none";
-  document.getElementById("preview-placeholder").style.display = "block";
-  document.getElementById("btn-ocr").style.display   = "none";
-  document.getElementById("btn-ocr").disabled        = false;
-  document.getElementById("btn-ocr").innerHTML       = "🔍 อ่านข้อมูลเช็ค";
-  document.getElementById("btn-save").disabled       = false;
-  document.getElementById("btn-save").innerHTML      = "☁️ บันทึกขึ้น Google Drive";
-  document.getElementById("step-lbl").textContent    = "ขั้นตอน 1/3";
-  document.getElementById("badge-wrap").innerHTML    = "";
-  document.getElementById("fname").textContent       = "—";
-  ["f1","f2","f3","f4","f5"].forEach(function(id){
-    document.getElementById(id).value    = "";
-    document.getElementById(id).disabled = false;
-  });
-  document.getElementById("inp-cam").value = "";
-  document.getElementById("inp-gal").value = "";
-  setStatus("", "");
-  window.scrollTo(0, 0);
+function handleResponse(data, action) {
+  if (action === "ocr") {
+    var btn = document.getElementById("btn-ocr");
+    btn.disabled = false; btn.innerHTML = "🔍 อ่านข้อมูลเช็ค";
+    if (!data.success) { setStatus("st1","❌ " + (data.error||"อ่านไม่ได้"),"err"); return; }
+    fillForm(data);
+  } else if (action === "save") {
+    var btn2 = document.getElementById("btn-save");
+    btn2.disabled = false; btn2.innerHTML = "☁️ บันทึกขึ้น Google Drive";
+    if (!data.success) { setStatus("st2","❌ " + (data.error||"บันทึกไม่สำเร็จ"),"err"); return; }
+    document.getElementById("s2").style.display = "none";
+    document.getElementById("s3").style.display = "block";
+    document.getElementById("step-lbl").textContent = "ขั้นตอน 3/3";
+    document.getElementById("done-msg").textContent =
+      data.filename + "\n" + (data.linked ? "✓ อัพเดท Link ใน Sheet แล้ว" : "(ไม่พบเลขที่เช็คใน Sheet)");
+    document.getElementById("done-url").href = data.fileUrl || "#";
+    window.scrollTo(0,0);
+  }
 }
 
-function setStatus(msg, type) {
-  var el = document.getElementById("status-wrap");
-  if (!msg) { el.innerHTML = ""; return; }
-  el.innerHTML = '<div class="status s-' + type + '">' + msg + '</div>';
+function onError(action, msg) {
+  var btn  = document.getElementById("btn-ocr");
+  var btn2 = document.getElementById("btn-save");
+  btn.disabled  = false; btn.innerHTML  = "🔍 อ่านข้อมูลเช็ค";
+  btn2.disabled = false; btn2.innerHTML = "☁️ บันทึกขึ้น Google Drive";
+  if (action === "ocr")  setStatus("st1","❌ " + msg,"err");
+  if (action === "save") setStatus("st2","❌ " + msg,"err");
+}
+
+function fillForm(d) {
+  document.getElementById("f1").value = d.check_no || "";
+  document.getElementById("f2").value = d.bank     || "";
+  document.getElementById("f3").value = d.date     || "";
+  document.getElementById("f4").value = d.amount   || "";
+  document.getElementById("f5").value = d.payee    || "";
+  updateFname();
+  var conf = d.confidence || "medium";
+  var lbl  = {high:"✅ มั่นใจสูง",medium:"⚠️ ปานกลาง — โปรดตรวจสอบ",low:"❌ ต่ำ — กรุณาแก้ไขก่อน"};
+  document.getElementById("badge-wrap").innerHTML = '<div class="badge '+conf+'">'+(lbl[conf]||conf)+'</div>';
+  document.getElementById("s1").style.display = "none";
+  document.getElementById("s2").style.display = "block";
+  document.getElementById("step-lbl").textContent = "ขั้นตอน 2/3";
+  setStatus("st2","","");
+  window.scrollTo(0,0);
+}
+
+function updateFname() {
+  var no = document.getElementById("f1").value.trim();
+  var bk = document.getElementById("f2").value.trim();
+  document.getElementById("fname").textContent = (no&&bk)?no+"_"+bk+".pdf":(no?no+".pdf":"—");
+}
+["f1","f2"].forEach(function(id){ document.getElementById(id).addEventListener("input",updateFname); });
+
+function resetAll() {
+  b64=""; mime="image/jpeg";
+  ["s2","s3"].forEach(function(id){ document.getElementById(id).style.display="none"; });
+  document.getElementById("s1").style.display     = "block";
+  document.getElementById("preview-img").style.display = "none";
+  document.getElementById("preview-ph").style.display  = "block";
+  document.getElementById("btn-ocr").style.display     = "none";
+  document.getElementById("btn-ocr").disabled          = false;
+  document.getElementById("btn-ocr").innerHTML         = "🔍 อ่านข้อมูลเช็ค";
+  document.getElementById("btn-save").disabled         = false;
+  document.getElementById("btn-save").innerHTML        = "☁️ บันทึกขึ้น Google Drive";
+  document.getElementById("step-lbl").textContent      = "ขั้นตอน 1/3";
+  document.getElementById("badge-wrap").innerHTML      = "";
+  document.getElementById("fname").textContent         = "—";
+  ["f1","f2","f3","f4","f5"].forEach(function(id){
+    document.getElementById(id).value="";
+    document.getElementById(id).disabled=false;
+  });
+  document.getElementById("inp-cam").value="";
+  document.getElementById("inp-gal").value="";
+  setStatus("st1","",""); setStatus("st2","","");
+  window.scrollTo(0,0);
+}
+
+function setStatus(id, msg, type) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = msg ? '<div class="status s-'+type+'">'+msg+'</div>' : "";
 }
 </script>
 </body>

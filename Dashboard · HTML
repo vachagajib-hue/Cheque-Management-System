@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard ทะเบียนเช็คสั่งจ่าย</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sarabun',sans-serif;background:#F3F0FA;color:#222;font-size:15px}
+header{background:#3A1F6E;color:#fff;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+header h1{font-size:20px;font-weight:700}
+header .sub{font-size:13px;opacity:.7;margin-top:3px}
+.refresh-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-family:'Sarabun',sans-serif}
+.refresh-btn:hover{background:rgba(255,255,255,.25)}
+.wrap{max-width:1200px;margin:0 auto;padding:20px}
+
+/* KPI Cards */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:#fff;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.kpi .label{font-size:12px;color:#888;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.kpi .value{font-size:22px;font-weight:700;margin-bottom:4px}
+.kpi .sub{font-size:12px;color:#aaa}
+.kpi.urgent{background:#FFF5F5;border-left:4px solid #E53E3E}
+.kpi.urgent .value{color:#C53030}
+.kpi.follow{background:#FFFAF0;border-left:4px solid #DD6B20}
+.kpi.follow .value{color:#C05621}
+.kpi.normal{background:#F0FFF4;border-left:4px solid #38A169}
+.kpi.normal .value{color:#276749}
+.kpi.expired{background:#F7FAFC;border-left:4px solid #718096}
+.kpi.expired .value{color:#4A5568}
+.kpi.returned{background:#FFF5F5;border-left:4px solid #FC8181}
+.kpi.returned .value{color:#C53030}
+.kpi.done{background:#EBF8FF;border-left:4px solid #3182CE}
+.kpi.done .value{color:#2B6CB0}
+
+/* Cards */
+.row{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:768px){.row,.row2{grid-template-columns:1fr}}
+.card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.card h2{font-size:16px;font-weight:700;color:#3A1F6E;margin-bottom:4px}
+.card .sub-title{font-size:12px;color:#aaa;margin-bottom:16px}
+
+/* Urgent List */
+.urgent-item{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:8px;margin-bottom:8px;background:#FFF5F5;border-left:3px solid #E53E3E}
+.urgent-item.day15{background:#FFFAF0;border-color:#DD6B20}
+.urgent-item .check-info .no{font-size:13px;font-weight:700;color:#C53030}
+.urgent-item.day15 .check-info .no{color:#C05621}
+.urgent-item .check-info .detail{font-size:11px;color:#888;margin-top:2px}
+.urgent-item .right{text-align:right}
+.urgent-item .right .amt{font-size:13px;font-weight:700;color:#333}
+.urgent-item .right .days{font-size:11px;color:#E53E3E;margin-top:2px}
+.urgent-item.day15 .right .days{color:#C05621}
+
+/* Bank List */
+.bank-item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0}
+.bank-item:last-child{border-bottom:none}
+.bank-bar-wrap{flex:1;margin:0 12px;background:#f0f0f0;border-radius:4px;height:8px;overflow:hidden}
+.bank-bar{height:8px;border-radius:4px;background:#5B3FA6;transition:width .5s}
+.bank-name{font-size:13px;color:#333;min-width:80px}
+.bank-amt{font-size:13px;font-weight:600;color:#3A1F6E;min-width:80px;text-align:right}
+
+/* Fee */
+.fee-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0f0;font-size:14px}
+.fee-row:last-child{border-bottom:none}
+.fee-row .lbl{color:#666}
+.fee-row .val{font-weight:700;color:#333}
+.fee-row .diff-pos{color:#E53E3E}
+.fee-row .diff-neg{color:#38A169}
+
+/* Loading */
+#loading{text-align:center;padding:60px;color:#888}
+.spinner{width:40px;height:40px;border:4px solid #e0d9f5;border-top-color:#5B3FA6;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Legend */
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;font-size:12px;color:#666}
+.legend span{display:flex;align-items:center;gap:4px}
+.legend .dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+
+.fmt-num{font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>📊 Dashboard ทะเบียนเช็คสั่งจ่าย</h1>
+    <div class="sub" id="update-time">กำลังโหลดข้อมูล...</div>
+  </div>
+  <button class="refresh-btn" onclick="loadData()">🔄 รีเฟรช</button>
+</header>
+
+<div class="wrap">
+  <div id="loading">
+    <div class="spinner"></div>
+    <div>กำลังดึงข้อมูลจาก Google Sheet...</div>
+  </div>
+  <div id="content" style="display:none">
+
+    <!-- KPI -->
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="label">ยอดเช็คทั้งหมด</div>
+        <div class="value fmt-num" id="kpi-total">—</div>
+        <div class="sub" id="kpi-total-count">— ใบ</div>
+      </div>
+      <div class="kpi urgent">
+        <div class="label">🔴 เร่งด่วน (&lt;15 วัน)</div>
+        <div class="value fmt-num" id="kpi-urgent">—</div>
+        <div class="sub" id="kpi-urgent-count">— ใบ</div>
+      </div>
+      <div class="kpi follow">
+        <div class="label">🟠 ติดตาม (15-30 วัน)</div>
+        <div class="value fmt-num" id="kpi-follow">—</div>
+        <div class="sub" id="kpi-follow-count">— ใบ</div>
+      </div>
+      <div class="kpi normal">
+        <div class="label">🟢 ปกติ (&gt;30 วัน)</div>
+        <div class="value fmt-num" id="kpi-normal">—</div>
+        <div class="sub" id="kpi-normal-count">— ใบ</div>
+      </div>
+      <div class="kpi expired">
+        <div class="label">⬜ หมดอายุแล้ว</div>
+        <div class="value fmt-num" id="kpi-expired">—</div>
+        <div class="sub" id="kpi-expired-count">— ใบ</div>
+      </div>
+      <div class="kpi returned">
+        <div class="label">⚠️ เช็คคืน</div>
+        <div class="value fmt-num" id="kpi-return">—</div>
+        <div class="sub" id="kpi-return-count">— ใบ</div>
+      </div>
+      <div class="kpi done">
+        <div class="label">✅ ขึ้นเงินแล้ว</div>
+        <div class="value fmt-num" id="kpi-done">—</div>
+        <div class="sub" id="kpi-done-count">— ใบ</div>
+      </div>
+    </div>
+
+    <!-- Cash Flow + Urgent -->
+    <div class="row">
+      <div class="card">
+        <h2>Cash Flow เงินออก — รายเดือน</h2>
+        <div class="sub-title">เช็คที่รอขึ้นเงิน แยกตามเดือนที่หมดอายุ</div>
+        <div class="legend">
+          <span><span class="dot" style="background:#E53E3E"></span>เร่งด่วน</span>
+          <span><span class="dot" style="background:#DD6B20"></span>ติดตาม</span>
+          <span><span class="dot" style="background:#3182CE"></span>ปกติ</span>
+        </div>
+        <div style="position:relative;height:240px">
+          <canvas id="cashflowChart" role="img" aria-label="Cash Flow รายเดือน">ข้อมูล Cash Flow รายเดือน</canvas>
+        </div>
+      </div>
+      <div class="card">
+        <h2>เช็คเร่งด่วน</h2>
+        <div class="sub-title">ต้องติดตามโดยด่วน</div>
+        <div id="urgent-list"></div>
+      </div>
+    </div>
+
+    <!-- Bank + Fee -->
+    <div class="row2">
+      <div class="card">
+        <h2>ยอดเช็คแยกตามธนาคาร</h2>
+        <div class="sub-title">เรียงจากมากไปน้อย</div>
+        <div id="bank-list"></div>
+      </div>
+      <div class="card">
+        <h2>ค่าธรรมเนียมเช็คคืน</h2>
+        <div class="sub-title">เปรียบเทียบยอดคำนวณ vs ธนาคารหักจริง</div>
+        <div id="fee-info"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxej2efdZ6h2B9Hab0YJ7Opgc85UrQFhQ3WVoWRf9BrKG5m5imH2PasmFgnzQOKAyfa/exec";
+var cashflowChartObj = null;
+
+function fmt(n){ return "฿"+Math.round(n).toLocaleString("th-TH"); }
+function fmtM(n){ return n>=1000000?"฿"+(n/1000000).toFixed(1)+"M":n>=1000?"฿"+(n/1000).toFixed(0)+"K":fmt(n); }
+
+function loadData(){
+  document.getElementById("loading").style.display="block";
+  document.getElementById("content").style.display="none";
+  var xhr=new XMLHttpRequest();
+  xhr.open("GET",SCRIPT_URL+"?action=dashboard",true);
+  xhr.timeout=60000;
+  xhr.onreadystatechange=function(){
+    if(xhr.readyState!==4)return;
+    try{
+      var d=JSON.parse(xhr.responseText);
+      renderDashboard(d);
+    }catch(e){
+      document.getElementById("loading").innerHTML="<div style='color:#E53E3E'>โหลดข้อมูลไม่สำเร็จ: "+e.message+"<br><button onclick='loadData()' style='margin-top:12px;padding:8px 16px;cursor:pointer'>ลองใหม่</button></div>";
+    }
+  };
+  xhr.ontimeout=function(){
+    document.getElementById("loading").innerHTML="<div style='color:#E53E3E'>หมดเวลา — <button onclick='loadData()' style='margin-top:12px;padding:8px 16px;cursor:pointer'>ลองใหม่</button></div>";
+  };
+  xhr.send();
+}
+
+function renderDashboard(d){
+  // อัพเดทเวลา
+  var now=new Date();
+  document.getElementById("update-time").textContent=
+    "ข้อมูล ณ "+now.toLocaleDateString("th-TH",{year:"numeric",month:"long",day:"numeric"})+" "+now.toLocaleTimeString("th-TH");
+
+  var totalCount=d.urgentCount+d.followCount+d.normalCount+d.expiredCount+d.returnCount+d.doneCount;
+
+  // KPI
+  document.getElementById("kpi-total").textContent=fmtM(d.totalAmount);
+  document.getElementById("kpi-total-count").textContent=totalCount.toLocaleString()+" ใบ";
+  document.getElementById("kpi-urgent").textContent=fmtM(d.urgentAmount);
+  document.getElementById("kpi-urgent-count").textContent=d.urgentCount.toLocaleString()+" ใบ";
+  document.getElementById("kpi-follow").textContent=fmtM(d.followAmount);
+  document.getElementById("kpi-follow-count").textContent=d.followCount.toLocaleString()+" ใบ";
+  document.getElementById("kpi-normal").textContent=fmtM(d.normalAmount);
+  document.getElementById("kpi-normal-count").textContent=d.normalCount.toLocaleString()+" ใบ";
+  document.getElementById("kpi-expired").textContent=fmtM(d.expiredAmount);
+  document.getElementById("kpi-expired-count").textContent=d.expiredCount.toLocaleString()+" ใบ";
+  document.getElementById("kpi-return").textContent=fmtM(d.returnAmount);
+  document.getElementById("kpi-return-count").textContent=d.returnCount.toLocaleString()+" ใบ";
+  document.getElementById("kpi-done").textContent=fmtM(d.doneAmount);
+  document.getElementById("kpi-done-count").textContent=d.doneCount.toLocaleString()+" ใบ";
+
+  // Cash Flow Chart
+  var cf=d.cashflow||{};
+  var months=Object.keys(cf).sort(function(a,b){
+    var pa=a.split("/"),pb=b.split("/");
+    return new Date(pa[1],pa[0]-1)-new Date(pb[1],pb[0]-1);
+  }).slice(0,8);
+  var labels=months.map(function(m){
+    var p=m.split("/");
+    var names=["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+    return names[parseInt(p[0])-1]+" "+(parseInt(p[1])+543);
+  });
+  var urgentData=months.map(function(m){return Math.round((cf[m].urgent||0)/1000);});
+  var followData=months.map(function(m){return Math.round((cf[m].follow||0)/1000);});
+  var normalData=months.map(function(m){return Math.round((cf[m].normal||0)/1000);});
+
+  if(cashflowChartObj) cashflowChartObj.destroy();
+  cashflowChartObj=new Chart(document.getElementById("cashflowChart"),{
+    type:"bar",
+    data:{
+      labels:labels.length?labels:["ไม่มีข้อมูล"],
+      datasets:[
+        {label:"เร่งด่วน",data:urgentData,backgroundColor:"#E53E3E",borderRadius:3,stack:"a"},
+        {label:"ติดตาม",  data:followData,backgroundColor:"#DD6B20",borderRadius:3,stack:"a"},
+        {label:"ปกติ",    data:normalData,backgroundColor:"#3182CE",borderRadius:3,stack:"a"}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.dataset.label+": ฿"+c.parsed.y.toLocaleString()+"K";}}}},
+      scales:{
+        x:{stacked:true,grid:{color:"#f0f0f0"},ticks:{color:"#888",font:{size:11},autoSkip:false}},
+        y:{stacked:true,grid:{color:"#f0f0f0"},ticks:{color:"#888",font:{size:11},callback:function(v){return "฿"+v+"K";}},beginAtZero:true}
+      }
+    }
+  });
+
+  // Urgent List
+  var ul=document.getElementById("urgent-list");
+  ul.innerHTML="";
+  if(!d.urgentList||d.urgentList.length===0){
+    ul.innerHTML='<div style="text-align:center;color:#aaa;padding:20px">ไม่มีเช็คเร่งด่วน 🎉</div>';
+  } else {
+    d.urgentList.forEach(function(item){
+      var cls=item.daysLeft>7?"urgent-item day15":"urgent-item";
+      ul.innerHTML+='<div class="'+cls+'">'+
+        '<div class="check-info">'+
+          '<div class="no">'+item.checkNo+'</div>'+
+          '<div class="detail">'+item.bank+' | หมดอายุ '+item.expDate+'</div>'+
+        '</div>'+
+        '<div class="right">'+
+          '<div class="amt">'+fmt(item.amount)+'</div>'+
+          '<div class="days">เหลือ '+item.daysLeft+' วัน</div>'+
+        '</div>'+
+      '</div>';
+    });
+  }
+
+  // Bank List
+  var banks=d.byBank||{};
+  var bankArr=Object.keys(banks).map(function(k){return{name:k,amount:banks[k]};});
+  bankArr.sort(function(a,b){return b.amount-a.amount;});
+  var maxAmt=bankArr.length?bankArr[0].amount:1;
+  var bl=document.getElementById("bank-list");
+  bl.innerHTML="";
+  bankArr.slice(0,8).forEach(function(b){
+    var pct=Math.round(b.amount/maxAmt*100);
+    bl.innerHTML+='<div class="bank-item">'+
+      '<div class="bank-name">'+b.name+'</div>'+
+      '<div class="bank-bar-wrap"><div class="bank-bar" style="width:'+pct+'%"></div></div>'+
+      '<div class="bank-amt">'+fmtM(b.amount)+'</div>'+
+    '</div>';
+  });
+
+  // Fee
+  var diff=d.feeActual-d.feeCalc;
+  var diffCls=diff>0?"diff-pos":"diff-neg";
+  var diffSign=diff>0?"+":"";
+  document.getElementById("fee-info").innerHTML=
+    '<div class="fee-row"><span class="lbl">ค่าธรรมเนียมที่ควรจ่าย (0.2%)</span><span class="val">'+fmt(d.feeCalc)+'</span></div>'+
+    '<div class="fee-row"><span class="lbl">ยอดที่ธนาคารหักจริง</span><span class="val">'+fmt(d.feeActual)+'</span></div>'+
+    '<div class="fee-row"><span class="lbl">ผลต่าง</span><span class="val '+diffCls+'">'+diffSign+fmt(diff)+'</span></div>'+
+    '<div style="margin-top:12px;font-size:12px;color:#aaa">'+
+      (Math.abs(diff)<100?'✅ ค่าธรรมเนียมตรงกัน':'⚠️ มีผลต่าง — ควรตรวจสอบ')+
+    '</div>';
+
+  document.getElementById("loading").style.display="none";
+  document.getElementById("content").style.display="block";
+}
+
+loadData();
+</script>
+</body>
+</html>

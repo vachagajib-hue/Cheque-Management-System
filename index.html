@@ -8,51 +8,83 @@
 <title>สแกนเช็ค</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:sans-serif;background:#F3F0FA;min-height:100vh;padding-bottom:40px}
-header{background:#3A1F6E;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
-header h1{color:#fff;font-size:17px;font-weight:700}
-header span{color:rgba(255,255,255,.6);font-size:12px}
-.wrap{max-width:480px;margin:0 auto;padding:14px}
-.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-.card-title{font-size:13px;font-weight:700;color:#5B3FA6;margin-bottom:14px}
-#preview-wrap{width:100%;min-height:160px;background:#f0eeff;border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden}
-#preview-img{width:100%;max-height:280px;object-fit:contain;display:none}
-#preview-ph{text-align:center;color:#9E8DC7;padding:24px}
-#preview-ph .ic{font-size:48px;margin-bottom:8px}
-#preview-ph p{font-size:13px}
-.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-.btn-cam{background:#3A1F6E;color:#fff;border:none;border-radius:10px;padding:16px 8px;font-size:15px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:sans-serif;width:100%}
-.btn-gal{background:#EDE9F8;color:#3A1F6E;border:none;border-radius:10px;padding:16px 8px;font-size:15px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:sans-serif;width:100%}
-.btn-cam .ic,.btn-gal .ic{font-size:28px}
+html,body{height:100%}
+body{font-family:'Sarabun',sans-serif;background:#F3F0FA;min-height:100vh;padding-bottom:40px;font-size:16px}
+
+header{background:#3A1F6E;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+header h1{color:#fff;font-size:20px;font-weight:700}
+header span{color:rgba(255,255,255,.7);font-size:14px}
+
+.wrap{max-width:600px;margin:0 auto;padding:16px}
+
+.card{background:#fff;border-radius:16px;padding:20px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.card-title{font-size:16px;font-weight:700;color:#5B3FA6;margin-bottom:16px}
+
+/* preview */
+#preview-wrap{width:100%;min-height:200px;background:#f0eeff;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:4px}
+#preview-img{width:100%;max-height:340px;object-fit:contain;display:none}
+#preview-ph{text-align:center;color:#9E8DC7;padding:32px 20px}
+#preview-ph .ic{font-size:56px;margin-bottom:10px}
+#preview-ph p{font-size:15px;line-height:1.6}
+
+/* ปุ่มเลือกรูป */
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.btn-cam,.btn-gal{border:none;border-radius:12px;padding:20px 8px;font-size:16px;
+  font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;
+  gap:6px;font-family:'Sarabun',sans-serif;width:100%;transition:opacity .15s}
+.btn-cam{background:#3A1F6E;color:#fff}
+.btn-gal{background:#EDE9F8;color:#3A1F6E}
+.btn-cam .ic,.btn-gal .ic{font-size:34px}
 button:active{opacity:.8;transform:scale(.97)}
-.btn-full{width:100%;padding:15px;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;font-family:sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px}
+
+/* ปุ่มหลัก */
+.btn-full{width:100%;padding:18px;border:none;border-radius:12px;font-size:17px;
+  font-weight:700;cursor:pointer;font-family:'Sarabun',sans-serif;
+  display:flex;align-items:center;justify-content:center;gap:10px;margin-top:12px}
 .btn-full:disabled{opacity:.45;cursor:not-allowed}
-.btn-ocr{background:#0E7C6B;color:#fff}
+.btn-ocr {background:#0E7C6B;color:#fff}
 .btn-save{background:#1A56A0;color:#fff}
-.btn-new{background:#eee;color:#555;font-size:14px;padding:12px}
-.field{margin-bottom:10px}
-.field label{display:block;font-size:11px;color:#888;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
-.field input{width:100%;padding:12px;border:1.5px solid #e0d9f5;border-radius:8px;font-size:15px;font-family:sans-serif;color:#222}
-.field input:focus{outline:none;border-color:#5B3FA6}
-.field input:disabled{background:#f9f9f9;color:#aaa}
-.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;margin-bottom:12px}
-.high{background:#C8E6C9;color:#1B5E20}
+.btn-new {background:#eee;color:#555;font-size:15px;padding:14px}
+
+/* form */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;color:#666;font-weight:700;
+  text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.field input{width:100%;padding:14px;border:2px solid #e0d9f5;border-radius:10px;
+  font-size:17px;font-family:'Sarabun',sans-serif;color:#222;background:#fff}
+.field input:focus{outline:none;border-color:#5B3FA6;background:#faf8ff}
+.field input:disabled{background:#f5f5f5;color:#aaa}
+
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;
+  border-radius:20px;font-size:15px;font-weight:700;margin-bottom:14px}
+.high  {background:#C8E6C9;color:#1B5E20}
 .medium{background:#FFE0B2;color:#E65100}
-.low{background:#FFCDD2;color:#B71C1C}
-.fname-box{background:#EDE9F8;border-radius:8px;padding:10px 12px;margin-top:8px}
-.fname-lbl{font-size:10px;color:#5B3FA6;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
-.fname-val{font-size:14px;color:#3A1F6E;font-weight:700;word-break:break-all;margin-top:3px}
-.status{border-radius:10px;padding:12px 14px;font-size:13px;margin-top:10px;line-height:1.6}
+.low   {background:#FFCDD2;color:#B71C1C}
+
+.fname-box{background:#EDE9F8;border-radius:10px;padding:14px;margin-top:10px}
+.fname-lbl{font-size:12px;color:#5B3FA6;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.fname-val{font-size:16px;color:#3A1F6E;font-weight:700;word-break:break-all;margin-top:4px}
+
+/* status */
+.status{border-radius:12px;padding:14px 16px;font-size:15px;margin-top:12px;line-height:1.6}
 .s-load{background:#EDE9F8;color:#3A1F6E}
-.s-ok{background:#C8E6C9;color:#1B5E20}
-.s-err{background:#FFCDD2;color:#B71C1C}
-.done-box{text-align:center;padding:24px 16px}
-.done-box .ic{font-size:60px;margin-bottom:12px}
-.done-box h2{color:#1B5E20;font-size:20px;margin-bottom:8px}
-.done-box p{color:#555;font-size:14px;line-height:1.7;white-space:pre-line}
-.done-link{display:block;background:#e8f0fb;color:#1A56A0;border-radius:8px;padding:10px 14px;margin-top:14px;text-decoration:none;font-size:13px;word-break:break-all}
-.spin{width:16px;height:16px;min-width:16px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:inline-block}
+.s-ok  {background:#C8E6C9;color:#1B5E20}
+.s-err {background:#FFCDD2;color:#B71C1C}
+
+/* สำเร็จ */
+.done-box{text-align:center;padding:28px 16px}
+.done-box .ic{font-size:72px;margin-bottom:14px}
+.done-box h2{color:#1B5E20;font-size:24px;margin-bottom:10px}
+.done-box p{color:#555;font-size:16px;line-height:1.8;white-space:pre-line}
+.done-link{display:block;background:#e8f0fb;color:#1A56A0;border-radius:10px;
+  padding:14px 16px;margin-top:16px;text-decoration:none;font-size:15px;
+  word-break:break-all;font-weight:600}
+
+.spin{width:18px;height:18px;min-width:18px;border:3px solid rgba(255,255,255,.3);
+  border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:inline-block}
 @keyframes sp{to{transform:rotate(360deg)}}
+
 input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 </style>
 </head>
@@ -61,6 +93,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events
   <h1>📷 สแกนเช็คสั่งจ่าย</h1>
   <span id="step-lbl">ขั้นตอน 1/3</span>
 </header>
+
 <div class="wrap">
 
 <!-- STEP 1 -->
@@ -70,7 +103,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events
     <div id="preview-wrap">
       <div id="preview-ph">
         <div class="ic">📄</div>
-        <p>กดปุ่มด้านล่างเพื่อเริ่ม</p>
+        <p>กดปุ่มด้านล่าง<br>เพื่อถ่ายหรือเลือกรูปเช็ค</p>
       </div>
       <img id="preview-img" alt="รูปเช็ค">
     </div>
@@ -96,11 +129,11 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events
   <div class="card">
     <div class="card-title">📋 ตรวจสอบข้อมูลก่อนบันทึก</div>
     <div id="badge-wrap"></div>
-    <div class="field"><label>เลขที่เช็ค</label><input id="f1" type="tel" placeholder="เช่น 43986730"></div>
-    <div class="field"><label>ธนาคาร</label><input id="f2" type="text" placeholder="เช่น ทหารไทยธนชาต"></div>
-    <div class="field"><label>วันที่ (DD/MM/YYYY)</label><input id="f3" type="text" placeholder="เช่น 09/01/2565"></div>
-    <div class="field"><label>จำนวนเงิน (บาท)</label><input id="f4" type="tel" placeholder="เช่น 48109.68"></div>
-    <div class="field"><label>ผู้รับเงิน</label><input id="f5" type="text"></div>
+    <div class="field"><label>เลขที่เช็ค</label>         <input id="f1" type="tel"  placeholder="เช่น 88036175"></div>
+    <div class="field"><label>ธนาคาร</label>              <input id="f2" type="text" placeholder="เช่น ทหารไทยธนชาต"></div>
+    <div class="field"><label>วันที่ (DD/MM/YYYY)</label> <input id="f3" type="text" placeholder="เช่น 22/07/2569"></div>
+    <div class="field"><label>จำนวนเงิน (บาท)</label>    <input id="f4" type="tel"  placeholder="เช่น 191640.08"></div>
+    <div class="field"><label>ผู้รับเงิน</label>          <input id="f5" type="text"></div>
     <div class="fname-box">
       <div class="fname-lbl">ชื่อไฟล์ที่จะบันทึก</div>
       <div class="fname-val" id="fname">—</div>
@@ -116,7 +149,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events
   <div class="card">
     <div class="done-box">
       <div class="ic">✅</div>
-      <h2>บันทึกสำเร็จ</h2>
+      <h2>บันทึกสำเร็จ!</h2>
       <p id="done-msg"></p>
       <a id="done-url" class="done-link" href="#" target="_blank">📂 เปิดไฟล์ใน Google Drive</a>
     </div>
@@ -127,9 +160,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events
 </div>
 
 <script>
-// ── ใส่ URL Apps Script ──────────────────────────────
 var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxej2efdZ6h2B9Hab0YJ7Opgc85UrQFhQ3WVoWRf9BrKG5m5imH2PasmFgnzQOKAyfa/exec";
-// ────────────────────────────────────────────────────
 
 var b64 = "", mime = "image/jpeg";
 
@@ -155,7 +186,7 @@ function runOCR() {
   var btn = document.getElementById("btn-ocr");
   btn.disabled = true;
   btn.innerHTML = '<span class="spin"></span> กำลังอ่าน AI...';
-  setStatus("st1","🔍 กำลังส่งรูปให้ Claude วิเคราะห์...","load");
+  setStatus("st1","🔍 Claude AI กำลังวิเคราะห์รูปเช็ค...","load");
   callScript({ action:"ocr", image:b64, mime:mime }, "ocr");
 }
 
@@ -176,42 +207,26 @@ function doSave() {
   callScript({ action:"save", image:b64, mime:mime, data:cd }, "save");
 }
 
-// ── ส่งข้อมูลไป Apps Script ──
-// ใช้ text/plain เพื่อหลีกเลี่ยง CORS preflight
 function callScript(payload, action) {
   var xhr = new XMLHttpRequest();
   xhr.open("POST", SCRIPT_URL, true);
   xhr.setRequestHeader("Content-Type", "text/plain;charset=utf-8");
-  xhr.timeout = 60000; // 60 วินาที
+  xhr.timeout = 60000;
   xhr.onreadystatechange = function() {
     if (xhr.readyState !== 4) return;
     if (xhr.status === 0) {
-      // status 0 = CORS blocked หรือ network error → ลอง GET แทน
-      callScriptViaGet(payload, action);
+      onError(action, "เชื่อมต่อไม่ได้ — ตรวจสอบ URL และ Deploy settings");
       return;
     }
     try {
       var data = JSON.parse(xhr.responseText);
       handleResponse(data, action);
     } catch(e) {
-      onError(action, "parse error");
+      onError(action, "ข้อมูลผิดพลาด: " + xhr.responseText.substring(0,80));
     }
   };
   xhr.ontimeout = function() { onError(action, "หมดเวลา — ลองใหม่อีกครั้ง"); };
   xhr.send(JSON.stringify(payload));
-}
-
-// ── Fallback: ส่งผ่าน GET + query string (สำหรับ OCR เล็กๆ) ──
-function callScriptViaGet(payload, action) {
-  // สำหรับ OCR ไม่สามารถส่งรูปผ่าน GET ได้ → แจ้ง error พร้อมวิธีแก้
-  if (action === "ocr" || action === "save") {
-    onError(action,
-      "CORS blocked — กรุณาตรวจสอบ:\n" +
-      "1. Apps Script Deploy เป็น 'Anyone' แล้วหรือยัง\n" +
-      "2. คัดลอก URL Deploy ใหม่ล่าสุด\n" +
-      "3. ลอง Deploy → New Version อีกครั้ง"
-    );
-  }
 }
 
 function handleResponse(data, action) {
@@ -235,12 +250,12 @@ function handleResponse(data, action) {
 }
 
 function onError(action, msg) {
-  var btn  = document.getElementById("btn-ocr");
-  var btn2 = document.getElementById("btn-save");
-  btn.disabled  = false; btn.innerHTML  = "🔍 อ่านข้อมูลเช็ค";
-  btn2.disabled = false; btn2.innerHTML = "☁️ บันทึกขึ้น Google Drive";
-  if (action === "ocr")  setStatus("st1","❌ " + msg,"err");
-  if (action === "save") setStatus("st2","❌ " + msg,"err");
+  document.getElementById("btn-ocr").disabled  = false;
+  document.getElementById("btn-ocr").innerHTML  = "🔍 อ่านข้อมูลเช็ค";
+  document.getElementById("btn-save").disabled = false;
+  document.getElementById("btn-save").innerHTML = "☁️ บันทึกขึ้น Google Drive";
+  if (action==="ocr")  setStatus("st1","❌ "+msg,"err");
+  if (action==="save") setStatus("st2","❌ "+msg,"err");
 }
 
 function fillForm(d) {
@@ -263,7 +278,8 @@ function fillForm(d) {
 function updateFname() {
   var no = document.getElementById("f1").value.trim();
   var bk = document.getElementById("f2").value.trim();
-  document.getElementById("fname").textContent = (no&&bk)?no+"_"+bk+".pdf":(no?no+".pdf":"—");
+  // เก็บเป็น .jpg แทน .pdf
+  document.getElementById("fname").textContent = (no&&bk)?no+"_"+bk+".jpg":(no?no+".jpg":"—");
 }
 ["f1","f2"].forEach(function(id){ document.getElementById(id).addEventListener("input",updateFname); });
 

@@ -8,52 +8,77 @@
 <title>สแกนเช็ค</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:'Sarabun',sans-serif;background:#F3F0FA;min-height:100vh;padding-bottom:40px;font-size:16px}
-header{background:#3A1F6E;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
-header h1{color:#fff;font-size:20px;font-weight:700}
-header span{color:rgba(255,255,255,.7);font-size:14px}
-.wrap{max-width:600px;margin:0 auto;padding:16px}
-.card{background:#fff;border-radius:16px;padding:20px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
-.card-title{font-size:16px;font-weight:700;color:#5B3FA6;margin-bottom:16px}
-#preview-wrap{width:100%;min-height:200px;background:#f0eeff;border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:4px}
-#preview-img{width:100%;max-height:300px;object-fit:contain;display:none}
-#preview-ph{text-align:center;color:#9E8DC7;padding:32px 20px}
-#preview-ph .ic{font-size:56px;margin-bottom:10px}
-#preview-ph p{font-size:15px;line-height:1.6}
-.size-info{font-size:12px;color:#888;text-align:right;margin-top:4px;min-height:18px}
-.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
-.btn-cam,.btn-gal{border:none;border-radius:12px;padding:20px 8px;font-size:16px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;font-family:'Sarabun',sans-serif;width:100%}
+html,body{width:100%;min-height:100vh}
+body{font-family:'Sarabun',sans-serif;background:#F3F0FA;font-size:18px;padding-bottom:40px}
+
+header{background:#3A1F6E;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+header h1{color:#fff;font-size:22px;font-weight:700}
+header span{color:rgba(255,255,255,.75);font-size:15px;white-space:nowrap}
+
+/* ไม่จำกัดความกว้าง เต็มหน้าจอ */
+.wrap{width:100%;padding:16px}
+
+.card{background:#fff;border-radius:18px;padding:22px;margin-bottom:16px;box-shadow:0 3px 12px rgba(0,0,0,.09)}
+.card-title{font-size:18px;font-weight:700;color:#5B3FA6;margin-bottom:18px}
+
+#preview-wrap{width:100%;min-height:220px;background:#f0eeff;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:6px}
+#preview-img{width:100%;max-height:360px;object-fit:contain;display:none}
+#preview-ph{text-align:center;color:#9E8DC7;padding:36px 20px}
+#preview-ph .ic{font-size:64px;margin-bottom:12px}
+#preview-ph p{font-size:17px;line-height:1.7}
+.size-info{font-size:13px;color:#888;text-align:right;margin-top:6px;min-height:20px}
+
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.btn-cam,.btn-gal{border:none;border-radius:14px;padding:22px 8px;font-size:18px;
+  font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;
+  gap:8px;font-family:'Sarabun',sans-serif;width:100%}
 .btn-cam{background:#3A1F6E;color:#fff}
 .btn-gal{background:#EDE9F8;color:#3A1F6E}
-.btn-cam .ic,.btn-gal .ic{font-size:34px}
+.btn-cam .ic,.btn-gal .ic{font-size:40px}
 button:active{opacity:.8;transform:scale(.97)}
-.btn-full{width:100%;padding:18px;border:none;border-radius:12px;font-size:17px;font-weight:700;cursor:pointer;font-family:'Sarabun',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:12px}
+
+.btn-full{width:100%;padding:20px;border:none;border-radius:14px;font-size:19px;
+  font-weight:700;cursor:pointer;font-family:'Sarabun',sans-serif;
+  display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px}
 .btn-full:disabled{opacity:.45;cursor:not-allowed}
-.btn-ocr{background:#0E7C6B;color:#fff}
+.btn-ocr {background:#0E7C6B;color:#fff}
 .btn-save{background:#1A56A0;color:#fff}
-.btn-new{background:#eee;color:#555;font-size:15px;padding:14px}
-.field{margin-bottom:14px}
-.field label{display:block;font-size:13px;color:#666;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-.field input{width:100%;padding:14px;border:2px solid #e0d9f5;border-radius:10px;font-size:17px;font-family:'Sarabun',sans-serif;color:#222}
-.field input:focus{outline:none;border-color:#5B3FA6}
+.btn-new {background:#e0e0e0;color:#444;font-size:16px;padding:16px}
+
+.field{margin-bottom:16px}
+.field label{display:block;font-size:14px;color:#666;font-weight:700;
+  text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px}
+.field input{width:100%;padding:16px;border:2px solid #e0d9f5;border-radius:12px;
+  font-size:19px;font-family:'Sarabun',sans-serif;color:#222;background:#fff}
+.field input:focus{outline:none;border-color:#5B3FA6;background:#faf8ff}
 .field input:disabled{background:#f5f5f5;color:#aaa}
-.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:20px;font-size:15px;font-weight:700;margin-bottom:14px}
-.high{background:#C8E6C9;color:#1B5E20}
+
+.badge{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;
+  border-radius:24px;font-size:16px;font-weight:700;margin-bottom:16px}
+.high  {background:#C8E6C9;color:#1B5E20}
 .medium{background:#FFE0B2;color:#E65100}
-.low{background:#FFCDD2;color:#B71C1C}
-.fname-box{background:#EDE9F8;border-radius:10px;padding:14px;margin-top:10px}
-.fname-lbl{font-size:12px;color:#5B3FA6;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
-.fname-val{font-size:16px;color:#3A1F6E;font-weight:700;word-break:break-all;margin-top:4px}
-.status{border-radius:12px;padding:14px 16px;font-size:15px;margin-top:12px;line-height:1.6}
+.low   {background:#FFCDD2;color:#B71C1C}
+
+.fname-box{background:#EDE9F8;border-radius:12px;padding:16px;margin-top:12px}
+.fname-lbl{font-size:13px;color:#5B3FA6;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.fname-val{font-size:17px;color:#3A1F6E;font-weight:700;word-break:break-all;margin-top:4px}
+
+.status{border-radius:14px;padding:16px 18px;font-size:16px;margin-top:14px;line-height:1.7}
 .s-load{background:#EDE9F8;color:#3A1F6E}
-.s-ok{background:#C8E6C9;color:#1B5E20}
-.s-err{background:#FFCDD2;color:#B71C1C}
-.done-box{text-align:center;padding:28px 16px}
-.done-box .ic{font-size:72px;margin-bottom:14px}
-.done-box h2{color:#1B5E20;font-size:24px;margin-bottom:10px}
-.done-box p{color:#555;font-size:16px;line-height:1.8;white-space:pre-line}
-.done-link{display:block;background:#e8f0fb;color:#1A56A0;border-radius:10px;padding:14px 16px;margin-top:16px;text-decoration:none;font-size:15px;word-break:break-all;font-weight:600}
-.spin{width:18px;height:18px;min-width:18px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:inline-block}
+.s-ok  {background:#C8E6C9;color:#1B5E20}
+.s-err {background:#FFCDD2;color:#B71C1C}
+
+.done-box{text-align:center;padding:32px 20px}
+.done-box .ic{font-size:80px;margin-bottom:16px}
+.done-box h2{color:#1B5E20;font-size:26px;margin-bottom:12px;font-weight:700}
+.done-box p{color:#555;font-size:17px;line-height:1.9;white-space:pre-line}
+.done-link{display:block;background:#e8f0fb;color:#1A56A0;border-radius:12px;
+  padding:16px 18px;margin-top:18px;text-decoration:none;font-size:16px;
+  word-break:break-all;font-weight:700}
+
+.spin{width:20px;height:20px;min-width:20px;border:3px solid rgba(255,255,255,.3);
+  border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:inline-block}
 @keyframes sp{to{transform:rotate(360deg)}}
 input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 canvas{display:none}
@@ -132,47 +157,43 @@ canvas{display:none}
 <script>
 var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxej2efdZ6h2B9Hab0YJ7Opgc85UrQFhQ3WVoWRf9BrKG5m5imH2PasmFgnzQOKAyfa/exec";
 
-// OCR ใช้รูปใหญ่กว่า (อ่านได้แม่นยำ), Save ใช้รูปเล็กกว่า (อัพโหลดเร็ว)
-var b64Ocr  = ""; // รูปสำหรับ OCR (800px)
-var b64Save = ""; // รูปสำหรับ Save (600px, quality 0.6)
-var mime    = "image/jpeg";
+var b64Ocr="", b64Save="", mime="image/jpeg";
 
 function resizeImage(dataUrl, maxW, maxH, quality, cb) {
-  var img = new Image();
-  img.onload = function() {
-    var w = img.width, h = img.height;
-    var ratio = Math.min(maxW/w, maxH/h, 1);
-    w = Math.round(w*ratio); h = Math.round(h*ratio);
-    var cv = document.getElementById("cv");
+  var img=new Image();
+  img.onload=function(){
+    var w=img.width, h=img.height;
+    var ratio=Math.min(maxW/w, maxH/h, 1);
+    w=Math.round(w*ratio); h=Math.round(h*ratio);
+    var cv=document.getElementById("cv");
     cv.width=w; cv.height=h;
     cv.getContext("2d").drawImage(img,0,0,w,h);
-    cb(cv.toDataURL("image/jpeg", quality).split(",")[1]);
+    cb(cv.toDataURL("image/jpeg",quality).split(",")[1]);
   };
-  img.src = dataUrl;
+  img.src=dataUrl;
 }
 
-function getKB(b64) { return Math.round(b64.length * 0.75 / 1024); }
+function getKB(b64){ return Math.round(b64.length*0.75/1024); }
 
-function onImg(inp) {
-  var f = inp.files[0]; if (!f) return;
-  mime = "image/jpeg";
+function onImg(inp){
+  var f=inp.files[0]; if(!f) return;
+  mime="image/jpeg";
   setStatus("st1","⏳ กำลังประมวลผลรูป...","load");
-  var r = new FileReader();
-  r.onload = function(e) {
-    var dataUrl = e.target.result;
-    // สร้างรูป 2 ขนาดพร้อมกัน
-    resizeImage(dataUrl, 1000, 750, 0.82, function(ocrB64) {
-      b64Ocr = ocrB64;
-      resizeImage(dataUrl, 600, 450, 0.60, function(saveB64) {
-        b64Save = saveB64;
-        var img = document.getElementById("preview-img");
-        img.src = dataUrl;
-        img.style.display = "block";
-        document.getElementById("preview-ph").style.display = "none";
-        document.getElementById("btn-ocr").style.display = "flex";
-        document.getElementById("s2").style.display = "none";
-        document.getElementById("size-info").textContent =
-          "ขนาดไฟล์ที่จะอัพโหลด: ~" + getKB(b64Save) + " KB";
+  var r=new FileReader();
+  r.onload=function(e){
+    var dataUrl=e.target.result;
+    resizeImage(dataUrl,1000,750,0.82,function(ocrB64){
+      b64Ocr=ocrB64;
+      resizeImage(dataUrl,600,450,0.60,function(saveB64){
+        b64Save=saveB64;
+        var img=document.getElementById("preview-img");
+        img.src=dataUrl;
+        img.style.display="block";
+        document.getElementById("preview-ph").style.display="none";
+        document.getElementById("btn-ocr").style.display="flex";
+        document.getElementById("s2").style.display="none";
+        document.getElementById("size-info").textContent=
+          "ขนาดไฟล์ที่จะอัพโหลด: ~"+getKB(b64Save)+" KB";
         setStatus("st1","✅ รูปพร้อมแล้ว","ok");
       });
     });
@@ -180,59 +201,57 @@ function onImg(inp) {
   r.readAsDataURL(f);
 }
 
-function runOCR() {
-  if (!b64Ocr) { setStatus("st1","กรุณาเลือกรูปก่อน","err"); return; }
-  var btn = document.getElementById("btn-ocr");
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spin"></span> กำลังอ่าน AI...';
+function runOCR(){
+  if(!b64Ocr){setStatus("st1","กรุณาเลือกรูปก่อน","err");return;}
+  var btn=document.getElementById("btn-ocr");
+  btn.disabled=true;
+  btn.innerHTML='<span class="spin"></span> กำลังอ่าน AI...';
   setStatus("st1","🔍 Claude AI กำลังวิเคราะห์รูปเช็ค...","load");
-  callScript({ action:"ocr", image:b64Ocr, mime:mime }, "ocr");
+  callScript({action:"ocr",image:b64Ocr,mime:mime},"ocr");
 }
 
-function doSave() {
-  var cd = {
-    check_no : document.getElementById("f1").value.trim(),
-    bank     : document.getElementById("f2").value.trim(),
-    date     : document.getElementById("f3").value.trim(),
-    amount   : document.getElementById("f4").value.trim(),
-    payee    : document.getElementById("f5").value.trim(),
-    filename : document.getElementById("fname").textContent
+function doSave(){
+  var cd={
+    check_no:document.getElementById("f1").value.trim(),
+    bank:document.getElementById("f2").value.trim(),
+    date:document.getElementById("f3").value.trim(),
+    amount:document.getElementById("f4").value.trim(),
+    payee:document.getElementById("f5").value.trim(),
+    filename:document.getElementById("fname").textContent
   };
-  if (!cd.check_no || !cd.bank) { setStatus("st2","❌ กรุณากรอกเลขที่เช็คและธนาคาร","err"); return; }
-  var btn = document.getElementById("btn-save");
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spin"></span> กำลังอัพโหลด...';
-  var kb = getKB(b64Save);
-  setStatus("st2","☁️ กำลังบันทึก (~"+kb+" KB) รอสักครู่...","load");
-  // ส่งรูปเล็ก (b64Save) ไปบันทึก Drive
-  callScript({ action:"save", image:b64Save, mime:mime, data:cd }, "save");
+  if(!cd.check_no||!cd.bank){setStatus("st2","❌ กรุณากรอกเลขที่เช็คและธนาคาร","err");return;}
+  var btn=document.getElementById("btn-save");
+  btn.disabled=true;
+  btn.innerHTML='<span class="spin"></span> กำลังอัพโหลด...';
+  setStatus("st2","☁️ กำลังบันทึก (~"+getKB(b64Save)+" KB) รอสักครู่...","load");
+  callScript({action:"save",image:b64Save,mime:mime,data:cd},"save");
 }
 
-function callScript(payload, action) {
-  var xhr = new XMLHttpRequest();
-  xhr.open("POST", SCRIPT_URL, true);
-  xhr.setRequestHeader("Content-Type", "text/plain;charset=utf-8");
-  xhr.timeout = 120000;
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState !== 4) return;
-    if (xhr.status === 0) { onError(action, "เชื่อมต่อไม่ได้ — ตรวจสอบ URL และ Deploy settings"); return; }
-    try { handleResponse(JSON.parse(xhr.responseText), action); }
-    catch(e) { onError(action, "ข้อมูลผิดพลาด"); }
+function callScript(payload,action){
+  var xhr=new XMLHttpRequest();
+  xhr.open("POST",SCRIPT_URL,true);
+  xhr.setRequestHeader("Content-Type","text/plain;charset=utf-8");
+  xhr.timeout=120000;
+  xhr.onreadystatechange=function(){
+    if(xhr.readyState!==4)return;
+    if(xhr.status===0){onError(action,"เชื่อมต่อไม่ได้ — ตรวจสอบ URL และ Deploy");return;}
+    try{handleResponse(JSON.parse(xhr.responseText),action);}
+    catch(e){onError(action,"ข้อมูลผิดพลาด");}
   };
-  xhr.ontimeout = function() { onError(action, "หมดเวลา — ลองอีกครั้ง"); };
+  xhr.ontimeout=function(){onError(action,"หมดเวลา — กด บันทึก อีกครั้ง");};
   xhr.send(JSON.stringify(payload));
 }
 
-function handleResponse(data, action) {
-  if (action === "ocr") {
-    var btn = document.getElementById("btn-ocr");
+function handleResponse(data,action){
+  if(action==="ocr"){
+    var btn=document.getElementById("btn-ocr");
     btn.disabled=false; btn.innerHTML="🔍 อ่านข้อมูลเช็ค";
-    if (!data.success) { setStatus("st1","❌ "+(data.error||"อ่านไม่ได้"),"err"); return; }
+    if(!data.success){setStatus("st1","❌ "+(data.error||"อ่านไม่ได้"),"err");return;}
     fillForm(data);
-  } else if (action === "save") {
-    var btn2 = document.getElementById("btn-save");
+  }else if(action==="save"){
+    var btn2=document.getElementById("btn-save");
     btn2.disabled=false; btn2.innerHTML="☁️ บันทึกขึ้น Google Drive";
-    if (!data.success) { setStatus("st2","❌ "+(data.error||"บันทึกไม่สำเร็จ"),"err"); return; }
+    if(!data.success){setStatus("st2","❌ "+(data.error||"บันทึกไม่สำเร็จ"),"err");return;}
     document.getElementById("s2").style.display="none";
     document.getElementById("s3").style.display="block";
     document.getElementById("step-lbl").textContent="ขั้นตอน 3/3";
@@ -243,16 +262,16 @@ function handleResponse(data, action) {
   }
 }
 
-function onError(action, msg) {
+function onError(action,msg){
   document.getElementById("btn-ocr").disabled=false;
   document.getElementById("btn-ocr").innerHTML="🔍 อ่านข้อมูลเช็ค";
   document.getElementById("btn-save").disabled=false;
   document.getElementById("btn-save").innerHTML="☁️ บันทึกขึ้น Google Drive";
-  if (action==="ocr")  setStatus("st1","❌ "+msg,"err");
-  if (action==="save") setStatus("st2","❌ "+msg,"err");
+  if(action==="ocr") setStatus("st1","❌ "+msg,"err");
+  if(action==="save") setStatus("st2","❌ "+msg,"err");
 }
 
-function fillForm(d) {
+function fillForm(d){
   document.getElementById("f1").value=d.check_no||"";
   document.getElementById("f2").value=d.bank||"";
   document.getElementById("f3").value=d.date||"";
@@ -269,16 +288,16 @@ function fillForm(d) {
   window.scrollTo(0,0);
 }
 
-function updateFname() {
+function updateFname(){
   var no=document.getElementById("f1").value.trim();
   var bk=document.getElementById("f2").value.trim();
   document.getElementById("fname").textContent=(no&&bk)?no+"_"+bk+".jpg":(no?no+".jpg":"—");
 }
-["f1","f2"].forEach(function(id){ document.getElementById(id).addEventListener("input",updateFname); });
+["f1","f2"].forEach(function(id){document.getElementById(id).addEventListener("input",updateFname);});
 
-function resetAll() {
+function resetAll(){
   b64Ocr=""; b64Save=""; mime="image/jpeg";
-  ["s2","s3"].forEach(function(id){ document.getElementById(id).style.display="none"; });
+  ["s2","s3"].forEach(function(id){document.getElementById(id).style.display="none";});
   document.getElementById("s1").style.display="block";
   document.getElementById("preview-img").style.display="none";
   document.getElementById("preview-ph").style.display="block";

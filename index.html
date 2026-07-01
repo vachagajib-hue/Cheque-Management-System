@@ -6,7 +6,6 @@
 <meta name="theme-color" content="#3A1F6E">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>สแกนเช็ค</title>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{width:100%;min-height:100vh}
@@ -33,7 +32,6 @@ button:active{opacity:.8;transform:scale(.97)}
 .btn-full:disabled{opacity:.45;cursor:not-allowed}
 .btn-ocr{background:#0E7C6B;color:#fff}
 .btn-save{background:#1A56A0;color:#fff}
-.btn-login{background:#DB4437;color:#fff}
 .btn-new{background:#e0e0e0;color:#444;font-size:16px;padding:16px}
 .field{margin-bottom:16px}
 .field label{display:block;font-size:14px;color:#666;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px}
@@ -56,9 +54,6 @@ button:active{opacity:.8;transform:scale(.97)}
 .done-box h2{color:#1B5E20;font-size:26px;margin-bottom:12px;font-weight:700}
 .done-box p{color:#555;font-size:17px;line-height:1.9;white-space:pre-line}
 .done-link{display:block;background:#e8f0fb;color:#1A56A0;border-radius:12px;padding:16px 18px;margin-top:18px;text-decoration:none;font-size:16px;word-break:break-all;font-weight:700}
-.login-box{text-align:center;padding:32px 20px}
-.login-box .ic{font-size:64px;margin-bottom:16px}
-.login-box p{font-size:17px;color:#555;margin-bottom:20px;line-height:1.7}
 .spin{width:20px;height:20px;min-width:20px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:inline-block}
 @keyframes sp{to{transform:rotate(360deg)}}
 input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
@@ -72,19 +67,8 @@ canvas{display:none}
 </header>
 <div class="wrap">
 
-<!-- LOGIN -->
-<div id="s-login">
-  <div class="card">
-    <div class="login-box">
-      <div class="ic">🔐</div>
-      <p>กด Login เพื่อเชื่อมต่อ Google Drive<br>สำหรับบันทึกไฟล์เช็คค่ะ</p>
-      <button class="btn-full btn-login" onclick="loginGoogle()">🔑 Login ด้วย Google</button>
-    </div>
-  </div>
-</div>
-
 <!-- STEP 1 -->
-<div id="s1" style="display:none">
+<div id="s1">
   <div class="card">
     <div class="card-title">📸 ถ่ายหรือเลือกรูปหน้าเช็ค</div>
     <div id="preview-wrap">
@@ -147,34 +131,13 @@ canvas{display:none}
 <canvas id="cv"></canvas>
 
 <script>
-// ── Config ──────────────────────────────────
-var CLIENT_ID   = "1008388977570-3520if5ea2j8fbng82huni3r8ld8h9eb.apps.googleusercontent.com";
-var SCRIPT_URL  = "https://script.google.com/macros/s/AKfycbxej2efdZ6h2B9Hab0YJ7Opgc85UrQFhQ3WVoWRf9BrKG5m5imH2PasmFgnzQOKAyfa/exec";
-var FOLDER_NAME = "ทะเบียนเช็คสั่งจ่าย";
-var SCOPE       = "https://www.googleapis.com/auth/drive.file";
-// ────────────────────────────────────────────
+// ── ใส่ URL Apps Script ──
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxej2efdZ6h2B9Hab0YJ7Opgc85UrQFhQ3WVoWRf9BrKG5m5imH2PasmFgnzQOKAyfa/exec";
+// ────────────────────────
 
-var accessToken = "";
-var b64Ocr = "", b64Full = "", mime = "image/jpeg";
+var b64Ocr="", b64Save="", mime="image/jpeg";
 
-// ── Google Login ──
-function loginGoogle() {
-  var client = google.accounts.oauth2.initTokenClient({
-    client_id : CLIENT_ID,
-    scope     : SCOPE,
-    callback  : function(resp) {
-      if (resp.error) { alert("Login ไม่สำเร็จ: "+resp.error); return; }
-      accessToken = resp.access_token;
-      document.getElementById("s-login").style.display = "none";
-      document.getElementById("s1").style.display = "block";
-      setStatus("st1","✅ Login สำเร็จ พร้อมใช้งานแล้วค่ะ","ok");
-    }
-  });
-  client.requestAccessToken();
-}
-
-// ── ลดขนาดรูป ──
-function resizeImage(dataUrl, maxW, maxH, quality, cb) {
+function resizeImage(dataUrl,maxW,maxH,quality,cb){
   var img=new Image();
   img.onload=function(){
     var w=img.width,h=img.height;
@@ -183,12 +146,12 @@ function resizeImage(dataUrl, maxW, maxH, quality, cb) {
     var cv=document.getElementById("cv");
     cv.width=w; cv.height=h;
     cv.getContext("2d").drawImage(img,0,0,w,h);
-    cb(cv.toDataURL("image/jpeg",quality));
+    cb(cv.toDataURL("image/jpeg",quality).split(",")[1]);
   };
   img.src=dataUrl;
 }
 
-function getKB(b64){ return Math.round(b64.length*0.75/1024); }
+function getKB(b64){return Math.round(b64.length*0.75/1024);}
 
 function onImg(inp){
   var f=inp.files[0]; if(!f) return;
@@ -197,49 +160,37 @@ function onImg(inp){
   var r=new FileReader();
   r.onload=function(e){
     var dataUrl=e.target.result;
-    resizeImage(dataUrl,1200,900,0.88,function(ocrUrl){
-      b64Ocr=ocrUrl.split(",")[1];
-      b64Full=dataUrl.split(",")[1];
-      var img=document.getElementById("preview-img");
-      img.src=dataUrl;
-      img.style.display="block";
-      document.getElementById("preview-ph").style.display="none";
-      document.getElementById("btn-ocr").style.display="flex";
-      document.getElementById("s2").style.display="none";
-      document.getElementById("size-info").textContent="ขนาดไฟล์: ~"+getKB(b64Full)+" KB";
-      setStatus("st1","✅ รูปพร้อมแล้ว","ok");
+    // OCR: 1200px คุณภาพสูง
+    resizeImage(dataUrl,1200,900,0.88,function(ocrB64){
+      b64Ocr=ocrB64;
+      // Save: 900px คุณภาพดี — ชัด แต่ไม่หนักเกินไป
+      resizeImage(dataUrl,900,675,0.80,function(saveB64){
+        b64Save=saveB64;
+        var img=document.getElementById("preview-img");
+        img.src=dataUrl;
+        img.style.display="block";
+        document.getElementById("preview-ph").style.display="none";
+        document.getElementById("btn-ocr").style.display="flex";
+        document.getElementById("s2").style.display="none";
+        document.getElementById("size-info").textContent=
+          "OCR: ~"+getKB(b64Ocr)+"KB  |  บันทึก: ~"+getKB(b64Save)+"KB";
+        setStatus("st1","✅ รูปพร้อมแล้ว","ok");
+      });
     });
   };
   r.readAsDataURL(f);
 }
 
-// ── OCR ──
 function runOCR(){
   if(!b64Ocr){setStatus("st1","กรุณาเลือกรูปก่อน","err");return;}
   var btn=document.getElementById("btn-ocr");
   btn.disabled=true;
   btn.innerHTML='<span class="spin"></span> กำลังอ่าน AI...';
   setStatus("st1","🔍 Claude AI กำลังวิเคราะห์รูปเช็ค...","load");
-
-  var xhr=new XMLHttpRequest();
-  xhr.open("POST",SCRIPT_URL,true);
-  xhr.setRequestHeader("Content-Type","text/plain;charset=utf-8");
-  xhr.timeout=60000;
-  xhr.onreadystatechange=function(){
-    if(xhr.readyState!==4)return;
-    btn.disabled=false; btn.innerHTML="🔍 อ่านข้อมูลเช็ค";
-    try{
-      var data=JSON.parse(xhr.responseText);
-      if(!data.success){setStatus("st1","❌ "+(data.error||"อ่านไม่ได้"),"err");return;}
-      fillForm(data);
-    }catch(e){setStatus("st1","❌ ข้อมูลผิดพลาด","err");}
-  };
-  xhr.ontimeout=function(){btn.disabled=false;btn.innerHTML="🔍 อ่านข้อมูลเช็ค";setStatus("st1","❌ หมดเวลา — ลองใหม่","err");};
-  xhr.send(JSON.stringify({action:"ocr",image:b64Ocr,mime:mime}));
+  callScript({action:"ocr",image:b64Ocr,mime:mime},"ocr");
 }
 
-// ── บันทึก ──
-async function doSave(){
+function doSave(){
   var cd={
     check_no:document.getElementById("f1").value.trim(),
     bank:document.getElementById("f2").value.trim(),
@@ -249,127 +200,67 @@ async function doSave(){
     filename:document.getElementById("fname").textContent
   };
   if(!cd.check_no||!cd.bank){setStatus("st2","❌ กรุณากรอกเลขที่เช็คและธนาคาร","err");return;}
-  if(!accessToken){setStatus("st2","❌ กรุณา Login ก่อนค่ะ","err");return;}
-
   var btn=document.getElementById("btn-save");
   btn.disabled=true;
-  btn.innerHTML='<span class="spin"></span> กำลังอัพโหลด Drive...';
-  setStatus("st2","☁️ กำลังหาโฟลเดอร์...","load");
+  btn.innerHTML='<span class="spin"></span> กำลังบันทึก...';
+  setStatus("st2","☁️ กำลังบันทึกรูปขึ้น Drive และอัพเดท Sheet...\nอาจใช้เวลา 30-60 วินาที กรุณารอค่ะ","load");
+  callScript({action:"save",image:b64Save,mime:mime,data:cd},"save");
+}
 
-  try{
-    // 1. หาโฟลเดอร์ปีที่ถูกต้อง
-    var targetFolderId = await getOrCreateFolder(cd.date);
-    setStatus("st2","☁️ กำลังบันทึกรูปขึ้น Drive...","load");
+function callScript(payload,action){
+  var xhr=new XMLHttpRequest();
+  xhr.open("POST",SCRIPT_URL,true);
+  xhr.setRequestHeader("Content-Type","text/plain;charset=utf-8");
+  // OCR: 60 วิ, Save: 3 นาที
+  xhr.timeout = action==="ocr" ? 60000 : 180000;
+  xhr.onreadystatechange=function(){
+    if(xhr.readyState!==4)return;
+    if(xhr.status===0){onError(action,"เชื่อมต่อไม่ได้ — ตรวจสอบ URL");return;}
+    try{
+      var data=JSON.parse(xhr.responseText);
+      handleResponse(data,action);
+    }catch(e){onError(action,"ข้อมูลผิดพลาด");}
+  };
+  xhr.ontimeout=function(){
+    if(action==="save"){
+      // timeout แต่อาจบันทึกสำเร็จแล้ว — ให้เช็ค Drive
+      document.getElementById("btn-save").disabled=false;
+      document.getElementById("btn-save").innerHTML="☁️ บันทึกขึ้น Google Drive";
+      setStatus("st2","⚠️ ระบบช้า — กรุณาเช็คใน Google Drive โฟลเดอร์ ทะเบียนเช็คสั่งจ่าย ว่าไฟล์บันทึกแล้วหรือยัง ถ้ายังไม่มีค่อยกดใหม่","err");
+    }else{
+      onError(action,"หมดเวลา — กดอ่านข้อมูลใหม่อีกครั้ง");
+    }
+  };
+  xhr.send(JSON.stringify(payload));
+}
 
-    // 2. อัพโหลดรูปตรงไป Drive ในโฟลเดอร์ที่ถูกต้อง
-    var result = await uploadToDrive(b64Full, cd.filename, targetFolderId);
-    setStatus("st2","📋 กำลังบันทึก Link ใน Sheet...","load");
-
-    // 3. บันทึก Link ใน Sheet ผ่าน Apps Script
-    await linkToSheetViaScript(cd.check_no, result.webViewLink, cd.filename);
-
-    // 4. แสดงสำเร็จ
+function handleResponse(data,action){
+  if(action==="ocr"){
+    var btn=document.getElementById("btn-ocr");
+    btn.disabled=false; btn.innerHTML="🔍 อ่านข้อมูลเช็ค";
+    if(!data.success){setStatus("st1","❌ "+(data.error||"อ่านไม่ได้"),"err");return;}
+    fillForm(data);
+  }else if(action==="save"){
+    var btn2=document.getElementById("btn-save");
+    btn2.disabled=false; btn2.innerHTML="☁️ บันทึกขึ้น Google Drive";
+    if(!data.success){setStatus("st2","❌ "+(data.error||"บันทึกไม่สำเร็จ"),"err");return;}
     document.getElementById("s2").style.display="none";
     document.getElementById("s3").style.display="block";
     document.getElementById("step-lbl").textContent="ขั้นตอน 3/3";
-    document.getElementById("done-msg").textContent=cd.filename+"\n✓ บันทึกใน Drive และอัพเดท Sheet แล้ว";
-    document.getElementById("done-url").href=result.webViewLink;
+    document.getElementById("done-msg").textContent=
+      data.filename+"\n"+(data.linked?"✓ บันทึก Drive และอัพเดท Link ใน Sheet แล้ว":"✓ บันทึก Drive แล้ว (ไม่พบเลขที่เช็คใน Sheet)");
+    document.getElementById("done-url").href=data.fileUrl||"#";
     window.scrollTo(0,0);
-
-  }catch(e){
-    btn.disabled=false;
-    btn.innerHTML="☁️ บันทึกขึ้น Google Drive";
-    setStatus("st2","❌ "+e.message,"err");
   }
 }
 
-// ── อัพโหลดตรงไป Drive API ──
-async function uploadToDrive(base64Data, filename, targetFolderId){
-  var binary=atob(base64Data);
-  var bytes=new Uint8Array(binary.length);
-  for(var i=0;i<binary.length;i++) bytes[i]=binary.charCodeAt(i);
-  var blob=new Blob([bytes],{type:"image/jpeg"});
-
-  var metadata={name:filename, parents:[targetFolderId]};
-  var form=new FormData();
-  form.append("metadata",new Blob([JSON.stringify(metadata)],{type:"application/json"}));
-  form.append("file",blob);
-
-  var res=await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink",{
-    method:"POST",
-    headers:{"Authorization":"Bearer "+accessToken},
-    body:form
-  });
-  if(!res.ok){
-    var err=await res.text();
-    throw new Error("อัพโหลด Drive ไม่สำเร็จ ("+res.status+"): "+err.substring(0,80));
-  }
-  var data=await res.json();
-
-  // ตั้ง public permission
-  await fetch("https://www.googleapis.com/drive/v3/files/"+data.id+"/permissions",{
-    method:"POST",
-    headers:{"Authorization":"Bearer "+accessToken,"Content-Type":"application/json"},
-    body:JSON.stringify({role:"reader",type:"anyone"})
-  });
-
-  return {
-    fileId: data.id,
-    webViewLink: data.webViewLink||"https://drive.google.com/file/d/"+data.id+"/view"
-  };
-}
-
-// ── หา/สร้างโฟลเดอร์ตามปี พ.ศ. ──
-async function getOrCreateFolder(dateStr){
-  // หาโฟลเดอร์หลัก
-  var rootId=await findOrCreateDriveFolder(FOLDER_NAME,null);
-
-  // คำนวณปี พ.ศ.
-  var yearBE=new Date().getFullYear()+543;
-  if(dateStr){
-    var p=dateStr.split("/");
-    if(p.length===3){var y=parseInt(p[2]);yearBE=y>2400?y:y+543;}
-  }
-  return await findOrCreateDriveFolder(yearBE.toString(),rootId);
-}
-
-async function findOrCreateDriveFolder(name,parentId){
-  // ค้นหาโฟลเดอร์ที่มีอยู่
-  var q="mimeType='application/vnd.google-apps.folder' and name='"+name+"' and trashed=false";
-  if(parentId) q+=" and '"+parentId+"' in parents";
-  var res=await fetch("https://www.googleapis.com/drive/v3/files?q="+encodeURIComponent(q)+"&fields=files(id,name)",{
-    headers:{"Authorization":"Bearer "+accessToken}
-  });
-  var data=await res.json();
-  if(data.files&&data.files.length>0) return data.files[0].id;
-
-  // สร้างใหม่
-  var body={name:name,mimeType:"application/vnd.google-apps.folder"};
-  if(parentId) body.parents=[parentId];
-  var res2=await fetch("https://www.googleapis.com/drive/v3/files?fields=id",{
-    method:"POST",
-    headers:{"Authorization":"Bearer "+accessToken,"Content-Type":"application/json"},
-    body:JSON.stringify(body)
-  });
-  var data2=await res2.json();
-  if(!data2.id) throw new Error("สร้างโฟลเดอร์ไม่สำเร็จ");
-  return data2.id;
-}
-
-// ── บันทึก Link ใน Sheet ผ่าน Apps Script ──
-function linkToSheetViaScript(checkNo, fileUrl, filename){
-  return new Promise(function(resolve){
-    var xhr=new XMLHttpRequest();
-    xhr.open("POST",SCRIPT_URL,true);
-    xhr.setRequestHeader("Content-Type","text/plain;charset=utf-8");
-    xhr.timeout=30000;
-    xhr.onreadystatechange=function(){
-      if(xhr.readyState===4) resolve(); // resolve เสมอ ไม่ block
-    };
-    xhr.ontimeout=function(){ resolve(); };
-    xhr.onerror=function(){ resolve(); };
-    xhr.send(JSON.stringify({action:"link",check_no:checkNo,fileUrl:fileUrl,filename:filename}));
-  });
+function onError(action,msg){
+  document.getElementById("btn-ocr").disabled=false;
+  document.getElementById("btn-ocr").innerHTML="🔍 อ่านข้อมูลเช็ค";
+  document.getElementById("btn-save").disabled=false;
+  document.getElementById("btn-save").innerHTML="☁️ บันทึกขึ้น Google Drive";
+  if(action==="ocr") setStatus("st1","❌ "+msg,"err");
+  if(action==="save") setStatus("st2","❌ "+msg,"err");
 }
 
 function fillForm(d){
@@ -397,7 +288,7 @@ function updateFname(){
 ["f1","f2"].forEach(function(id){document.getElementById(id).addEventListener("input",updateFname);});
 
 function resetAll(){
-  b64Ocr=""; b64Full=""; mime="image/jpeg";
+  b64Ocr=""; b64Save=""; mime="image/jpeg";
   ["s2","s3"].forEach(function(id){document.getElementById(id).style.display="none";});
   document.getElementById("s1").style.display="block";
   document.getElementById("preview-img").style.display="none";

@@ -212,7 +212,7 @@ function callScript(payload,action){
   xhr.open("POST",SCRIPT_URL,true);
   xhr.setRequestHeader("Content-Type","text/plain;charset=utf-8");
   // OCR: 60 วิ, Save: 3 นาที
-  xhr.timeout = action==="ocr" ? 60000 : 180000;
+  xhr.timeout = action==="ocr" ? 60000 : 300000; // OCR: 60วิ, Save: 5นาที
   xhr.onreadystatechange=function(){
     if(xhr.readyState!==4)return;
     if(xhr.status===0){onError(action,"เชื่อมต่อไม่ได้ — ตรวจสอบ URL");return;}

@@ -8,84 +8,54 @@
 <title>สแกนเช็ค</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%}
 body{font-family:'Sarabun',sans-serif;background:#F3F0FA;min-height:100vh;padding-bottom:40px;font-size:16px}
-
 header{background:#3A1F6E;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.2)}
 header h1{color:#fff;font-size:20px;font-weight:700}
 header span{color:rgba(255,255,255,.7);font-size:14px}
-
 .wrap{max-width:600px;margin:0 auto;padding:16px}
-
 .card{background:#fff;border-radius:16px;padding:20px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
 .card-title{font-size:16px;font-weight:700;color:#5B3FA6;margin-bottom:16px}
-
-/* preview */
-#preview-wrap{width:100%;min-height:200px;background:#f0eeff;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:4px}
+#preview-wrap{width:100%;min-height:200px;background:#f0eeff;border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:4px}
 #preview-img{width:100%;max-height:340px;object-fit:contain;display:none}
 #preview-ph{text-align:center;color:#9E8DC7;padding:32px 20px}
 #preview-ph .ic{font-size:56px;margin-bottom:10px}
 #preview-ph p{font-size:15px;line-height:1.6}
-
-/* ปุ่มเลือกรูป */
 .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
-.btn-cam,.btn-gal{border:none;border-radius:12px;padding:20px 8px;font-size:16px;
-  font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;
-  gap:6px;font-family:'Sarabun',sans-serif;width:100%;transition:opacity .15s}
+.btn-cam,.btn-gal{border:none;border-radius:12px;padding:20px 8px;font-size:16px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;font-family:'Sarabun',sans-serif;width:100%}
 .btn-cam{background:#3A1F6E;color:#fff}
 .btn-gal{background:#EDE9F8;color:#3A1F6E}
 .btn-cam .ic,.btn-gal .ic{font-size:34px}
 button:active{opacity:.8;transform:scale(.97)}
-
-/* ปุ่มหลัก */
-.btn-full{width:100%;padding:18px;border:none;border-radius:12px;font-size:17px;
-  font-weight:700;cursor:pointer;font-family:'Sarabun',sans-serif;
-  display:flex;align-items:center;justify-content:center;gap:10px;margin-top:12px}
+.btn-full{width:100%;padding:18px;border:none;border-radius:12px;font-size:17px;font-weight:700;cursor:pointer;font-family:'Sarabun',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:12px}
 .btn-full:disabled{opacity:.45;cursor:not-allowed}
-.btn-ocr {background:#0E7C6B;color:#fff}
+.btn-ocr{background:#0E7C6B;color:#fff}
 .btn-save{background:#1A56A0;color:#fff}
-.btn-new {background:#eee;color:#555;font-size:15px;padding:14px}
-
-/* form */
+.btn-new{background:#eee;color:#555;font-size:15px;padding:14px}
 .field{margin-bottom:14px}
-.field label{display:block;font-size:13px;color:#666;font-weight:700;
-  text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-.field input{width:100%;padding:14px;border:2px solid #e0d9f5;border-radius:10px;
-  font-size:17px;font-family:'Sarabun',sans-serif;color:#222;background:#fff}
+.field label{display:block;font-size:13px;color:#666;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.field input{width:100%;padding:14px;border:2px solid #e0d9f5;border-radius:10px;font-size:17px;font-family:'Sarabun',sans-serif;color:#222;background:#fff}
 .field input:focus{outline:none;border-color:#5B3FA6;background:#faf8ff}
 .field input:disabled{background:#f5f5f5;color:#aaa}
-
-.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;
-  border-radius:20px;font-size:15px;font-weight:700;margin-bottom:14px}
-.high  {background:#C8E6C9;color:#1B5E20}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:20px;font-size:15px;font-weight:700;margin-bottom:14px}
+.high{background:#C8E6C9;color:#1B5E20}
 .medium{background:#FFE0B2;color:#E65100}
-.low   {background:#FFCDD2;color:#B71C1C}
-
+.low{background:#FFCDD2;color:#B71C1C}
 .fname-box{background:#EDE9F8;border-radius:10px;padding:14px;margin-top:10px}
 .fname-lbl{font-size:12px;color:#5B3FA6;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
 .fname-val{font-size:16px;color:#3A1F6E;font-weight:700;word-break:break-all;margin-top:4px}
-
-/* status */
 .status{border-radius:12px;padding:14px 16px;font-size:15px;margin-top:12px;line-height:1.6}
 .s-load{background:#EDE9F8;color:#3A1F6E}
-.s-ok  {background:#C8E6C9;color:#1B5E20}
-.s-err {background:#FFCDD2;color:#B71C1C}
-
-/* สำเร็จ */
+.s-ok{background:#C8E6C9;color:#1B5E20}
+.s-err{background:#FFCDD2;color:#B71C1C}
 .done-box{text-align:center;padding:28px 16px}
 .done-box .ic{font-size:72px;margin-bottom:14px}
 .done-box h2{color:#1B5E20;font-size:24px;margin-bottom:10px}
 .done-box p{color:#555;font-size:16px;line-height:1.8;white-space:pre-line}
-.done-link{display:block;background:#e8f0fb;color:#1A56A0;border-radius:10px;
-  padding:14px 16px;margin-top:16px;text-decoration:none;font-size:15px;
-  word-break:break-all;font-weight:600}
-
-.spin{width:18px;height:18px;min-width:18px;border:3px solid rgba(255,255,255,.3);
-  border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:inline-block}
+.done-link{display:block;background:#e8f0fb;color:#1A56A0;border-radius:10px;padding:14px 16px;margin-top:16px;text-decoration:none;font-size:15px;word-break:break-all;font-weight:600}
+.spin{width:18px;height:18px;min-width:18px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:inline-block}
 @keyframes sp{to{transform:rotate(360deg)}}
-
 input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+canvas{display:none}
 </style>
 </head>
 <body>
@@ -93,7 +63,6 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events
   <h1>📷 สแกนเช็คสั่งจ่าย</h1>
   <span id="step-lbl">ขั้นตอน 1/3</span>
 </header>
-
 <div class="wrap">
 
 <!-- STEP 1 -->
@@ -118,9 +87,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events
     <input id="inp-cam" type="file" accept="image/*" capture="environment" onchange="onImg(this)">
     <input id="inp-gal" type="file" accept="image/*" onchange="onImg(this)">
   </div>
-  <button class="btn-full btn-ocr" id="btn-ocr" onclick="runOCR()" style="display:none">
-    🔍 อ่านข้อมูลเช็ค
-  </button>
+  <button class="btn-full btn-ocr" id="btn-ocr" onclick="runOCR()" style="display:none">🔍 อ่านข้อมูลเช็ค</button>
   <div id="st1"></div>
 </div>
 
@@ -129,11 +96,11 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events
   <div class="card">
     <div class="card-title">📋 ตรวจสอบข้อมูลก่อนบันทึก</div>
     <div id="badge-wrap"></div>
-    <div class="field"><label>เลขที่เช็ค</label>         <input id="f1" type="tel"  placeholder="เช่น 88036175"></div>
-    <div class="field"><label>ธนาคาร</label>              <input id="f2" type="text" placeholder="เช่น ทหารไทยธนชาต"></div>
-    <div class="field"><label>วันที่ (DD/MM/YYYY)</label> <input id="f3" type="text" placeholder="เช่น 22/07/2569"></div>
-    <div class="field"><label>จำนวนเงิน (บาท)</label>    <input id="f4" type="tel"  placeholder="เช่น 191640.08"></div>
-    <div class="field"><label>ผู้รับเงิน</label>          <input id="f5" type="text"></div>
+    <div class="field"><label>เลขที่เช็ค</label><input id="f1" type="tel" placeholder="เช่น 88036175"></div>
+    <div class="field"><label>ธนาคาร</label><input id="f2" type="text" placeholder="เช่น ทหารไทยธนชาต"></div>
+    <div class="field"><label>วันที่ (DD/MM/YYYY)</label><input id="f3" type="text" placeholder="เช่น 22/07/2569"></div>
+    <div class="field"><label>จำนวนเงิน (บาท)</label><input id="f4" type="tel" placeholder="เช่น 191640.08"></div>
+    <div class="field"><label>ผู้รับเงิน</label><input id="f5" type="text"></div>
     <div class="fname-box">
       <div class="fname-lbl">ชื่อไฟล์ที่จะบันทึก</div>
       <div class="fname-val" id="fname">—</div>
@@ -158,25 +125,49 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events
 </div>
 
 </div>
+<canvas id="cv"></canvas>
 
 <script>
 var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxej2efdZ6h2B9Hab0YJ7Opgc85UrQFhQ3WVoWRf9BrKG5m5imH2PasmFgnzQOKAyfa/exec";
 
 var b64 = "", mime = "image/jpeg";
 
+// ── ลดขนาดรูปก่อนส่ง (สำคัญมาก — ลดเวลา upload) ──
+function resizeImage(dataUrl, maxW, maxH, quality, cb) {
+  var img = new Image();
+  img.onload = function() {
+    var w = img.width, h = img.height;
+    // คำนวณขนาดใหม่
+    if (w > maxW || h > maxH) {
+      var ratio = Math.min(maxW/w, maxH/h);
+      w = Math.round(w * ratio);
+      h = Math.round(h * ratio);
+    }
+    var cv = document.getElementById("cv");
+    cv.width = w; cv.height = h;
+    cv.getContext("2d").drawImage(img, 0, 0, w, h);
+    cb(cv.toDataURL("image/jpeg", quality).split(",")[1]);
+  };
+  img.src = dataUrl;
+}
+
 function onImg(inp) {
   var f = inp.files[0]; if (!f) return;
-  mime = f.type || "image/jpeg";
+  mime = "image/jpeg"; // บังคับ jpeg เสมอ
   var r = new FileReader();
   r.onload = function(e) {
-    b64 = e.target.result.split(",")[1];
-    var img = document.getElementById("preview-img");
-    img.src = e.target.result;
-    img.style.display = "block";
-    document.getElementById("preview-ph").style.display = "none";
-    document.getElementById("btn-ocr").style.display = "flex";
-    document.getElementById("s2").style.display = "none";
-    setStatus("st1","","");
+    var dataUrl = e.target.result;
+    // ลดขนาดรูป: max 1200x900, quality 0.75
+    resizeImage(dataUrl, 1200, 900, 0.75, function(resizedB64) {
+      b64 = resizedB64;
+      var img = document.getElementById("preview-img");
+      img.src = dataUrl; // แสดง preview รูปเต็ม
+      img.style.display = "block";
+      document.getElementById("preview-ph").style.display = "none";
+      document.getElementById("btn-ocr").style.display = "flex";
+      document.getElementById("s2").style.display = "none";
+      setStatus("st1","✅ รูปพร้อม (ย่อขนาดแล้วเพื่อส่งได้เร็วขึ้น)","ok");
+    });
   };
   r.readAsDataURL(f);
 }
@@ -203,7 +194,7 @@ function doSave() {
   var btn = document.getElementById("btn-save");
   btn.disabled = true;
   btn.innerHTML = '<span class="spin"></span> กำลังอัพโหลด...';
-  setStatus("st2","☁️ กำลังบันทึก " + cd.filename + "...","load");
+  setStatus("st2","☁️ กำลังบันทึก "+cd.filename+" — อาจใช้เวลา 20-30 วินาที...","load");
   callScript({ action:"save", image:b64, mime:mime, data:cd }, "save");
 }
 
@@ -211,7 +202,7 @@ function callScript(payload, action) {
   var xhr = new XMLHttpRequest();
   xhr.open("POST", SCRIPT_URL, true);
   xhr.setRequestHeader("Content-Type", "text/plain;charset=utf-8");
-  xhr.timeout = 60000;
+  xhr.timeout = 120000; // 2 นาที
   xhr.onreadystatechange = function() {
     if (xhr.readyState !== 4) return;
     if (xhr.status === 0) {
@@ -219,13 +210,14 @@ function callScript(payload, action) {
       return;
     }
     try {
-      var data = JSON.parse(xhr.responseText);
-      handleResponse(data, action);
+      handleResponse(JSON.parse(xhr.responseText), action);
     } catch(e) {
-      onError(action, "ข้อมูลผิดพลาด: " + xhr.responseText.substring(0,80));
+      onError(action, "ข้อมูลผิดพลาด");
     }
   };
-  xhr.ontimeout = function() { onError(action, "หมดเวลา — ลองใหม่อีกครั้ง"); };
+  xhr.ontimeout = function() {
+    onError(action, "หมดเวลา — ลองอีกครั้ง (รูปถูกย่อขนาดแล้ว ควรเร็วขึ้น)");
+  };
   xhr.send(JSON.stringify(payload));
 }
 
@@ -233,17 +225,17 @@ function handleResponse(data, action) {
   if (action === "ocr") {
     var btn = document.getElementById("btn-ocr");
     btn.disabled = false; btn.innerHTML = "🔍 อ่านข้อมูลเช็ค";
-    if (!data.success) { setStatus("st1","❌ " + (data.error||"อ่านไม่ได้"),"err"); return; }
+    if (!data.success) { setStatus("st1","❌ "+(data.error||"อ่านไม่ได้"),"err"); return; }
     fillForm(data);
   } else if (action === "save") {
     var btn2 = document.getElementById("btn-save");
     btn2.disabled = false; btn2.innerHTML = "☁️ บันทึกขึ้น Google Drive";
-    if (!data.success) { setStatus("st2","❌ " + (data.error||"บันทึกไม่สำเร็จ"),"err"); return; }
+    if (!data.success) { setStatus("st2","❌ "+(data.error||"บันทึกไม่สำเร็จ"),"err"); return; }
     document.getElementById("s2").style.display = "none";
     document.getElementById("s3").style.display = "block";
     document.getElementById("step-lbl").textContent = "ขั้นตอน 3/3";
     document.getElementById("done-msg").textContent =
-      data.filename + "\n" + (data.linked ? "✓ อัพเดท Link ใน Sheet แล้ว" : "(ไม่พบเลขที่เช็คใน Sheet)");
+      data.filename+"\n"+(data.linked?"✓ อัพเดท Link ใน Sheet แล้ว":"(ไม่พบเลขที่เช็คใน Sheet)");
     document.getElementById("done-url").href = data.fileUrl || "#";
     window.scrollTo(0,0);
   }
@@ -278,7 +270,6 @@ function fillForm(d) {
 function updateFname() {
   var no = document.getElementById("f1").value.trim();
   var bk = document.getElementById("f2").value.trim();
-  // เก็บเป็น .jpg แทน .pdf
   document.getElementById("fname").textContent = (no&&bk)?no+"_"+bk+".jpg":(no?no+".jpg":"—");
 }
 ["f1","f2"].forEach(function(id){ document.getElementById(id).addEventListener("input",updateFname); });

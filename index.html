@@ -184,7 +184,7 @@ function onImg(inp){
     var dataUrl=e.target.result;
     resizeImage(dataUrl,1000,750,0.82,function(ocrB64){
       b64Ocr=ocrB64;
-      resizeImage(dataUrl,600,450,0.60,function(saveB64){
+      resizeImage(dataUrl,400,300,0.45,function(saveB64){
         b64Save=saveB64;
         var img=document.getElementById("preview-img");
         img.src=dataUrl;
@@ -231,14 +231,31 @@ function callScript(payload,action){
   var xhr=new XMLHttpRequest();
   xhr.open("POST",SCRIPT_URL,true);
   xhr.setRequestHeader("Content-Type","text/plain;charset=utf-8");
-  xhr.timeout=120000;
+  xhr.timeout=90000; // 90 วินาที
   xhr.onreadystatechange=function(){
     if(xhr.readyState!==4)return;
     if(xhr.status===0){onError(action,"เชื่อมต่อไม่ได้ — ตรวจสอบ URL และ Deploy");return;}
     try{handleResponse(JSON.parse(xhr.responseText),action);}
-    catch(e){onError(action,"ข้อมูลผิดพลาด");}
+    catch(e){
+      // Apps Script บางครั้ง timeout แต่ไฟล์บันทึกสำเร็จแล้ว
+      if(action==="save"){
+        setStatus("st2","⚠️ ระบบช้า — เช็คใน Google Drive ว่าไฟล์บันทึกแล้วหรือยัง ถ้ายังไม่มีค่อยกดใหม่","err");
+        document.getElementById("btn-save").disabled=false;
+        document.getElementById("btn-save").innerHTML="☁️ บันทึกขึ้น Google Drive";
+      } else {
+        onError(action,"ข้อมูลผิดพลาด");
+      }
+    }
   };
-  xhr.ontimeout=function(){onError(action,"หมดเวลา — กด บันทึก อีกครั้ง");};
+  xhr.ontimeout=function(){
+    if(action==="save"){
+      setStatus("st2","⚠️ ระบบใช้เวลานาน — เช็คใน Google Drive ก่อนว่าไฟล์บันทึกแล้วหรือยัง ถ้ายังไม่มีค่อยกดบันทึกใหม่","err");
+      document.getElementById("btn-save").disabled=false;
+      document.getElementById("btn-save").innerHTML="☁️ บันทึกขึ้น Google Drive";
+    } else {
+      onError(action,"หมดเวลา — กดอ่านข้อมูลใหม่อีกครั้ง");
+    }
+  };
   xhr.send(JSON.stringify(payload));
 }
 

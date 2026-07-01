@@ -13,6 +13,13 @@ header h1{font-size:20px;font-weight:700}
 header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .refresh-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-family:'Sarabun',sans-serif}
 .refresh-btn:hover{background:rgba(255,255,255,.25)}
+.quicklinks{background:#2D1760;padding:10px 24px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.ql-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;font-family:"Sarabun",sans-serif;cursor:pointer;border:none;transition:opacity .15s}
+.ql-btn:hover{opacity:.85}
+.ql-sheet{background:#0F9D58;color:#fff}
+.ql-drive{background:#1A73E8;color:#fff}
+.ql-scan{background:#E65100;color:#fff}
+.ql-label{font-size:12px;color:rgba(255,255,255,.5);margin-right:4px}
 .wrap{max-width:1200px;margin:0 auto;padding:20px}
 
 /* KPI Cards */
@@ -91,6 +98,12 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
   </div>
   <button class="refresh-btn" onclick="loadData()">🔄 รีเฟรช</button>
 </header>
+<div class="quicklinks">
+  <span class="ql-label">ลิงก์ด่วน:</span>
+  <a class="ql-btn ql-sheet" href="https://docs.google.com/spreadsheets/d/1xQvawSJPQEyLF7WL_OtWHq7QUFTwrxHmyn9nwPnflTs/edit" target="_blank">📊 Google Sheet</a>
+  <a class="ql-btn ql-drive" href="https://drive.google.com/drive/folders/1Mms8-T1QsHeer0vGsk_F_B1gU1Yd1QuF" target="_blank">📁 Google Drive</a>
+  <a class="ql-btn ql-scan"  href="index.html" target="_blank">📷 สแกนเช็ค</a>
+</div>
 
 <div class="wrap">
   <div id="loading">

@@ -23,7 +23,7 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .wrap{max-width:1200px;margin:0 auto;padding:20px}
 
 /* KPI Cards */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
 .kpi{background:#fff;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
 .kpi .label{font-size:12px;color:#888;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
 .kpi .value{font-size:22px;font-weight:700;margin-bottom:4px}
@@ -50,7 +50,7 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 /* Cards */
 .row{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
-@media(max-width:768px){.row,.row2{grid-template-columns:1fr}}
+@media(max-width:768px){.row,.row2{grid-template-columns:1fr}.kpi-grid{grid-template-columns:repeat(2,1fr)}}
 .card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
 .card h2{font-size:16px;font-weight:700;color:#3A1F6E;margin-bottom:4px}
 .card .sub-title{font-size:12px;color:#aaa;margin-bottom:16px}
@@ -225,7 +225,11 @@ var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxej2efdZ6h2B9Hab0YJ7O
 var cashflowChartObj = null;
 
 function fmt(n){ return "฿"+Math.round(n).toLocaleString("th-TH"); }
-function fmtM(n){ return n>=1000000?"฿"+(n/1000000).toFixed(1)+"M":n>=1000?"฿"+(n/1000).toFixed(0)+"K":fmt(n); }
+function fmtFull(n){
+  if(!n||isNaN(n)) return "฿0";
+  return "฿"+Math.round(n).toLocaleString("th-TH");
+}
+function fmtM(n){ return fmtFull(n); }
 
 function loadData(){
   document.getElementById("loading").style.display="block";

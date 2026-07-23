@@ -29,11 +29,11 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .case-table th{text-align:left;padding:8px 12px;color:#888;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid #f0f0f0;background:#fafafa}
 .case-table td{padding:10px 12px;border-bottom:0.5px solid #f5f5f5;color:#333;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .case-table tr:last-child td{border-bottom:none}
-.case-table .col-no{width:13%}
-.case-table .col-bank{width:20%}
-.case-table .col-date{width:15%}
-.case-table .col-amt{width:17%;text-align:right!important}
-.case-table .col-status{width:25%;padding-left:20px!important}
+.case-table .col-no{width:12%}
+.case-table .col-bank{width:18%}
+.case-table .col-date{width:14%}
+.case-table .col-amt{width:16%;text-align:right!important;padding-right:16px!important}
+.case-table .col-status{width:40%;padding-left:36px!important}
 .case-badge{display:inline-block;padding:4px 12px;border-radius:6px;font-size:12px;font-weight:600;text-align:left}
 .cb-sue{background:#FFCDD2;color:#B71C1C;border:1.5px solid #E57373;font-weight:700}
 .cb-notsue{background:#DCEDC8;color:#33691E;border:1.5px solid #8BC34A;font-weight:700}
@@ -295,6 +295,40 @@ function fmtFull(n){
 }
 function fmtM(n){ return fmtFull(n); }
 
+// ย่อจำนวนเงินสำหรับ label บนกราฟ เช่น ฿45K, ฿1.2M
+function fmtAbbrev(n){
+  if(!n) return "";
+  var v=Math.abs(n);
+  if(v>=1000000) return "฿"+(n/1000000).toFixed(1).replace(/\.0$/,"")+"M";
+  if(v>=1000) return "฿"+Math.round(n/1000)+"K";
+  return "฿"+Math.round(n);
+}
+
+// Plugin วาดค่าจำนวนเงินย่อบนแท่งกราฟ Cash Flow
+var barValueLabelsPlugin = {
+  id:"barValueLabels",
+  afterDatasetsDraw:function(chart){
+    var ctx=chart.ctx;
+    ctx.save();
+    ctx.font="bold 11px Sarabun, sans-serif";
+    ctx.fillStyle="#fff";
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+    chart.data.datasets.forEach(function(dataset,dsIndex){
+      var meta=chart.getDatasetMeta(dsIndex);
+      if(meta.hidden) return;
+      meta.data.forEach(function(bar,index){
+        var val=dataset.data[index];
+        if(!val) return;
+        if(bar.height<14) return; // แท่งเล็กเกินไป ไม่แสดง label กันข้อความล้น
+        var label=fmtAbbrev(val*1000); // ค่าจริงมาจาก K -> baht
+        ctx.fillText(label,bar.x,bar.y+bar.height/2);
+      });
+    });
+    ctx.restore();
+  }
+};
+
 function setEl(id,val){var e=document.getElementById(id);if(e)e.textContent=val;}
 
 function toggleUrgent(){
@@ -402,6 +436,7 @@ function renderDashboard(d){
   if(cashflowChartObj) cashflowChartObj.destroy();
   cashflowChartObj=new Chart(document.getElementById("cashflowChart"),{
     type:"bar",
+    plugins:[barValueLabelsPlugin],
     data:{
       labels:labels.length?labels:["ไม่มีข้อมูล"],
       datasets:[
@@ -542,10 +577,11 @@ function renderCaseList(caseList) {
 
 function getCaseBadge(status) {
   if (!status) return {cls:"cb-other"};
-  // สีแดง = คดีฟ้องเช็คแล้ว
+  // สีเขียว = ยังไม่ฟ้อง / รอ / เกินกำหนดยังไม่ฟ้อง — เช็คเงื่อนไขนี้ก่อน
+  // เพราะคำว่า "ยังไม่ฟ้อง" มีคำว่า "ฟ้อง" ปนอยู่ ถ้าเช็คเงื่อนไข "ฟ้อง" ก่อนจะจับผิดกลุ่มเสมอ
+  if (status.indexOf("ยังไม่") >= 0 || status.indexOf("ไม่ฟ้อง") >= 0 || status.indexOf("รอ") >= 0 || status.indexOf("เกินกำหนด") >= 0) return {cls:"cb-notsue"};
+  // สีแดง = คดีฟ้องเช็คแล้ว / อยู่ระหว่างดำเนินคดี
   if (status.indexOf("ฟ้อง") >= 0 || status.indexOf("คดี") >= 0 || status.indexOf("ระหว่าง") >= 0 || status.indexOf("ดำเนิน") >= 0) return {cls:"cb-sue"};
-  // สีเขียว = เกินกำหนดยังไม่ฟ้อง
-  if (status.indexOf("ยังไม่") >= 0 || status.indexOf("รอ") >= 0 || status.indexOf("ไม่ฟ้อง") >= 0 || status.indexOf("เกินกำหนด") >= 0) return {cls:"cb-notsue"};
   // สีน้ำเงิน = อื่นๆ เช่น ชนะคดี จบแล้ว
   return {cls:"cb-other"};
 }

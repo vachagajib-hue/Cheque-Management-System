@@ -250,6 +250,32 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
   </div>
 </div>
 
+
+  <!-- ส่วนคดีเช็ค -->
+  <div style="margin-bottom:16px">
+    <div class="card" style="grid-column:1/-1">
+      <h2>⚖️ คดีเช็ค</h2>
+      <div class="sub-title">จัดกลุ่มตามผู้รับเงิน เรียงตามวันที่ออกเช็ค (เก่า → ใหม่)</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">
+        <div style="background:#FFF5F5;border-radius:10px;padding:12px 14px">
+          <div style="font-size:11px;color:#C53030;margin-bottom:4px">จำนวนคดีทั้งหมด</div>
+          <div style="font-size:22px;font-weight:700;color:#C53030" id="case-total-count">—</div>
+        </div>
+        <div style="background:#FFFAF0;border-radius:10px;padding:12px 14px">
+          <div style="font-size:11px;color:#C05621;margin-bottom:4px">ยอดรวมคดี</div>
+          <div style="font-size:22px;font-weight:700;color:#C05621" id="case-total-amount">—</div>
+        </div>
+        <div style="background:#F7FAFC;border-radius:10px;padding:12px 14px">
+          <div style="font-size:11px;color:#4A5568;margin-bottom:4px">จำนวนกลุ่มผู้รับเงิน</div>
+          <div style="font-size:22px;font-weight:700;color:#4A5568" id="case-group-count">—</div>
+        </div>
+      </div>
+      <div id="case-list">
+        <div style="text-align:center;color:#aaa;padding:20px">กำลังโหลด...</div>
+      </div>
+    </div>
+  </div>
+
 <script>
 var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxej2efdZ6h2B9Hab0YJ7Opgc85UrQFhQ3WVoWRf9BrKG5m5imH2PasmFgnzQOKAyfa/exec";
 var cashflowChartObj = null;
@@ -404,7 +430,7 @@ function renderDashboard(d){
     '</div>';
 
   // คดีเช็ค
-  renderCaseList(d.caseList||[]);
+  if(document.getElementById("case-list")) renderCaseList(d.caseList||[]);
 
   document.getElementById("loading").style.display="none";
   document.getElementById("content").style.display="block";
@@ -412,11 +438,12 @@ function renderDashboard(d){
 
 function renderCaseList(caseList) {
   var el = document.getElementById("case-list");
+  if (!el) return;
   if (!caseList || caseList.length === 0) {
     el.innerHTML = '<div style="text-align:center;color:#aaa;padding:24px">ไม่มีข้อมูลคดีเช็ค</div>';
-    document.getElementById("case-total-count").textContent = "0 ใบ";
-    document.getElementById("case-total-amount").textContent = "฿0";
-    document.getElementById("case-group-count").textContent = "0 กลุ่ม";
+    setEl("case-total-count", "0 ใบ");
+    setEl("case-total-amount", "฿0");
+    setEl("case-group-count", "0 กลุ่ม");
     return;
   }
 
@@ -431,9 +458,9 @@ function renderCaseList(caseList) {
     totalAmount += item.amount;
   });
 
-  document.getElementById("case-total-count").textContent = caseList.length.toLocaleString() + " ใบ";
-  document.getElementById("case-total-amount").textContent = fmtFull(totalAmount);
-  document.getElementById("case-group-count").textContent = Object.keys(groups).length + " กลุ่ม";
+  setEl("case-total-count", caseList.length.toLocaleString() + " ใบ");
+  setEl("case-total-amount", fmtFull(totalAmount));
+  setEl("case-group-count", Object.keys(groups).length + " กลุ่ม");
 
   var html = "";
   Object.keys(groups).sort().forEach(function(payee) {

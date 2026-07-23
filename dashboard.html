@@ -415,7 +415,7 @@ function renderDashboard(d){
       plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){
   var v=c.parsed.y*1000;
   return c.dataset.label+": ฿"+Math.round(v).toLocaleString("th-TH");
-}}}},
+},title:function(items){return items[0].label;}}}},
       scales:{
         x:{stacked:true,grid:{color:"#f0f0f0"},ticks:{color:"#888",font:{size:11},autoSkip:false}},
         y:{stacked:true,grid:{color:"#f0f0f0"},ticks:{color:"#888",font:{size:11},callback:function(v){return "฿"+v+"K";}},beginAtZero:true}

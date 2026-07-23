@@ -21,6 +21,18 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .ql-scan{background:#E65100;color:#fff}
 .ql-label{font-size:12px;color:rgba(255,255,255,.5);margin-right:4px}
 .wrap{max-width:1200px;margin:0 auto;padding:20px}
+.case-group{background:#fff;border-radius:14px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.07);overflow:hidden}
+.case-group-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f8f7ff;border-bottom:1px solid #e8e4f5;cursor:pointer}
+.case-group-header:hover{background:#f0eeff}
+.case-table{width:100%;border-collapse:collapse;font-size:13px}
+.case-table th{text-align:left;padding:8px 12px;color:#888;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid #f0f0f0;background:#fafafa}
+.case-table td{padding:10px 12px;border-bottom:0.5px solid #f5f5f5;color:#333}
+.case-table tr:last-child td{border-bottom:none}
+.case-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.cb-active{background:#FFCDD2;color:#B71C1C}
+.cb-pending{background:#FFE0B2;color:#E65100}
+.cb-won{background:#C8E6C9;color:#1B5E20}
+.cb-other{background:#E3F2FD;color:#1565C0}
 
 /* KPI Cards */
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
@@ -120,7 +132,8 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
   </div>
   <div id="content" style="display:none">
 
-    <!-- KPI -->
+    <!-- KPI ตั้งแต่ 1/1/68 -->
+    <div style="font-size:13px;font-weight:700;color:#3A1F6E;margin-bottom:10px">ภาพรวมเช็ค — ตั้งแต่ 1 ม.ค. 2568</div>
     <div class="kpi-grid">
       <div class="kpi">
         <div class="label">ยอดเช็คทั้งหมด</div>
@@ -157,10 +170,18 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
         <div class="value fmt-num" id="kpi-done">—</div>
         <div class="sub" id="kpi-done-count">— ใบ</div>
       </div>
+      <div class="kpi" style="background:#FFF8F0;border-left:4px solid #C05621">
+        <div class="label" style="color:#C05621">📅 เกินกำหนดชำระ</div>
+        <div class="value fmt-num" style="color:#C05621" id="kpi-overdue">—</div>
+        <div class="sub" id="kpi-overdue-count">— ใบ</div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:#aaa;background:#f9f9f9;border-radius:8px;padding:8px 12px;margin-bottom:16px">
+      ℹ️ นับเฉพาะเช็คที่ออกตั้งแต่ 1 ม.ค. 2568 เป็นต้นไป — ข้อมูลก่อนหน้าไม่รวมในส่วนนี้
     </div>
 
     <!-- KPI รูปเช็ค AA -->
-    <div style="font-size:14px;font-weight:700;color:#3A1F6E;margin-bottom:10px;margin-top:4px">📎 สถานะรูปภาพเช็ค (คอลัมน์ AA) — นับตั้งแต่ 1 ม.ค. 2568</div>
+    <div style="font-size:14px;font-weight:700;color:#3A1F6E;margin-bottom:10px;margin-top:4px">📎 สถานะรูปภาพเช็ค เริ่ม 1/1/68 — ปัจจุบัน</div>
     <div class="kpi-grid" style="margin-bottom:12px;grid-template-columns:1fr">
       <div class="kpi total68">
         <div class="label">📋 เช็คทั้งหมดตั้งแต่ 1/1/2568 — ปัจจุบัน</div>
@@ -267,23 +288,23 @@ function renderDashboard(d){
   document.getElementById("update-time").textContent=
     "ข้อมูล ณ "+now.toLocaleDateString("th-TH",{year:"numeric",month:"long",day:"numeric"})+" "+now.toLocaleTimeString("th-TH");
 
-  var totalCount=d.urgentCount+d.followCount+d.normalCount+d.expiredCount+d.returnCount+d.doneCount;
-
-  // KPI
-  document.getElementById("kpi-total").textContent=fmtM(d.totalAmount);
-  document.getElementById("kpi-total-count").textContent=totalCount.toLocaleString()+" ใบ";
-  document.getElementById("kpi-urgent").textContent=fmtM(d.urgentAmount);
-  document.getElementById("kpi-urgent-count").textContent=d.urgentCount.toLocaleString()+" ใบ";
-  document.getElementById("kpi-follow").textContent=fmtM(d.followAmount);
-  document.getElementById("kpi-follow-count").textContent=d.followCount.toLocaleString()+" ใบ";
-  document.getElementById("kpi-normal").textContent=fmtM(d.normalAmount);
-  document.getElementById("kpi-normal-count").textContent=d.normalCount.toLocaleString()+" ใบ";
-  document.getElementById("kpi-expired").textContent=fmtM(d.expiredAmount);
-  document.getElementById("kpi-expired-count").textContent=d.expiredCount.toLocaleString()+" ใบ";
-  document.getElementById("kpi-return").textContent=fmtM(d.returnAmount);
-  document.getElementById("kpi-return-count").textContent=d.returnCount.toLocaleString()+" ใบ";
-  document.getElementById("kpi-done").textContent=fmtM(d.doneAmount);
-  document.getElementById("kpi-done-count").textContent=d.doneCount.toLocaleString()+" ใบ";
+  // KPI ตั้งแต่ 1/1/68
+  document.getElementById("kpi-total").textContent=fmtFull(d.total68Amount||0);
+  document.getElementById("kpi-total-count").textContent=(d.total68Count||0).toLocaleString()+" ใบ";
+  document.getElementById("kpi-urgent").textContent=fmtFull(d.urgent68Amount||0);
+  document.getElementById("kpi-urgent-count").textContent=(d.urgent68Count||0).toLocaleString()+" ใบ";
+  document.getElementById("kpi-follow").textContent=fmtFull(d.follow68Amount||0);
+  document.getElementById("kpi-follow-count").textContent=(d.follow68Count||0).toLocaleString()+" ใบ";
+  document.getElementById("kpi-normal").textContent=fmtFull(d.normal68Amount||0);
+  document.getElementById("kpi-normal-count").textContent=(d.normal68Count||0).toLocaleString()+" ใบ";
+  document.getElementById("kpi-expired").textContent=fmtFull(d.expired68Amount||0);
+  document.getElementById("kpi-expired-count").textContent=(d.expired68Count||0).toLocaleString()+" ใบ";
+  document.getElementById("kpi-return").textContent=fmtFull(d.return68Amount||0);
+  document.getElementById("kpi-return-count").textContent=(d.return68Count||0).toLocaleString()+" ใบ";
+  document.getElementById("kpi-done").textContent=fmtFull(d.done68Amount||0);
+  document.getElementById("kpi-done-count").textContent=(d.done68Count||0).toLocaleString()+" ใบ";
+  document.getElementById("kpi-overdue").textContent=fmtFull(d.overdue68Amount||0);
+  document.getElementById("kpi-overdue-count").textContent=(d.overdue68Count||0).toLocaleString()+" ใบ";
 
   // AA image KPIs
   var totalRows = (d.hasImageCount||0)+(d.noImageCount||0);
@@ -382,8 +403,78 @@ function renderDashboard(d){
       (Math.abs(diff)<100?'✅ ค่าธรรมเนียมตรงกัน':'⚠️ มีผลต่าง — ควรตรวจสอบ')+
     '</div>';
 
+  // คดีเช็ค
+  renderCaseList(d.caseList||[]);
+
   document.getElementById("loading").style.display="none";
   document.getElementById("content").style.display="block";
+}
+
+function renderCaseList(caseList) {
+  var el = document.getElementById("case-list");
+  if (!caseList || caseList.length === 0) {
+    el.innerHTML = '<div style="text-align:center;color:#aaa;padding:24px">ไม่มีข้อมูลคดีเช็ค</div>';
+    document.getElementById("case-total-count").textContent = "0 ใบ";
+    document.getElementById("case-total-amount").textContent = "฿0";
+    document.getElementById("case-group-count").textContent = "0 กลุ่ม";
+    return;
+  }
+
+  // จัดกลุ่มตามผู้รับเงิน
+  var groups = {};
+  var totalAmount = 0;
+  caseList.forEach(function(item) {
+    var key = item.payee || "ไม่ระบุ";
+    if (!groups[key]) groups[key] = { items:[], total:0 };
+    groups[key].items.push(item);
+    groups[key].total += item.amount;
+    totalAmount += item.amount;
+  });
+
+  document.getElementById("case-total-count").textContent = caseList.length.toLocaleString() + " ใบ";
+  document.getElementById("case-total-amount").textContent = fmtFull(totalAmount);
+  document.getElementById("case-group-count").textContent = Object.keys(groups).length + " กลุ่ม";
+
+  var html = "";
+  Object.keys(groups).sort().forEach(function(payee) {
+    var g = groups[payee];
+    html += '<div class="case-group">';
+    html += '<div class="case-group-header">';
+    html += '<div style="display:flex;align-items:center;gap:8px">';
+    html += '<span style="font-size:14px;font-weight:700;color:#3A1F6E">'+payee+'</span>';
+    html += '</div>';
+    html += '<div style="display:flex;align-items:center;gap:12px">';
+    html += '<span style="font-size:12px;color:#888">'+g.items.length+' ใบ</span>';
+    html += '<span style="font-size:13px;font-weight:700;color:#333">'+fmtFull(g.total)+'</span>';
+    html += '</div></div>';
+
+    html += '<table class="case-table">';
+    html += '<thead><tr>';
+    html += '<th>เลขที่เช็ค</th><th>ธนาคาร</th><th>วันที่ออกเช็ค</th><th style="text-align:right">จำนวนเงิน</th><th style="text-align:center">สถานะคดี</th>';
+    html += '</tr></thead><tbody>';
+
+    g.items.forEach(function(item) {
+      var badge = getCaseBadge(item.caseStatus);
+      html += '<tr>';
+      html += '<td style="font-weight:700">'+item.checkNo+'</td>';
+      html += '<td style="color:#555">'+item.bank+'</td>';
+      html += '<td style="color:#555">'+item.issueDate+'</td>';
+      html += '<td style="text-align:right;font-weight:700">'+fmtFull(item.amount)+'</td>';
+      html += '<td style="text-align:center"><span class="case-badge '+badge.cls+'">'+item.caseStatus+'</span></td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+  });
+
+  el.innerHTML = html;
+}
+
+function getCaseBadge(status) {
+  if (!status) return {cls:"cb-other"};
+  if (status.indexOf("ระหว่าง") >= 0 || status.indexOf("ดำเนิน") >= 0) return {cls:"cb-active"};
+  if (status.indexOf("รอ") >= 0 || status.indexOf("ฟ้อง") >= 0) return {cls:"cb-pending"};
+  if (status.indexOf("ชนะ") >= 0 || status.indexOf("จบ") >= 0 || status.indexOf("ยุติ") >= 0) return {cls:"cb-won"};
+  return {cls:"cb-other"};
 }
 
 loadData();

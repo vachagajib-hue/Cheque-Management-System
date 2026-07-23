@@ -287,6 +287,8 @@ function fmtFull(n){
 }
 function fmtM(n){ return fmtFull(n); }
 
+function setEl(id,val){var e=document.getElementById(id);if(e)e.textContent=val;}
+
 function loadData(){
   document.getElementById("loading").style.display="block";
   document.getElementById("content").style.display="none";
@@ -314,8 +316,7 @@ function renderDashboard(d){
   document.getElementById("update-time").textContent=
     "ข้อมูล ณ "+now.toLocaleDateString("th-TH",{year:"numeric",month:"long",day:"numeric"})+" "+now.toLocaleTimeString("th-TH");
 
-  // KPI ตั้งแต่ 1/1/68 — ใช้ setEl เพื่อป้องกัน null error
-  function setEl(id,val){var e=document.getElementById(id);if(e)e.textContent=val;}
+  // KPI ตั้งแต่ 1/1/68
   setEl("kpi-total",fmtFull(d.total68Amount||0));
   setEl("kpi-total-count",(d.total68Count||0).toLocaleString()+" ใบ");
   setEl("kpi-urgent",fmtFull(d.urgent68Amount||0));

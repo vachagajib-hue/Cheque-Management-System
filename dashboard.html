@@ -35,9 +35,9 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .case-table .col-amt{width:17%;text-align:right!important}
 .case-table .col-status{width:25%;padding-left:20px!important}
 .case-badge{display:inline-block;padding:4px 12px;border-radius:6px;font-size:12px;font-weight:600;text-align:left}
-.cb-sue{background:#FCE4EC;color:#C62828;border:1px solid #EF9A9A}
-.cb-notsue{background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7}
-.cb-other{background:#E3F2FD;color:#1565C0;border:1px solid #90CAF9}
+.cb-sue{background:#FFCDD2;color:#B71C1C;border:1.5px solid #E57373;font-weight:700}
+.cb-notsue{background:#DCEDC8;color:#33691E;border:1.5px solid #8BC34A;font-weight:700}
+.cb-other{background:#E3F2FD;color:#0D47A1;border:1.5px solid #64B5F6;font-weight:700}
 
 /* KPI Cards */
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
@@ -412,7 +412,10 @@ function renderDashboard(d){
     },
     options:{
       responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.dataset.label+": ฿"+c.parsed.y.toLocaleString()+"K";}}}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){
+  var v=c.parsed.y*1000;
+  return c.dataset.label+": ฿"+Math.round(v).toLocaleString("th-TH");
+}}}},
       scales:{
         x:{stacked:true,grid:{color:"#f0f0f0"},ticks:{color:"#888",font:{size:11},autoSkip:false}},
         y:{stacked:true,grid:{color:"#f0f0f0"},ticks:{color:"#888",font:{size:11},callback:function(v){return "฿"+v+"K";}},beginAtZero:true}

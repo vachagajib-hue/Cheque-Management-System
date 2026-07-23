@@ -46,6 +46,8 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .kpi.no-photo .value{color:#C53030}
 .kpi.warn{background:#FFFBF0;border-left:4px solid #D69E2E}
 .kpi.warn .value{color:#B7791F}
+.kpi.total68{background:#EDE9F8;border-left:4px solid #5B3FA6}
+.kpi.total68 .value{color:#3A1F6E}
 
 /* Cards */
 .row{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px}
@@ -158,7 +160,14 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
     </div>
 
     <!-- KPI รูปเช็ค AA -->
-    <div style="font-size:14px;font-weight:700;color:#3A1F6E;margin-bottom:10px;margin-top:4px">📎 สถานะรูปภาพเช็ค (คอลัมน์ AA)</div>
+    <div style="font-size:14px;font-weight:700;color:#3A1F6E;margin-bottom:10px;margin-top:4px">📎 สถานะรูปภาพเช็ค (คอลัมน์ AA) — นับตั้งแต่ 1 ม.ค. 2568</div>
+    <div class="kpi-grid" style="margin-bottom:12px;grid-template-columns:1fr">
+      <div class="kpi total68">
+        <div class="label">📋 เช็คทั้งหมดตั้งแต่ 1/1/2568 — ปัจจุบัน</div>
+        <div class="value fmt-num" id="kpi-total68">—</div>
+        <div class="sub" id="kpi-total68-sub">มีรูป + ไม่มีรูป</div>
+      </div>
+    </div>
     <div class="kpi-grid" style="margin-bottom:20px">
       <div class="kpi photo">
         <div class="label">📎 มีรูปเช็คแล้ว</div>
@@ -278,6 +287,9 @@ function renderDashboard(d){
 
   // AA image KPIs
   var totalRows = (d.hasImageCount||0)+(d.noImageCount||0);
+  document.getElementById("kpi-total68").textContent = totalRows.toLocaleString()+" ใบ";
+  document.getElementById("kpi-total68-sub").textContent =
+    "มีรูป "+( d.hasImageCount||0).toLocaleString()+" ใบ  +  ไม่มีรูป "+(d.noImageCount||0).toLocaleString()+" ใบ";
   document.getElementById("kpi-has-image").textContent=(d.hasImageCount||0).toLocaleString();
   document.getElementById("kpi-has-image-sub").textContent=totalRows>0?Math.round((d.hasImageCount||0)/totalRows*100)+"%":"—";
   document.getElementById("kpi-no-image").textContent=(d.noImageCount||0).toLocaleString();

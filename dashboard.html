@@ -29,15 +29,15 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .case-table th{text-align:left;padding:8px 12px;color:#888;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid #f0f0f0;background:#fafafa}
 .case-table td{padding:10px 12px;border-bottom:0.5px solid #f5f5f5;color:#333;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .case-table tr:last-child td{border-bottom:none}
-.case-table .col-no{width:12%}
-.case-table .col-bank{width:18%}
+.case-table .col-no{width:13%}
+.case-table .col-bank{width:20%}
 .case-table .col-date{width:15%}
-.case-table .col-amt{width:18%;text-align:right!important}
-.case-table .col-status{width:22%}
-.case-badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600;text-align:left}
-.cb-sue{background:#FFCDD2;color:#B71C1C}
-.cb-notsue{background:#C8E6C9;color:#1B5E20}
-.cb-other{background:#E3F2FD;color:#1565C0}
+.case-table .col-amt{width:17%;text-align:right!important}
+.case-table .col-status{width:25%;padding-left:20px!important}
+.case-badge{display:inline-block;padding:4px 12px;border-radius:6px;font-size:12px;font-weight:600;text-align:left}
+.cb-sue{background:#FCE4EC;color:#C62828;border:1px solid #EF9A9A}
+.cb-notsue{background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7}
+.cb-other{background:#E3F2FD;color:#1565C0;border:1px solid #90CAF9}
 
 /* KPI Cards */
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
@@ -232,9 +232,12 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
         </div>
       </div>
       <div class="card">
-        <h2>🔴 เช็คใกล้วันออกเช็ค</h2>
-        <div class="sub-title">เช็คที่ถึงกำหนดภายใน 7 วัน (Column W) สถานะรอขึ้นเงิน</div>
-        <div id="urgent-list"></div>
+        <h2 style="display:flex;align-items:center;justify-content:space-between">
+          <span>🔴 ใกล้วันออกเช็ค</span>
+          <button onclick="toggleUrgent()" id="btn-urgent" style="font-size:12px;padding:4px 12px;border-radius:6px;border:1px solid #ddd;background:#f5f5f5;cursor:pointer;color:#555;font-family:inherit">แสดงรายการ ▼</button>
+        </h2>
+        <div class="sub-title">เช็คสถานะรอขึ้นเงิน ถึงกำหนดภายใน 7 วัน</div>
+        <div id="urgent-list" style="display:none"></div>
       </div>
     </div>
 

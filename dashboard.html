@@ -288,35 +288,35 @@ function renderDashboard(d){
   document.getElementById("update-time").textContent=
     "ข้อมูล ณ "+now.toLocaleDateString("th-TH",{year:"numeric",month:"long",day:"numeric"})+" "+now.toLocaleTimeString("th-TH");
 
-  // KPI ตั้งแต่ 1/1/68
-  document.getElementById("kpi-total").textContent=fmtFull(d.total68Amount||0);
-  document.getElementById("kpi-total-count").textContent=(d.total68Count||0).toLocaleString()+" ใบ";
-  document.getElementById("kpi-urgent").textContent=fmtFull(d.urgent68Amount||0);
-  document.getElementById("kpi-urgent-count").textContent=(d.urgent68Count||0).toLocaleString()+" ใบ";
-  document.getElementById("kpi-follow").textContent=fmtFull(d.follow68Amount||0);
-  document.getElementById("kpi-follow-count").textContent=(d.follow68Count||0).toLocaleString()+" ใบ";
-  document.getElementById("kpi-normal").textContent=fmtFull(d.normal68Amount||0);
-  document.getElementById("kpi-normal-count").textContent=(d.normal68Count||0).toLocaleString()+" ใบ";
-  document.getElementById("kpi-expired").textContent=fmtFull(d.expired68Amount||0);
-  document.getElementById("kpi-expired-count").textContent=(d.expired68Count||0).toLocaleString()+" ใบ";
-  document.getElementById("kpi-return").textContent=fmtFull(d.return68Amount||0);
-  document.getElementById("kpi-return-count").textContent=(d.return68Count||0).toLocaleString()+" ใบ";
-  document.getElementById("kpi-done").textContent=fmtFull(d.done68Amount||0);
-  document.getElementById("kpi-done-count").textContent=(d.done68Count||0).toLocaleString()+" ใบ";
-  document.getElementById("kpi-overdue").textContent=fmtFull(d.overdue68Amount||0);
-  document.getElementById("kpi-overdue-count").textContent=(d.overdue68Count||0).toLocaleString()+" ใบ";
+  // KPI ตั้งแต่ 1/1/68 — ใช้ setEl เพื่อป้องกัน null error
+  function setEl(id,val){var e=document.getElementById(id);if(e)e.textContent=val;}
+  setEl("kpi-total",fmtFull(d.total68Amount||0));
+  setEl("kpi-total-count",(d.total68Count||0).toLocaleString()+" ใบ");
+  setEl("kpi-urgent",fmtFull(d.urgent68Amount||0));
+  setEl("kpi-urgent-count",(d.urgent68Count||0).toLocaleString()+" ใบ");
+  setEl("kpi-follow",fmtFull(d.follow68Amount||0));
+  setEl("kpi-follow-count",(d.follow68Count||0).toLocaleString()+" ใบ");
+  setEl("kpi-normal",fmtFull(d.normal68Amount||0));
+  setEl("kpi-normal-count",(d.normal68Count||0).toLocaleString()+" ใบ");
+  setEl("kpi-expired",fmtFull(d.expired68Amount||0));
+  setEl("kpi-expired-count",(d.expired68Count||0).toLocaleString()+" ใบ");
+  setEl("kpi-return",fmtFull(d.return68Amount||0));
+  setEl("kpi-return-count",(d.return68Count||0).toLocaleString()+" ใบ");
+  setEl("kpi-done",fmtFull(d.done68Amount||0));
+  setEl("kpi-done-count",(d.done68Count||0).toLocaleString()+" ใบ");
+  setEl("kpi-overdue",fmtFull(d.overdue68Amount||0));
+  setEl("kpi-overdue-count",(d.overdue68Count||0).toLocaleString()+" ใบ");
 
   // AA image KPIs
   var totalRows = (d.hasImageCount||0)+(d.noImageCount||0);
-  document.getElementById("kpi-total68").textContent = totalRows.toLocaleString()+" ใบ";
-  document.getElementById("kpi-total68-sub").textContent =
-    "มีรูป "+( d.hasImageCount||0).toLocaleString()+" ใบ  +  ไม่มีรูป "+(d.noImageCount||0).toLocaleString()+" ใบ";
-  document.getElementById("kpi-has-image").textContent=(d.hasImageCount||0).toLocaleString();
-  document.getElementById("kpi-has-image-sub").textContent=totalRows>0?Math.round((d.hasImageCount||0)/totalRows*100)+"%":"—";
-  document.getElementById("kpi-no-image").textContent=(d.noImageCount||0).toLocaleString();
-  document.getElementById("kpi-no-image-sub").textContent=totalRows>0?Math.round((d.noImageCount||0)/totalRows*100)+"%":"—";
-  document.getElementById("kpi-expired-no-image").textContent=(d.expiredNoImage||0).toLocaleString()+" ใบ";
-  document.getElementById("kpi-cancelled-no-image").textContent=(d.cancelledNoImage||0).toLocaleString()+" ใบ";
+  setEl("kpi-total68",totalRows.toLocaleString()+" ใบ");
+  setEl("kpi-total68-sub","มีรูป "+(d.hasImageCount||0).toLocaleString()+" ใบ  +  ไม่มีรูป "+(d.noImageCount||0).toLocaleString()+" ใบ");
+  setEl("kpi-has-image",(d.hasImageCount||0).toLocaleString());
+  setEl("kpi-has-image-sub",totalRows>0?Math.round((d.hasImageCount||0)/totalRows*100)+"%":"—");
+  setEl("kpi-no-image",(d.noImageCount||0).toLocaleString());
+  setEl("kpi-no-image-sub",totalRows>0?Math.round((d.noImageCount||0)/totalRows*100)+"%":"—");
+  setEl("kpi-expired-no-image",(d.expiredNoImage||0).toLocaleString()+" ใบ");
+  setEl("kpi-cancelled-no-image",(d.cancelledNoImage||0).toLocaleString()+" ใบ");
 
   // Cash Flow Chart
   var cf=d.cashflow||{};

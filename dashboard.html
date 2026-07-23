@@ -297,6 +297,25 @@ function fmtM(n){ return fmtFull(n); }
 
 function setEl(id,val){var e=document.getElementById(id);if(e)e.textContent=val;}
 
+function toggleUrgent(){
+  var el=document.getElementById("urgent-list");
+  var btn=document.getElementById("btn-urgent");
+  if(!el||!btn)return;
+  if(el.style.display==="none"||el.style.display===""){
+    el.style.display="block";
+    btn.textContent="ซ่อนรายการ ▲";
+    btn.style.background="#EDE9F8";
+    btn.style.color="#3A1F6E";
+    btn.style.borderColor="#C5B8E8";
+  } else {
+    el.style.display="none";
+    btn.textContent="แสดงรายการ ▼";
+    btn.style.background="#f5f5f5";
+    btn.style.color="#555";
+    btn.style.borderColor="#ddd";
+  }
+}
+
 function loadData(){
   document.getElementById("loading").style.display="block";
   document.getElementById("content").style.display="none";

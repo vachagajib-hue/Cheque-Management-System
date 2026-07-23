@@ -25,13 +25,18 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .case-group-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f8f7ff;border-bottom:1px solid #e8e4f5;cursor:pointer}
 .case-group-header:hover{background:#f0eeff}
 .case-table{width:100%;border-collapse:collapse;font-size:13px}
+.case-table{table-layout:fixed;width:100%}
 .case-table th{text-align:left;padding:8px 12px;color:#888;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid #f0f0f0;background:#fafafa}
-.case-table td{padding:10px 12px;border-bottom:0.5px solid #f5f5f5;color:#333}
+.case-table td{padding:10px 12px;border-bottom:0.5px solid #f5f5f5;color:#333;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .case-table tr:last-child td{border-bottom:none}
-.case-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
-.cb-active{background:#FFCDD2;color:#B71C1C}
-.cb-pending{background:#FFE0B2;color:#E65100}
-.cb-won{background:#C8E6C9;color:#1B5E20}
+.case-table .col-no{width:12%}
+.case-table .col-bank{width:18%}
+.case-table .col-date{width:15%}
+.case-table .col-amt{width:18%;text-align:right!important}
+.case-table .col-status{width:22%}
+.case-badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600;text-align:left}
+.cb-sue{background:#FFCDD2;color:#B71C1C}
+.cb-notsue{background:#C8E6C9;color:#1B5E20}
 .cb-other{background:#E3F2FD;color:#1565C0}
 
 /* KPI Cards */
@@ -216,7 +221,7 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
     <div class="row">
       <div class="card">
         <h2>Cash Flow เงินออก — รายเดือน</h2>
-        <div class="sub-title">เช็คที่รอขึ้นเงิน แยกตามเดือนที่หมดอายุ</div>
+        <div class="sub-title">เช็คที่รอขึ้นเงิน แยกตามเดือนที่ออกเช็ค (Column W)</div>
         <div class="legend">
           <span><span class="dot" style="background:#E53E3E"></span>เร่งด่วน</span>
           <span><span class="dot" style="background:#DD6B20"></span>ติดตาม</span>
@@ -227,8 +232,8 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
         </div>
       </div>
       <div class="card">
-        <h2>เช็คเร่งด่วน</h2>
-        <div class="sub-title">ต้องติดตามโดยด่วน</div>
+        <h2>🔴 เช็คใกล้วันออกเช็ค</h2>
+        <div class="sub-title">เช็คที่ถึงกำหนดภายใน 7 วัน (Column W) สถานะรอขึ้นเงิน</div>
         <div id="urgent-list"></div>
       </div>
     </div>
@@ -347,7 +352,19 @@ function renderDashboard(d){
 
   // Cash Flow Chart
   var cf=d.cashflow||{};
-  var months=Object.keys(cf).sort(function(a,b){
+  // สร้าง 8 เดือนถัดไปจากเดือนปัจจุบัน
+  var now=new Date();
+  var futureMonths=[];
+  for(var mi=0;mi<8;mi++){
+    var d2=new Date(now.getFullYear(),now.getMonth()+mi,1);
+    var mm=String(d2.getMonth()+1).padStart(2,"0");
+    var yy=d2.getFullYear();
+    futureMonths.push(mm+"/"+yy);
+  }
+  // รวมกับที่มีข้อมูลจริง เรียงตามวันที่
+  var allMonths=Object.keys(cf);
+  var months=futureMonths.filter(function(m){return cf[m]&&cf[m].total>0;});
+  if(months.length===0) months=allMonths.sort(function(a,b){
     var pa=a.split("/"),pb=b.split("/");
     return new Date(pa[1],pa[0]-1)-new Date(pb[1],pb[0]-1);
   }).slice(0,8);
@@ -385,18 +402,19 @@ function renderDashboard(d){
   var ul=document.getElementById("urgent-list");
   ul.innerHTML="";
   if(!d.urgentList||d.urgentList.length===0){
-    ul.innerHTML='<div style="text-align:center;color:#aaa;padding:20px">ไม่มีเช็คเร่งด่วน 🎉</div>';
+    ul.innerHTML='<div style="text-align:center;color:#aaa;padding:20px">ไม่มีเช็คที่ถึงกำหนดใน 7 วัน 🎉</div>';
   } else {
     d.urgentList.forEach(function(item){
-      var cls=item.daysLeft>7?"urgent-item day15":"urgent-item";
+      var cls=item.daysLeft<=3?"urgent-item":"urgent-item day15";
+      var dayTxt=item.daysLeft===0?"วันนี้! 🔴":"เหลือ "+item.daysLeft+" วัน "+(item.daysLeft<=3?"🔴":"🟠");
       ul.innerHTML+='<div class="'+cls+'">'+
         '<div class="check-info">'+
-          '<div class="no">'+item.checkNo+'</div>'+
-          '<div class="detail">'+item.bank+' | หมดอายุ '+item.expDate+'</div>'+
+          '<div class="no">'+item.checkNo+' — '+item.bank+'</div>'+
+          '<div class="detail">ผู้รับ: '+item.payee+' | วันออกเช็ค '+item.issueDate+'</div>'+
         '</div>'+
         '<div class="right">'+
           '<div class="amt">'+fmt(item.amount)+'</div>'+
-          '<div class="days">เหลือ '+item.daysLeft+' วัน</div>'+
+          '<div class="days">'+dayTxt+'</div>'+
         '</div>'+
       '</div>';
     });
@@ -478,17 +496,17 @@ function renderCaseList(caseList) {
 
     html += '<table class="case-table">';
     html += '<thead><tr>';
-    html += '<th>เลขที่เช็ค</th><th>ธนาคาร</th><th>วันที่ออกเช็ค</th><th style="text-align:right">จำนวนเงิน</th><th style="text-align:center">สถานะคดี</th>';
+    html += '<th class="col-no">เลขที่เช็ค</th><th class="col-bank">ธนาคาร</th><th class="col-date">วันที่ออกเช็ค</th><th class="col-amt">จำนวนเงิน</th><th class="col-status">สถานะคดี</th>';
     html += '</tr></thead><tbody>';
 
     g.items.forEach(function(item) {
       var badge = getCaseBadge(item.caseStatus);
       html += '<tr>';
-      html += '<td style="font-weight:700">'+item.checkNo+'</td>';
-      html += '<td style="color:#555">'+item.bank+'</td>';
-      html += '<td style="color:#555">'+item.issueDate+'</td>';
-      html += '<td style="text-align:right;font-weight:700">'+fmtFull(item.amount)+'</td>';
-      html += '<td style="text-align:center"><span class="case-badge '+badge.cls+'">'+item.caseStatus+'</span></td>';
+      html += '<td class="col-no" style="font-weight:700">'+item.checkNo+'</td>';
+      html += '<td class="col-bank" style="color:#555">'+item.bank+'</td>';
+      html += '<td class="col-date" style="color:#555">'+item.issueDate+'</td>';
+      html += '<td class="col-amt" style="font-weight:700">'+fmtFull(item.amount)+'</td>';
+      html += '<td class="col-status"><span class="case-badge '+badge.cls+'">'+item.caseStatus+'</span></td>';
       html += '</tr>';
     });
     html += '</tbody></table></div>';
@@ -499,9 +517,11 @@ function renderCaseList(caseList) {
 
 function getCaseBadge(status) {
   if (!status) return {cls:"cb-other"};
-  if (status.indexOf("ระหว่าง") >= 0 || status.indexOf("ดำเนิน") >= 0) return {cls:"cb-active"};
-  if (status.indexOf("รอ") >= 0 || status.indexOf("ฟ้อง") >= 0) return {cls:"cb-pending"};
-  if (status.indexOf("ชนะ") >= 0 || status.indexOf("จบ") >= 0 || status.indexOf("ยุติ") >= 0) return {cls:"cb-won"};
+  // สีแดง = คดีฟ้องเช็คแล้ว
+  if (status.indexOf("ฟ้อง") >= 0 || status.indexOf("คดี") >= 0 || status.indexOf("ระหว่าง") >= 0 || status.indexOf("ดำเนิน") >= 0) return {cls:"cb-sue"};
+  // สีเขียว = เกินกำหนดยังไม่ฟ้อง
+  if (status.indexOf("ยังไม่") >= 0 || status.indexOf("รอ") >= 0 || status.indexOf("ไม่ฟ้อง") >= 0 || status.indexOf("เกินกำหนด") >= 0) return {cls:"cb-notsue"};
+  // สีน้ำเงิน = อื่นๆ เช่น ชนะคดี จบแล้ว
   return {cls:"cb-other"};
 }
 

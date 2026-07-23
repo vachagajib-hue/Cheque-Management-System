@@ -288,20 +288,20 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxej2efdZ6h2B9Hab0YJ7Opgc85UrQFhQ3WVoWRf9BrKG5m5imH2PasmFgnzQOKAyfa/exec";
 var cashflowChartObj = null;
 
-function fmt(n){ return "฿"+Math.round(n).toLocaleString("th-TH"); }
+function fmt(n){ return Math.round(n).toLocaleString("th-TH"); }
 function fmtFull(n){
-  if(!n||isNaN(n)) return "฿0";
-  return "฿"+Math.round(n).toLocaleString("th-TH");
+  if(!n||isNaN(n)) return "0";
+  return Math.round(n).toLocaleString("th-TH");
 }
 function fmtM(n){ return fmtFull(n); }
 
-// ย่อจำนวนเงินสำหรับ label บนกราฟ เช่น ฿45K, ฿1.2M
+// ย่อจำนวนเงินสำหรับ label บนกราฟ เช่น 45K, 1.2M
 function fmtAbbrev(n){
   if(!n) return "";
   var v=Math.abs(n);
-  if(v>=1000000) return "฿"+(n/1000000).toFixed(1).replace(/\.0$/,"")+"M";
-  if(v>=1000) return "฿"+Math.round(n/1000)+"K";
-  return "฿"+Math.round(n);
+  if(v>=1000000) return (n/1000000).toFixed(1).replace(/\.0$/,"")+"M";
+  if(v>=1000) return Math.round(n/1000)+"K";
+  return ""+Math.round(n);
 }
 
 // Plugin วาดค่าจำนวนเงินย่อบนแท่งกราฟ Cash Flow
@@ -449,11 +449,11 @@ function renderDashboard(d){
       responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){
   var v=c.parsed.y*1000;
-  return c.dataset.label+": ฿"+Math.round(v).toLocaleString("th-TH");
+  return c.dataset.label+": "+Math.round(v).toLocaleString("th-TH");
 },title:function(items){return items[0].label;}}}},
       scales:{
         x:{stacked:true,grid:{color:"#f0f0f0"},ticks:{color:"#888",font:{size:11},autoSkip:false}},
-        y:{stacked:true,grid:{color:"#f0f0f0"},ticks:{color:"#888",font:{size:11},callback:function(v){return "฿"+v+"K";}},beginAtZero:true}
+        y:{stacked:true,grid:{color:"#f0f0f0"},ticks:{color:"#888",font:{size:11},callback:function(v){return v+"K";}},beginAtZero:true}
       }
     }
   });
@@ -521,7 +521,7 @@ function renderCaseList(caseList) {
   if (!caseList || caseList.length === 0) {
     el.innerHTML = '<div style="text-align:center;color:#aaa;padding:24px">ไม่มีข้อมูลคดีเช็ค</div>';
     setEl("case-total-count", "0 ใบ");
-    setEl("case-total-amount", "฿0");
+    setEl("case-total-amount", "0");
     setEl("case-group-count", "0 กลุ่ม");
     return;
   }
@@ -551,7 +551,7 @@ function renderCaseList(caseList) {
     html += '</div>';
     html += '<div style="display:flex;align-items:center;gap:12px">';
     html += '<span style="font-size:12px;color:rgba(255,255,255,.75)">'+g.items.length+' ใบ</span>';
-    html += '<span style="font-size:14px;font-weight:700;color:#fff">'+fmtFull(g.total)+'</span>';
+    html += '<span style="font-size:22px;font-weight:700;color:#fff">'+fmtFull(g.total)+'</span>';
     html += '</div></div>';
 
     html += '<table class="case-table">';

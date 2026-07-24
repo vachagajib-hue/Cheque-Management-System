@@ -38,7 +38,6 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .cb-sue{background:#FFCDD2;color:#B71C1C;border:1.5px solid #E57373;font-weight:700}
 .cb-notsue{background:#DCEDC8;color:#33691E;border:1.5px solid #8BC34A;font-weight:700}
 .cb-other{background:#E3F2FD;color:#0D47A1;border:1.5px solid #64B5F6;font-weight:700}
-
 /* KPI Cards */
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
 .kpi{background:#fff;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
@@ -65,7 +64,6 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .kpi.warn .value{color:#B7791F}
 .kpi.total68{background:#EDE9F8;border-left:4px solid #5B3FA6}
 .kpi.total68 .value{color:#3A1F6E}
-
 /* Cards */
 .row{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
@@ -73,7 +71,6 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
 .card h2{font-size:16px;font-weight:700;color:#3A1F6E;margin-bottom:4px}
 .card .sub-title{font-size:12px;color:#aaa;margin-bottom:16px}
-
 /* Urgent List */
 .urgent-item{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:8px;margin-bottom:8px;background:#FFF5F5;border-left:3px solid #E53E3E}
 .urgent-item.day15{background:#FFFAF0;border-color:#DD6B20}
@@ -84,7 +81,6 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .urgent-item .right .amt{font-size:13px;font-weight:700;color:#333}
 .urgent-item .right .days{font-size:11px;color:#E53E3E;margin-top:2px}
 .urgent-item.day15 .right .days{color:#C05621}
-
 /* Bank List */
 .bank-item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0}
 .bank-item:last-child{border-bottom:none}
@@ -92,7 +88,6 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .bank-bar{height:8px;border-radius:4px;background:#5B3FA6;transition:width .5s}
 .bank-name{font-size:13px;color:#333;min-width:80px}
 .bank-amt{font-size:13px;font-weight:600;color:#3A1F6E;min-width:80px;text-align:right}
-
 /* Fee */
 .fee-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0f0;font-size:14px}
 .fee-row:last-child{border-bottom:none}
@@ -100,22 +95,18 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .fee-row .val{font-weight:700;color:#333}
 .fee-row .diff-pos{color:#E53E3E}
 .fee-row .diff-neg{color:#38A169}
-
 /* Loading */
 #loading{text-align:center;padding:60px;color:#888}
 .spinner{width:40px;height:40px;border:4px solid #e0d9f5;border-top-color:#5B3FA6;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
 @keyframes spin{to{transform:rotate(360deg)}}
-
 /* Legend */
 .legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;font-size:12px;color:#666}
 .legend span{display:flex;align-items:center;gap:4px}
 .legend .dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
-
 .fmt-num{font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
-
 <header>
   <div>
     <h1>📊 Dashboard ทะเบียนเช็คสั่งจ่าย</h1>
@@ -129,16 +120,14 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
   <a class="ql-btn ql-drive" href="https://drive.google.com/drive/folders/1Mms8-T1QsHeer0vGsk_F_B1gU1Yd1QuF" target="_blank">📁 Google Drive</a>
   <a class="ql-btn ql-scan"  href="index.html" target="_blank">📷 สแกนเช็ค</a>
 </div>
-
 <div class="wrap">
   <div id="loading">
     <div class="spinner"></div>
     <div>กำลังดึงข้อมูลจาก Google Sheet...</div>
   </div>
   <div id="content" style="display:none">
-
-    <!-- KPI ตั้งแต่ 1/1/68 -->
-    <div style="font-size:13px;font-weight:700;color:#3A1F6E;margin-bottom:10px">ภาพรวมเช็ค — ตั้งแต่ 1 ม.ค. 2568</div>
+    <!-- KPI ภาพรวมทั้งฐานข้อมูล -->
+    <div style="font-size:13px;font-weight:700;color:#3A1F6E;margin-bottom:10px">ภาพรวมเช็คทั้งหมด — ทั้งฐานข้อมูล</div>
     <div class="kpi-grid">
       <div class="kpi">
         <div class="label">ยอดเช็คทั้งหมด</div>
@@ -182,9 +171,8 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
       </div>
     </div>
     <div style="font-size:11px;color:#aaa;background:#f9f9f9;border-radius:8px;padding:8px 12px;margin-bottom:16px">
-      ℹ️ นับเฉพาะเช็คที่ออกตั้งแต่ 1 ม.ค. 2568 เป็นต้นไป — ข้อมูลก่อนหน้าไม่รวมในส่วนนี้
+      ℹ️ นับรวมเช็คทั้งหมดในฐานข้อมูล ตั้งแต่เริ่มระบบทะเบียนจนถึงปัจจุบัน
     </div>
-
     <!-- KPI รูปเช็ค AA -->
     <div style="font-size:14px;font-weight:700;color:#3A1F6E;margin-bottom:10px;margin-top:4px">📎 สถานะรูปภาพเช็ค เริ่ม 1/1/68 — ปัจจุบัน</div>
     <div class="kpi-grid" style="margin-bottom:12px;grid-template-columns:1fr">
@@ -216,7 +204,6 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
         <div class="sub">ควรแนบหลักฐาน</div>
       </div>
     </div>
-
     <!-- Cash Flow + Urgent -->
     <div class="row">
       <div class="card">
@@ -240,7 +227,6 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
         <div id="urgent-list" style="display:none"></div>
       </div>
     </div>
-
     <!-- Bank + Fee -->
     <div class="row2">
       <div class="card">
@@ -254,11 +240,8 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
         <div id="fee-info"></div>
       </div>
     </div>
-
   </div>
 </div>
-
-
   <!-- ส่วนคดีเช็ค -->
   <div style="margin-bottom:16px">
     <div class="card" style="grid-column:1/-1">
@@ -283,18 +266,15 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
       </div>
     </div>
   </div>
-
 <script>
 var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxej2efdZ6h2B9Hab0YJ7Opgc85UrQFhQ3WVoWRf9BrKG5m5imH2PasmFgnzQOKAyfa/exec";
 var cashflowChartObj = null;
-
 function fmt(n){ return Math.round(n).toLocaleString("th-TH"); }
 function fmtFull(n){
   if(!n||isNaN(n)) return "0";
   return Math.round(n).toLocaleString("th-TH");
 }
 function fmtM(n){ return fmtFull(n); }
-
 // ย่อจำนวนเงินสำหรับ label บนกราฟ เช่น 45K, 1.2M
 function fmtAbbrev(n){
   if(!n) return "";
@@ -303,7 +283,6 @@ function fmtAbbrev(n){
   if(v>=1000) return Math.round(n/1000)+"K";
   return ""+Math.round(n);
 }
-
 // Plugin วาดค่าจำนวนเงินย่อบนแท่งกราฟ Cash Flow
 var barValueLabelsPlugin = {
   id:"barValueLabels",
@@ -328,9 +307,7 @@ var barValueLabelsPlugin = {
     ctx.restore();
   }
 };
-
 function setEl(id,val){var e=document.getElementById(id);if(e)e.textContent=val;}
-
 function toggleUrgent(){
   var el=document.getElementById("urgent-list");
   var btn=document.getElementById("btn-urgent");
@@ -349,7 +326,6 @@ function toggleUrgent(){
     btn.style.borderColor="#ddd";
   }
 }
-
 function loadData(){
   document.getElementById("loading").style.display="block";
   document.getElementById("content").style.display="none";
@@ -370,32 +346,29 @@ function loadData(){
   };
   xhr.send();
 }
-
 function renderDashboard(d){
   // อัพเดทเวลา
   var now=new Date();
   document.getElementById("update-time").textContent=
     "ข้อมูล ณ "+now.toLocaleDateString("th-TH",{year:"numeric",month:"long",day:"numeric"})+" "+now.toLocaleTimeString("th-TH");
-
-  // KPI ตั้งแต่ 1/1/68
-  setEl("kpi-total",fmtFull(d.total68Amount||0));
-  setEl("kpi-total-count",(d.total68Count||0).toLocaleString()+" ใบ");
-  setEl("kpi-urgent",fmtFull(d.urgent68Amount||0));
-  setEl("kpi-urgent-count",(d.urgent68Count||0).toLocaleString()+" ใบ");
-  setEl("kpi-follow",fmtFull(d.follow68Amount||0));
-  setEl("kpi-follow-count",(d.follow68Count||0).toLocaleString()+" ใบ");
-  setEl("kpi-normal",fmtFull(d.normal68Amount||0));
-  setEl("kpi-normal-count",(d.normal68Count||0).toLocaleString()+" ใบ");
-  setEl("kpi-expired",fmtFull(d.expired68Amount||0));
-  setEl("kpi-expired-count",(d.expired68Count||0).toLocaleString()+" ใบ");
-  setEl("kpi-return",fmtFull(d.return68Amount||0));
-  setEl("kpi-return-count",(d.return68Count||0).toLocaleString()+" ใบ");
-  setEl("kpi-done",fmtFull(d.done68Amount||0));
-  setEl("kpi-done-count",(d.done68Count||0).toLocaleString()+" ใบ");
-  setEl("kpi-overdue",fmtFull(d.overdue68Amount||0));
-  setEl("kpi-overdue-count",(d.overdue68Count||0).toLocaleString()+" ใบ");
-
-  // AA image KPIs
+  // KPI ภาพรวมทั้งฐานข้อมูล
+  setEl("kpi-total",fmtFull(d.totalAmount||0));
+  setEl("kpi-total-count",(d.totalCount||0).toLocaleString()+" ใบ");
+  setEl("kpi-urgent",fmtFull(d.urgentAmount||0));
+  setEl("kpi-urgent-count",(d.urgentCount||0).toLocaleString()+" ใบ");
+  setEl("kpi-follow",fmtFull(d.followAmount||0));
+  setEl("kpi-follow-count",(d.followCount||0).toLocaleString()+" ใบ");
+  setEl("kpi-normal",fmtFull(d.normalAmount||0));
+  setEl("kpi-normal-count",(d.normalCount||0).toLocaleString()+" ใบ");
+  setEl("kpi-expired",fmtFull(d.expiredAmount||0));
+  setEl("kpi-expired-count",(d.expiredCount||0).toLocaleString()+" ใบ");
+  setEl("kpi-return",fmtFull(d.returnAmount||0));
+  setEl("kpi-return-count",(d.returnCount||0).toLocaleString()+" ใบ");
+  setEl("kpi-done",fmtFull(d.doneAmount||0));
+  setEl("kpi-done-count",(d.doneCount||0).toLocaleString()+" ใบ");
+  setEl("kpi-overdue",fmtFull(d.overdueAmount||0));
+  setEl("kpi-overdue-count",(d.overdueCount||0).toLocaleString()+" ใบ");
+  // AA image KPIs (ยังคงนับตั้งแต่ 1/1/68 ตามเดิม — ไม่เกี่ยวกับส่วนภาพรวมด้านบน)
   var totalRows = (d.hasImageCount||0)+(d.noImageCount||0);
   setEl("kpi-total68",totalRows.toLocaleString()+" ใบ");
   setEl("kpi-total68-sub","มีรูป "+(d.hasImageCount||0).toLocaleString()+" ใบ  +  ไม่มีรูป "+(d.noImageCount||0).toLocaleString()+" ใบ");
@@ -405,7 +378,6 @@ function renderDashboard(d){
   setEl("kpi-no-image-sub",totalRows>0?Math.round((d.noImageCount||0)/totalRows*100)+"%":"—");
   setEl("kpi-expired-no-image",(d.expiredNoImage||0).toLocaleString()+" ใบ");
   setEl("kpi-cancelled-no-image",(d.cancelledNoImage||0).toLocaleString()+" ใบ");
-
   // Cash Flow Chart
   var cf=d.cashflow||{};
   // สร้าง 8 เดือนถัดไปจากเดือนปัจจุบัน
@@ -432,7 +404,6 @@ function renderDashboard(d){
   var urgentData=months.map(function(m){return Math.round((cf[m].urgent||0)/1000);});
   var followData=months.map(function(m){return Math.round((cf[m].follow||0)/1000);});
   var normalData=months.map(function(m){return Math.round((cf[m].normal||0)/1000);});
-
   if(cashflowChartObj) cashflowChartObj.destroy();
   cashflowChartObj=new Chart(document.getElementById("cashflowChart"),{
     type:"bar",
@@ -457,7 +428,6 @@ function renderDashboard(d){
       }
     }
   });
-
   // Urgent List
   var ul=document.getElementById("urgent-list");
   ul.innerHTML="";
@@ -479,7 +449,6 @@ function renderDashboard(d){
       '</div>';
     });
   }
-
   // Bank List
   var banks=d.byBank||{};
   var bankArr=Object.keys(banks).map(function(k){return{name:k,amount:banks[k]};});
@@ -495,7 +464,6 @@ function renderDashboard(d){
       '<div class="bank-amt">'+fmtM(b.amount)+'</div>'+
     '</div>';
   });
-
   // Fee
   var diff=d.feeActual-d.feeCalc;
   var diffCls=diff>0?"diff-pos":"diff-neg";
@@ -507,14 +475,11 @@ function renderDashboard(d){
     '<div style="margin-top:12px;font-size:12px;color:#aaa">'+
       (Math.abs(diff)<100?'✅ ค่าธรรมเนียมตรงกัน':'⚠️ มีผลต่าง — ควรตรวจสอบ')+
     '</div>';
-
   // คดีเช็ค
   if(document.getElementById("case-list")) renderCaseList(d.caseList||[]);
-
   document.getElementById("loading").style.display="none";
   document.getElementById("content").style.display="block";
 }
-
 function renderCaseList(caseList) {
   var el = document.getElementById("case-list");
   if (!el) return;
@@ -525,7 +490,6 @@ function renderCaseList(caseList) {
     setEl("case-group-count", "0 กลุ่ม");
     return;
   }
-
   // จัดกลุ่มตามผู้รับเงิน
   var groups = {};
   var totalAmount = 0;
@@ -536,11 +500,9 @@ function renderCaseList(caseList) {
     groups[key].total += item.amount;
     totalAmount += item.amount;
   });
-
   setEl("case-total-count", caseList.length.toLocaleString() + " ใบ");
   setEl("case-total-amount", fmtFull(totalAmount));
   setEl("case-group-count", Object.keys(groups).length + " กลุ่ม");
-
   var html = "";
   Object.keys(groups).sort().forEach(function(payee) {
     var g = groups[payee];
@@ -553,12 +515,10 @@ function renderCaseList(caseList) {
     html += '<span style="font-size:12px;color:rgba(255,255,255,.75)">'+g.items.length+' ใบ</span>';
     html += '<span style="font-size:22px;font-weight:700;color:#fff">'+fmtFull(g.total)+'</span>';
     html += '</div></div>';
-
     html += '<table class="case-table">';
     html += '<thead><tr>';
     html += '<th class="col-no">เลขที่เช็ค</th><th class="col-bank">ธนาคาร</th><th class="col-date">วันที่ออกเช็ค</th><th class="col-amt">จำนวนเงิน</th><th class="col-status">สถานะคดี</th>';
     html += '</tr></thead><tbody>';
-
     g.items.forEach(function(item) {
       var badge = getCaseBadge(item.caseStatus);
       html += '<tr>';
@@ -571,10 +531,8 @@ function renderCaseList(caseList) {
     });
     html += '</tbody></table></div>';
   });
-
   el.innerHTML = html;
 }
-
 function getCaseBadge(status) {
   if (!status) return {cls:"cb-other"};
   // สีเขียว = ยังไม่ฟ้อง / รอ / เกินกำหนดยังไม่ฟ้อง — เช็คเงื่อนไขนี้ก่อน
@@ -585,7 +543,6 @@ function getCaseBadge(status) {
   // สีน้ำเงิน = อื่นๆ เช่น ชนะคดี จบแล้ว
   return {cls:"cb-other"};
 }
-
 loadData();
 </script>
 </body>

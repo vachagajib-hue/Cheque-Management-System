@@ -206,44 +206,46 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
       ℹ️ นับเฉพาะเช็คที่ออกตั้งแต่ 1 ม.ค. 2568 เป็นต้นไป — ข้อมูลก่อนหน้าไม่รวมในส่วนนี้
     </div>
 
-    <!-- KPI รูปเช็ค AA -->
-    <div style="font-size:14px;font-weight:700;color:#3A1F6E;margin-bottom:10px;margin-top:4px">📎 สถานะรูปภาพเช็ค เริ่ม 1/1/68 — ปัจจุบัน</div>
+    <!-- สถานะเช็ค — ทั้งฐานข้อมูล (4 กล่องไม่ซ้อนทับกัน รวม = จำนวนเช็คทั้งหมด) -->
+    <div style="font-size:14px;font-weight:700;color:#3A1F6E;margin-bottom:10px;margin-top:4px">📎 สถานะเช็ค — ทั้งฐานข้อมูล</div>
     <div class="kpi-grid" style="margin-bottom:12px;grid-template-columns:1fr">
       <div class="kpi total68">
-        <div class="label">📋 เช็คทั้งหมดตั้งแต่ 1/1/2568 — ปัจจุบัน</div>
-        <div class="value fmt-num" id="kpi-total68">—</div>
-        <div class="sub" id="kpi-total68-sub">มีรูป + ไม่มีรูป</div>
+        <div class="label">📋 เช็คทั้งหมดในฐานข้อมูล</div>
+        <div class="value fmt-num" id="kpi-total-all">—</div>
+        <div class="sub" id="kpi-total-all-sub"></div>
       </div>
     </div>
-    <div class="kpi-grid" style="margin-bottom:20px">
+    <div class="kpi-grid" style="margin-bottom:12px">
       <div class="kpi photo">
         <div class="label">📎 มีรูปเช็คแล้ว</div>
-        <div class="value fmt-num" id="kpi-has-image">—</div>
-        <div class="sub" id="kpi-has-image-sub">— ใบ</div>
+        <div class="value fmt-num" id="ct-has-image">—</div>
+        <div class="sub" id="ct-has-image-sub">— ใบ</div>
+        <button class="pb-detail-btn" style="width:100%;margin-top:8px" onclick="ctToggleFlat('hasImage')" id="ct-btn-hasImage">ดูรายละเอียด ▼</button>
+      </div>
+      <div class="kpi" style="background:#EBF8FF;border-left:4px solid #3182CE">
+        <div class="label" style="color:#2B6CB0">🕒 เช็ครอขึ้นเงิน</div>
+        <div class="value fmt-num" style="color:#2B6CB0" id="ct-pending-cash">—</div>
+        <div class="sub" id="ct-pending-cash-sub">— ใบ</div>
+        <button class="pb-detail-btn" style="width:100%;margin-top:8px" onclick="ctToggleFlat('pendingCash')" id="ct-btn-pendingCash">ดูรายละเอียด ▼</button>
+      </div>
+      <div class="kpi" style="background:#EBF8FF;border-left:4px solid #3182CE">
+        <div class="label" style="color:#2B6CB0">✅ ขึ้นเงินแล้ว</div>
+        <div class="value fmt-num" style="color:#2B6CB0" id="ct-cashed">—</div>
+        <div class="sub" id="ct-cashed-sub">— ใบ</div>
+        <button class="pb-detail-btn" style="width:100%;margin-top:8px" onclick="ctToggleFlat('cashed')" id="ct-btn-cashed">ดูรายละเอียด ▼</button>
       </div>
       <div class="kpi no-photo">
-        <div class="label">🔴 ยังไม่มีรูปเช็ค</div>
-        <div class="value fmt-num" id="kpi-no-image">—</div>
-        <div class="sub" id="kpi-no-image-sub">— ใบ</div>
-      </div>
-      <div class="kpi warn">
-        <div class="label">⚠️ หมดอายุ — ไม่มีรูป</div>
-        <div class="value fmt-num" id="kpi-expired-no-image">—</div>
-        <div class="sub">ควรตรวจสอบด่วน</div>
-      </div>
-      <div class="kpi warn">
-        <div class="label">⚠️ ยกเลิก — ไม่มีรูป</div>
-        <div class="value fmt-num" id="kpi-cancelled-no-image">—</div>
-        <div class="sub">ควรแนบหลักฐาน</div>
+        <div class="label">🔴 ยังไม่มีรูปเช็ค (ต้องติดตาม)</div>
+        <div class="value fmt-num" id="ct-needs-followup">—</div>
+        <div class="sub" id="ct-needs-followup-sub">— ใบ</div>
+        <button class="pb-detail-btn" style="width:100%;margin-top:8px" onclick="ctToggleFollowUp()" id="ct-btn-followup">ดูรายละเอียด ▼</button>
       </div>
     </div>
 
-    <!-- ===== เพิ่มใหม่: แยกข้อมูลตามสถานะเช็ค (คอลัมภ์ L) + ปุ่มรายละเอียด (คอลัมภ์ M) ===== -->
-    <div class="card" style="margin-bottom:20px">
-      <h2>📋 แยกข้อมูลตามสถานะเช็ค (คอลัมภ์ L)</h2>
-      <div class="sub-title">แยกย่อยภายในแต่ละกลุ่มสถานะรูปภาพด้านบน — กด "ดูรายละเอียด" เพื่อดูเช็คแต่ละใบพร้อมหมายเหตุ/เหตุผล (คอลัมภ์ M)</div>
-      <div id="photo-breakdown"></div>
-    </div>
+    <div id="ct-detail-hasImage" style="display:none;margin-bottom:12px"></div>
+    <div id="ct-detail-pendingCash" style="display:none;margin-bottom:12px"></div>
+    <div id="ct-detail-cashed" style="display:none;margin-bottom:12px"></div>
+    <div id="ct-detail-followup" style="display:none;margin-bottom:20px"></div>
 
     <!-- Cash Flow + Urgent -->
     <div class="row">
@@ -344,72 +346,49 @@ function toggleUrgent(){
   }
 }
 
-/* ===== เพิ่มใหม่: แยกตามสถานะเช็ค (คอลัมภ์ L) + ปุ่มรายละเอียด (คอลัมภ์ M) ===== */
-var PB_BUCKET_LABELS = {
-  hasImage:         { label:"📎 มีรูปเช็คแล้ว",        color:"#276749" },
-  noImage:          { label:"🔴 ยังไม่มีรูปเช็ค",       color:"#C53030" },
-  expiredNoImage:   { label:"⚠️ หมดอายุ — ไม่มีรูป",   color:"#B7791F" },
-  cancelledNoImage: { label:"⚠️ ยกเลิก — ไม่มีรูป",     color:"#B7791F" }
-};
-var PB_BUCKET_ORDER = ["hasImage","noImage","expiredNoImage","cancelledNoImage"];
-
+/* ===== สถานะเช็ค — ทั้งฐานข้อมูล (4 กล่องไม่ซ้อนทับกัน) ===== */
 function escapeHtml(s){
   return (s===null||s===undefined?"":String(s))
     .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
 
-function renderPhotoBreakdown(pb){
-  var el=document.getElementById("photo-breakdown");
-  if(!el) return;
-  if(!pb){
-    el.innerHTML='<div class="pb-empty">ยังไม่มีข้อมูลแยกตามสถานะเช็ค (รอ Code.gs อัปเดต photoBreakdown)</div>';
+var CT_DATA = null;
+var CT_STATUS_ORDER = ["ยกเลิก","เกินกำหนดชำระ","รอตรวจสอบเช็คคืน","อื่นๆ"];
+var CT_STATUS_COLOR = {"ยกเลิก":"#C53030","เกินกำหนดชำระ":"#B7791F","รอตรวจสอบเช็คคืน":"#3A1F6E","อื่นๆ":"#555555"};
+
+function renderCheckTracking(ct){
+  CT_DATA = ct;
+  if(!ct){
+    setEl("kpi-total-all","—");
     return;
   }
+  var totalAll = (ct.hasImage.count||0)+(ct.pendingCash.count||0)+(ct.cashed.count||0)+(ct.needsFollowUp.count||0);
+  setEl("kpi-total-all", totalAll.toLocaleString()+" ใบ");
+  setEl("kpi-total-all-sub",
+    "มีรูป "+(ct.hasImage.count||0).toLocaleString()+
+    " + รอขึ้นเงิน "+(ct.pendingCash.count||0).toLocaleString()+
+    " + ขึ้นเงินแล้ว "+(ct.cashed.count||0).toLocaleString()+
+    " + ต้องติดตาม "+(ct.needsFollowUp.count||0).toLocaleString());
 
-  var html="";
-  PB_BUCKET_ORDER.forEach(function(bucketKey){
-    var bucket=pb[bucketKey];
-    var meta=PB_BUCKET_LABELS[bucketKey];
-    if(!bucket) return;
-    var groups=bucket.groups||{};
-    var statusKeys=Object.keys(groups).sort(function(a,b){ return (groups[b].count||0)-(groups[a].count||0); });
-
-    html+='<div class="pb-group">';
-    html+='<div class="pb-group-title" style="color:'+meta.color+'">'+meta.label+' — รวม '+(bucket.total||0).toLocaleString()+' ใบ</div>';
-
-    if(statusKeys.length===0){
-      html+='<div class="pb-empty">ไม่มีข้อมูล</div>';
-    } else {
-      html+='<table class="pb-table"><thead><tr>'+
-        '<th>สถานะเช็ค (L)</th><th style="text-align:right">จำนวน (ใบ)</th><th style="text-align:right">ยอดเงิน</th><th></th>'+
-        '</tr></thead><tbody>';
-      statusKeys.forEach(function(status,idx){
-        var g=groups[status];
-        var rowId=bucketKey+"-"+idx;
-        html+='<tr>'+
-          '<td>'+escapeHtml(status)+'</td>'+
-          '<td style="text-align:right">'+(g.count||0).toLocaleString()+'</td>'+
-          '<td style="text-align:right">'+fmtFull(g.amount)+'</td>'+
-          '<td style="text-align:right"><button class="pb-detail-btn" onclick="pbToggle(\''+rowId+'\')" id="pb-btn-'+rowId+'">ดูรายละเอียด ▼</button></td>'+
-        '</tr>';
-        html+='<tr id="pb-row-'+rowId+'" style="display:none"><td colspan="4" style="padding:0">'+pbBuildDetailTable(g.items)+'</td></tr>';
-      });
-      html+='</tbody></table>';
-    }
-    html+='</div>';
-  });
-
-  el.innerHTML=html;
+  setEl("ct-has-image",(ct.hasImage.count||0).toLocaleString());
+  setEl("ct-has-image-sub",(ct.hasImage.count||0).toLocaleString()+" ใบ");
+  setEl("ct-pending-cash",(ct.pendingCash.count||0).toLocaleString());
+  setEl("ct-pending-cash-sub",(ct.pendingCash.count||0).toLocaleString()+" ใบ");
+  setEl("ct-cashed",(ct.cashed.count||0).toLocaleString());
+  setEl("ct-cashed-sub",(ct.cashed.count||0).toLocaleString()+" ใบ");
+  setEl("ct-needs-followup",(ct.needsFollowUp.count||0).toLocaleString());
+  setEl("ct-needs-followup-sub",(ct.needsFollowUp.count||0).toLocaleString()+" ใบ");
 }
 
-function pbBuildDetailTable(items){
+function ctFlatTable(items){
   if(!items||items.length===0) return '<div class="pb-empty">ไม่มีรายการ</div>';
   var html='<div class="pb-detail-wrap"><table class="pb-detail-table">'+
-    '<thead><tr><th>เลขที่เช็ค</th><th>ธนาคาร</th><th style="text-align:right">จำนวนเงิน</th><th>หมายเหตุ/เหตุผล (M)</th></tr></thead><tbody>';
+    '<thead><tr><th>เลขที่เช็ค</th><th>ธนาคาร</th><th>วันที่</th><th style="text-align:right">จำนวนเงิน</th><th>หมายเหตุ (M)</th></tr></thead><tbody>';
   items.forEach(function(it){
     html+='<tr>'+
       '<td style="font-weight:600">'+escapeHtml(it.checkNo)+'</td>'+
       '<td>'+escapeHtml(it.bank)+'</td>'+
+      '<td>'+escapeHtml(it.date)+'</td>'+
       '<td style="text-align:right">'+fmtFull(it.amount)+'</td>'+
       '<td style="color:#666">'+escapeHtml(it.note||"—")+'</td>'+
     '</tr>';
@@ -418,13 +397,70 @@ function pbBuildDetailTable(items){
   return html;
 }
 
-function pbToggle(rowId){
-  var row=document.getElementById("pb-row-"+rowId);
-  var btn=document.getElementById("pb-btn-"+rowId);
-  if(!row) return;
-  var showing = row.style.display==="table-row";
-  row.style.display = showing ? "none" : "table-row";
-  if(btn) btn.textContent = showing ? "ดูรายละเอียด ▼" : "ซ่อนรายละเอียด ▲";
+function ctToggleFlat(bucketKey){
+  var el=document.getElementById("ct-detail-"+bucketKey);
+  var btn=document.getElementById("ct-btn-"+bucketKey);
+  if(!el||!CT_DATA) return;
+  var showing = el.style.display==="block";
+  if(showing){ el.style.display="none"; if(btn) btn.textContent="ดูรายละเอียด ▼"; return; }
+  el.innerHTML = ctFlatTable((CT_DATA[bucketKey]||{}).items);
+  el.style.display="block";
+  if(btn) btn.textContent="ซ่อนรายละเอียด ▲";
+}
+
+function ctBuildFollowUpHtml(fu){
+  var groups=(fu&&fu.groups)||{};
+  var html='<div class="card" style="padding:0;overflow:hidden">';
+  var any=false;
+  CT_STATUS_ORDER.forEach(function(statusKey,sIdx){
+    var g=groups[statusKey];
+    if(!g) return;
+    any=true;
+    var color=CT_STATUS_COLOR[statusKey]||"#555";
+    html+='<div class="amt-subgroup-header" onclick="ctToggleStatus('+sIdx+')" id="ct-status-hdr-'+sIdx+'">'+
+      '<span class="amt-subgroup-title" style="color:'+color+'">'+escapeHtml(statusKey)+'</span>'+
+      '<span class="amt-subgroup-meta">'+(g.count||0).toLocaleString()+' ใบ &nbsp; '+fmtFull(g.amount)+' &nbsp; <span class="amt-chevron" id="ct-status-chevron-'+sIdx+'">▶</span></span>'+
+    '</div>';
+    html+='<div id="ct-status-body-'+sIdx+'" style="display:none;padding:6px 14px 10px">';
+    var payees=g.payees||{};
+    var payeeNames=Object.keys(payees).sort();
+    payeeNames.forEach(function(payeeName){
+      var pg=payees[payeeName];
+      html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-top:0.5px solid #f0f0f0">'+
+        '<span style="font-size:12px;font-weight:600;color:#3A1F6E">'+escapeHtml(payeeName)+'</span>'+
+        '<span style="font-size:11px;color:#888">'+(pg.count||0).toLocaleString()+' ใบ &nbsp; '+fmtFull(pg.amount)+'</span>'+
+      '</div>';
+      html+='<table class="pb-detail-table" style="margin-bottom:6px"><thead><tr><th>เลขที่เช็ค</th><th>วันที่</th><th style="text-align:right">ยอดเงิน</th></tr></thead><tbody>';
+      (pg.items||[]).forEach(function(it){
+        html+='<tr><td style="font-weight:600">'+escapeHtml(it.checkNo)+'</td><td>'+escapeHtml(it.date)+'</td><td style="text-align:right">'+fmtFull(it.amount)+'</td></tr>';
+      });
+      html+='</tbody></table>';
+    });
+    html+='</div>';
+  });
+  if(!any) html+='<div class="pb-empty">ไม่มีข้อมูล</div>';
+  html+='</div>';
+  return html;
+}
+
+function ctToggleFollowUp(){
+  var el=document.getElementById("ct-detail-followup");
+  var btn=document.getElementById("ct-btn-followup");
+  if(!el||!CT_DATA) return;
+  var showing=el.style.display==="block";
+  if(showing){ el.style.display="none"; if(btn) btn.textContent="ดูรายละเอียด ▼"; return; }
+  el.innerHTML=ctBuildFollowUpHtml(CT_DATA.needsFollowUp);
+  el.style.display="block";
+  if(btn) btn.textContent="ซ่อนรายละเอียด ▲";
+}
+
+function ctToggleStatus(idx){
+  var body=document.getElementById("ct-status-body-"+idx);
+  var chevron=document.getElementById("ct-status-chevron-"+idx);
+  if(!body) return;
+  var showing=body.style.display==="block";
+  body.style.display=showing?"none":"block";
+  if(chevron) chevron.textContent=showing?"▶":"▼";
 }
 
 function loadData(){
@@ -472,19 +508,8 @@ function renderDashboard(d){
   setEl("kpi-overdue",fmtFull(d.overdue68Amount||0));
   setEl("kpi-overdue-count",(d.overdue68Count||0).toLocaleString()+" ใบ");
 
-  // AA image KPIs
-  var totalRows = (d.hasImageCount||0)+(d.noImageCount||0);
-  setEl("kpi-total68",totalRows.toLocaleString()+" ใบ");
-  setEl("kpi-total68-sub","มีรูป "+(d.hasImageCount||0).toLocaleString()+" ใบ  +  ไม่มีรูป "+(d.noImageCount||0).toLocaleString()+" ใบ");
-  setEl("kpi-has-image",(d.hasImageCount||0).toLocaleString());
-  setEl("kpi-has-image-sub",totalRows>0?Math.round((d.hasImageCount||0)/totalRows*100)+"%":"—");
-  setEl("kpi-no-image",(d.noImageCount||0).toLocaleString());
-  setEl("kpi-no-image-sub",totalRows>0?Math.round((d.noImageCount||0)/totalRows*100)+"%":"—");
-  setEl("kpi-expired-no-image",(d.expiredNoImage||0).toLocaleString()+" ใบ");
-  setEl("kpi-cancelled-no-image",(d.cancelledNoImage||0).toLocaleString()+" ใบ");
-
-  // แยกตามสถานะเช็ค (คอลัมภ์ L) + ปุ่มรายละเอียด (คอลัมภ์ M)
-  renderPhotoBreakdown(d.photoBreakdown);
+  // สถานะเช็ค — ทั้งฐานข้อมูล (4 กล่องไม่ซ้อนทับกัน)
+  renderCheckTracking(d.checkTracking);
 
   // Cash Flow Chart
   var cf=d.cashflow||{};

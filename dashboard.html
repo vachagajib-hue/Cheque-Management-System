@@ -190,13 +190,13 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
         <div class="label" style="color:#C05621">📅 เกินกำหนดชำระ</div>
         <div class="value fmt-num" style="color:#C05621" id="ts-overdue">—</div>
         <div class="sub" id="ts-overdue-sub">— ใบ</div>
-        <button class="pb-detail-btn" style="width:100%;margin-top:8px" onclick="tsToggleFlat('overdue')" id="ts-btn-overdue">ดูรายละเอียด ▼</button>
+        <button class="pb-detail-btn" style="width:100%;margin-top:8px" onclick="tsTogglePayeeGroup('overdue')" id="ts-btn-overdue">ดูรายละเอียด ▼</button>
       </div>
       <div class="kpi returned">
         <div class="label">🚫 ยกเลิก</div>
         <div class="value fmt-num" id="ts-cancelled">—</div>
         <div class="sub" id="ts-cancelled-sub">— ใบ</div>
-        <button class="pb-detail-btn" style="width:100%;margin-top:8px" onclick="tsToggleFlat('cancelled')" id="ts-btn-cancelled">ดูรายละเอียด ▼</button>
+        <button class="pb-detail-btn" style="width:100%;margin-top:8px" onclick="tsTogglePayeeGroup('cancelled')" id="ts-btn-cancelled">ดูรายละเอียด ▼</button>
       </div>
     </div>
 
@@ -220,19 +220,19 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
         <div class="label">📎 มีรูปเช็คแล้ว</div>
         <div class="value fmt-num" id="ct-has-image">—</div>
         <div class="sub" id="ct-has-image-sub">— ใบ</div>
-        <button class="pb-detail-btn" style="width:100%;margin-top:8px" onclick="ctToggleFlat('hasImage')" id="ct-btn-hasImage">ดูรายละเอียด ▼</button>
+        <button class="pb-detail-btn" style="width:100%;margin-top:8px" onclick="ctTogglePayeeGroup('hasImage')" id="ct-btn-hasImage">ดูรายละเอียด ▼</button>
       </div>
       <div class="kpi" style="background:#EBF8FF;border-left:4px solid #3182CE">
         <div class="label" style="color:#2B6CB0">🕒 เช็ครอขึ้นเงิน</div>
         <div class="value fmt-num" style="color:#2B6CB0" id="ct-pending-cash">—</div>
         <div class="sub" id="ct-pending-cash-sub">— ใบ</div>
-        <button class="pb-detail-btn" style="width:100%;margin-top:8px" onclick="ctToggleFlat('pendingCash')" id="ct-btn-pendingCash">ดูรายละเอียด ▼</button>
+        <button class="pb-detail-btn" style="width:100%;margin-top:8px" onclick="ctTogglePayeeGroup('pendingCash')" id="ct-btn-pendingCash">ดูรายละเอียด ▼</button>
       </div>
       <div class="kpi" style="background:#EBF8FF;border-left:4px solid #3182CE">
         <div class="label" style="color:#2B6CB0">✅ ขึ้นเงินแล้ว</div>
         <div class="value fmt-num" style="color:#2B6CB0" id="ct-cashed">—</div>
         <div class="sub" id="ct-cashed-sub">— ใบ</div>
-        <button class="pb-detail-btn" style="width:100%;margin-top:8px" onclick="ctToggleFlat('cashed')" id="ct-btn-cashed">ดูรายละเอียด ▼</button>
+        <button class="pb-detail-btn" style="width:100%;margin-top:8px" onclick="ctTogglePayeeGroup('cashed')" id="ct-btn-cashed">ดูรายละเอียด ▼</button>
       </div>
       <div class="kpi no-photo">
         <div class="label">🔴 ยังไม่มีรูปเช็ค (ต้องติดตาม)</div>
@@ -397,15 +397,17 @@ function renderAmtGroupTable(amountGroups, opts){
 }
 
 // แสดงรายการที่จัดกลุ่มตามชื่อผู้รับเงินก่อน แล้วจัดกลุ่มยอดเงินซ้อนอีกชั้นในแต่ละชื่อ
+// แถบชื่อผู้รับเงินใช้สีเข้ม (CASE_HEADER_PALETTE) สลับกันตามลำดับ ให้เห็นแยกกลุ่มชัดเจน ไม่กลืนกัน
 function renderPayeeGroups(payees){
   var names=Object.keys(payees||{}).sort();
   if(names.length===0) return '<div class="pb-empty">ไม่มีข้อมูล</div>';
   var html="";
-  names.forEach(function(name){
+  names.forEach(function(name, idx){
     var pg=payees[name];
-    html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-top:0.5px solid #f0f0f0">'+
-      '<span style="font-size:12px;font-weight:600;color:#3A1F6E">'+escapeHtml(name)+'</span>'+
-      '<span style="font-size:11px;color:#888">'+(pg.count||0).toLocaleString()+' ใบ &nbsp; '+fmtFull(pg.amount)+'</span>'+
+    var c=CASE_HEADER_PALETTE[idx % CASE_HEADER_PALETTE.length];
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;margin-top:8px;border-radius:6px;background:'+c.bg+'">'+
+      '<span style="font-size:12px;font-weight:600;color:'+c.text+'">'+escapeHtml(name)+'</span>'+
+      '<span style="font-size:11px;color:'+c.text+'">'+(pg.count||0).toLocaleString()+' ใบ &nbsp; '+fmtFull(pg.amount)+'</span>'+
     '</div>';
     html+=renderAmtGroupTable(pg.amountGroups, {showPayee:false});
   });
@@ -441,13 +443,14 @@ function renderCheckTracking(ct){
   setEl("ct-needs-followup-sub",(ct.needsFollowUp.count||0).toLocaleString()+" ใบ");
 }
 
-function ctToggleFlat(bucketKey){
+// มีรูปเช็คแล้ว / เช็ครอขึ้นเงิน / ขึ้นเงินแล้ว — รายละเอียดเต็ม (ชื่อผู้รับเงิน > กลุ่มยอดเงิน)
+function ctTogglePayeeGroup(bucketKey){
   var el=document.getElementById("ct-detail-"+bucketKey);
   var btn=document.getElementById("ct-btn-"+bucketKey);
   if(!el||!CT_DATA) return;
   var showing = el.style.display==="block";
   if(showing){ el.style.display="none"; if(btn) btn.textContent="ดูรายละเอียด ▼"; return; }
-  el.innerHTML = renderAmtGroupTable((CT_DATA[bucketKey]||{}).amountGroups, {showPayee:true, showNote:true});
+  el.innerHTML = '<div class="card" style="padding:0 14px 10px;overflow:hidden">'+renderPayeeGroups((CT_DATA[bucketKey]||{}).payees)+'</div>';
   el.style.display="block";
   if(btn) btn.textContent="ซ่อนรายละเอียด ▲";
 }
@@ -526,18 +529,6 @@ function tsTogglePayeeGroup(bucketKey){
   var showing=el.style.display==="block";
   if(showing){ el.style.display="none"; if(btn) btn.textContent="ดูรายละเอียด ▼"; return; }
   el.innerHTML='<div class="card" style="padding:0 14px 10px;overflow:hidden">'+renderPayeeGroups((TS_DATA[bucketKey]||{}).payees)+'</div>';
-  el.style.display="block";
-  if(btn) btn.textContent="ซ่อนรายละเอียด ▲";
-}
-
-// เกินกำหนดชำระ / ยกเลิก — รายละเอียดแบบง่าย (กลุ่มยอดเงิน + คอลัมน์ชื่อผู้รับเงิน)
-function tsToggleFlat(bucketKey){
-  var el=document.getElementById("ts-detail-"+bucketKey);
-  var btn=document.getElementById("ts-btn-"+bucketKey);
-  if(!el||!TS_DATA) return;
-  var showing=el.style.display==="block";
-  if(showing){ el.style.display="none"; if(btn) btn.textContent="ดูรายละเอียด ▼"; return; }
-  el.innerHTML = renderAmtGroupTable((TS_DATA[bucketKey]||{}).amountGroups, {showPayee:true});
   el.style.display="block";
   if(btn) btn.textContent="ซ่อนรายละเอียด ▲";
 }
@@ -737,33 +728,44 @@ function renderCaseList(caseList) {
       return (amtGroups[b].items.length - amtGroups[a].items.length) || (amtGroups[b].amount - amtGroups[a].amount);
     });
 
+    function caseRowHtml(item){
+      var badge = getCaseBadgeStyle(item.caseStatus);
+      return '<tr>'+
+        '<td class="col-no" style="font-weight:700">'+escapeHtml(item.checkNo)+'</td>'+
+        '<td class="col-bank" style="color:#555">'+escapeHtml(item.bank)+'</td>'+
+        '<td class="col-date" style="color:#555">'+escapeHtml(item.issueDate)+'</td>'+
+        '<td class="col-amt" style="font-weight:700">'+fmtFull(item.amount)+'</td>'+
+        '<td class="col-status"><span class="case-badge" style="background:'+badge.bg+';color:'+badge.text+'">'+escapeHtml(item.caseStatus)+'</span></td>'+
+      '</tr>';
+    }
+    var caseTableHead = '<thead><tr>'+
+      '<th class="col-no">เลขที่เช็ค</th><th class="col-bank">ธนาคาร</th><th class="col-date">วันที่ออกเช็ค</th><th class="col-amt">จำนวนเงิน</th><th class="col-status">สถานะคดี</th>'+
+      '</tr></thead>';
+
+    // ยอดเงินที่มีมากกว่า 1 ใบ — มีหัวข้อ "ยอดเงินจ่าย" + ตารางของตัวเอง
+    var soloItems = [];
     amtKeys.forEach(function(amtKey) {
       var ag = amtGroups[amtKey];
-      // ถ้ายอดนี้มีแค่ 1 ใบ ไม่ต้องมีหัวข้อ "ยอดเงินจ่าย" ครอบซ้อน แสดงแถวตรงๆ เลย
       if (ag.items.length > 1) {
         html += '<div class="amt-subgroup-header" style="cursor:default">';
         html += '<span class="amt-subgroup-title">ยอดเงินจ่าย '+fmtFull(ag.amount)+' บาท</span>';
         html += '<span class="amt-subgroup-meta">'+ag.items.length+' ใบ &nbsp; รวม '+fmtFull(ag.total)+'</span>';
         html += '</div>';
+        html += '<table class="case-table">'+caseTableHead+'<tbody>';
+        ag.items.forEach(function(item){ html += caseRowHtml(item); });
+        html += '</tbody></table>';
+      } else {
+        soloItems.push(ag.items[0]);
       }
-
-      html += '<table class="case-table">';
-      html += '<thead><tr>';
-      html += '<th class="col-no">เลขที่เช็ค</th><th class="col-bank">ธนาคาร</th><th class="col-date">วันที่ออกเช็ค</th><th class="col-amt">จำนวนเงิน</th><th class="col-status">สถานะคดี</th>';
-      html += '</tr></thead><tbody>';
-
-      ag.items.forEach(function(item) {
-        var badge = getCaseBadgeStyle(item.caseStatus);
-        html += '<tr>';
-        html += '<td class="col-no" style="font-weight:700">'+escapeHtml(item.checkNo)+'</td>';
-        html += '<td class="col-bank" style="color:#555">'+escapeHtml(item.bank)+'</td>';
-        html += '<td class="col-date" style="color:#555">'+escapeHtml(item.issueDate)+'</td>';
-        html += '<td class="col-amt" style="font-weight:700">'+fmtFull(item.amount)+'</td>';
-        html += '<td class="col-status"><span class="case-badge" style="background:'+badge.bg+';color:'+badge.text+'">'+escapeHtml(item.caseStatus)+'</span></td>';
-        html += '</tr>';
-      });
-      html += '</tbody></table>';
     });
+
+    // ยอดเงินที่มีแค่ 1 ใบ (ไม่ซ้ำกับใคร) — รวมเป็นตารางเดียวกันทั้งหมด หัวตารางแสดงครั้งเดียว
+    if (soloItems.length > 0) {
+      soloItems.sort(function(a,b){ return (a.issueDateTs||0)-(b.issueDateTs||0); });
+      html += '<table class="case-table">'+caseTableHead+'<tbody>';
+      soloItems.forEach(function(item){ html += caseRowHtml(item); });
+      html += '</tbody></table>';
+    }
 
     html += '</div>';
   });
@@ -771,15 +773,15 @@ function renderCaseList(caseList) {
   el.innerHTML = html;
 }
 
-// พาเลตสีแถบหัวชื่อผู้รับเงิน — สลับกันตามลำดับเพื่อให้แยกกลุ่มง่าย ไม่กลืนกัน
+// พาเลตสีแถบหัวชื่อผู้รับเงิน — เข้มขึ้นให้เห็นชัด ไม่กลืนกับพื้นหลัง สลับกันตามลำดับ
 var CASE_HEADER_PALETTE = [
-  {bg:"#EEEDFE", text:"#26215C"},
-  {bg:"#E1F5EE", text:"#04342C"},
-  {bg:"#FAECE7", text:"#4A1B0C"},
-  {bg:"#FBEAF0", text:"#4B1528"},
-  {bg:"#E6F1FB", text:"#042C53"},
-  {bg:"#EAF3DE", text:"#173404"},
-  {bg:"#FAEEDA", text:"#412402"}
+  {bg:"#AFA9EC", text:"#26215C"},
+  {bg:"#5DCAA5", text:"#04342C"},
+  {bg:"#F0997B", text:"#4A1B0C"},
+  {bg:"#ED93B1", text:"#4B1528"},
+  {bg:"#85B7EB", text:"#042C53"},
+  {bg:"#97C459", text:"#173404"},
+  {bg:"#EF9F27", text:"#412402"}
 ];
 
 // พาเลตสีป้ายสถานะคดี — แฮชข้อความให้ได้สีเดิมเสมอ ไม่ซ้ำกับข้อความอื่นถ้ามีไม่เกิน 9 แบบ

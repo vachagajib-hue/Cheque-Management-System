@@ -22,22 +22,28 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .ql-label{font-size:12px;color:rgba(255,255,255,.5);margin-right:4px}
 .wrap{max-width:1200px;margin:0 auto;padding:20px}
 .case-group{background:#fff;border-radius:14px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.07);overflow:hidden}
-.case-group-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:#3A1F6E;border-bottom:1px solid #2D1760;cursor:pointer}
-.case-group-header:hover{background:#4A2A8A}
+.case-group-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f8f7ff;border-bottom:1px solid #e8e4f5;cursor:pointer}
+.case-group-header:hover{background:#f0eeff}
 .case-table{width:100%;border-collapse:collapse;font-size:13px}
 .case-table{table-layout:fixed;width:100%}
 .case-table th{text-align:left;padding:8px 12px;color:#888;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid #f0f0f0;background:#fafafa}
 .case-table td{padding:10px 12px;border-bottom:0.5px solid #f5f5f5;color:#333;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .case-table tr:last-child td{border-bottom:none}
-.case-table .col-no{width:12%}
-.case-table .col-bank{width:18%}
-.case-table .col-date{width:14%}
-.case-table .col-amt{width:16%;text-align:right!important;padding-right:16px!important}
-.case-table .col-status{width:40%;padding-left:36px!important}
+.case-table .col-no{width:13%}
+.case-table .col-bank{width:20%}
+.case-table .col-date{width:15%}
+.case-table .col-amt{width:17%;text-align:right!important}
+.case-table .col-status{width:25%;padding-left:20px!important}
 .case-badge{display:inline-block;padding:4px 12px;border-radius:6px;font-size:12px;font-weight:600;text-align:left}
 .cb-sue{background:#FFCDD2;color:#B71C1C;border:1.5px solid #E57373;font-weight:700}
 .cb-notsue{background:#DCEDC8;color:#33691E;border:1.5px solid #8BC34A;font-weight:700}
 .cb-other{background:#E3F2FD;color:#0D47A1;border:1.5px solid #64B5F6;font-weight:700}
+.amt-subgroup-header{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:#fbfaff;border-top:1px solid #f0f0f0;cursor:pointer}
+.amt-subgroup-header:hover{background:#f3f1fc}
+.amt-subgroup-title{font-size:13px;font-weight:600;color:#3A1F6E}
+.amt-subgroup-meta{font-size:12px;color:#888;display:flex;align-items:center;gap:6px}
+.amt-chevron{font-size:10px;color:#aaa}
+
 /* KPI Cards */
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
 .kpi{background:#fff;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
@@ -64,6 +70,7 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .kpi.warn .value{color:#B7791F}
 .kpi.total68{background:#EDE9F8;border-left:4px solid #5B3FA6}
 .kpi.total68 .value{color:#3A1F6E}
+
 /* Cards */
 .row{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
@@ -71,6 +78,7 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
 .card h2{font-size:16px;font-weight:700;color:#3A1F6E;margin-bottom:4px}
 .card .sub-title{font-size:12px;color:#aaa;margin-bottom:16px}
+
 /* Urgent List */
 .urgent-item{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:8px;margin-bottom:8px;background:#FFF5F5;border-left:3px solid #E53E3E}
 .urgent-item.day15{background:#FFFAF0;border-color:#DD6B20}
@@ -81,6 +89,7 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .urgent-item .right .amt{font-size:13px;font-weight:700;color:#333}
 .urgent-item .right .days{font-size:11px;color:#E53E3E;margin-top:2px}
 .urgent-item.day15 .right .days{color:#C05621}
+
 /* Bank List */
 .bank-item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0}
 .bank-item:last-child{border-bottom:none}
@@ -88,6 +97,7 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .bank-bar{height:8px;border-radius:4px;background:#5B3FA6;transition:width .5s}
 .bank-name{font-size:13px;color:#333;min-width:80px}
 .bank-amt{font-size:13px;font-weight:600;color:#3A1F6E;min-width:80px;text-align:right}
+
 /* Fee */
 .fee-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0f0;font-size:14px}
 .fee-row:last-child{border-bottom:none}
@@ -95,18 +105,38 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .fee-row .val{font-weight:700;color:#333}
 .fee-row .diff-pos{color:#E53E3E}
 .fee-row .diff-neg{color:#38A169}
+
 /* Loading */
 #loading{text-align:center;padding:60px;color:#888}
 .spinner{width:40px;height:40px;border:4px solid #e0d9f5;border-top-color:#5B3FA6;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
 @keyframes spin{to{transform:rotate(360deg)}}
+
 /* Legend */
 .legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;font-size:12px;color:#666}
 .legend span{display:flex;align-items:center;gap:4px}
 .legend .dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+
 .fmt-num{font-variant-numeric:tabular-nums}
+
+/* ===== เพิ่มใหม่: แยกตามสถานะเช็ค (คอลัมภ์ L) + ปุ่มรายละเอียด (คอลัมภ์ M) ===== */
+.pb-group{margin-bottom:18px}
+.pb-group:last-child{margin-bottom:0}
+.pb-group-title{font-size:13px;font-weight:700;margin-bottom:8px}
+.pb-table{width:100%;border-collapse:collapse;font-size:13px;table-layout:auto}
+.pb-table th{text-align:left;padding:8px 10px;color:#888;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid #f0f0f0;background:#fafafa}
+.pb-table td{padding:9px 10px;border-bottom:0.5px solid #f5f5f5;color:#333}
+.pb-table tr:last-child>td{border-bottom:none}
+.pb-detail-btn{font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid #ddd;background:#f5f5f5;cursor:pointer;color:#555;font-family:inherit}
+.pb-detail-btn:hover{background:#EDE9F8;border-color:#C5B8E8;color:#3A1F6E}
+.pb-detail-wrap{background:#fafafa;padding:10px 12px;border-radius:0 0 8px 8px}
+.pb-detail-table{width:100%;border-collapse:collapse;font-size:12px}
+.pb-detail-table th{text-align:left;padding:4px 8px;color:#999;font-weight:600}
+.pb-detail-table td{padding:5px 8px;border-top:1px solid #eee;color:#444}
+.pb-empty{text-align:center;color:#aaa;padding:14px;font-size:12px}
 </style>
 </head>
 <body>
+
 <header>
   <div>
     <h1>📊 Dashboard ทะเบียนเช็คสั่งจ่าย</h1>
@@ -120,14 +150,16 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
   <a class="ql-btn ql-drive" href="https://drive.google.com/drive/folders/1Mms8-T1QsHeer0vGsk_F_B1gU1Yd1QuF" target="_blank">📁 Google Drive</a>
   <a class="ql-btn ql-scan"  href="index.html" target="_blank">📷 สแกนเช็ค</a>
 </div>
+
 <div class="wrap">
   <div id="loading">
     <div class="spinner"></div>
     <div>กำลังดึงข้อมูลจาก Google Sheet...</div>
   </div>
   <div id="content" style="display:none">
-    <!-- KPI ภาพรวมทั้งฐานข้อมูล -->
-    <div style="font-size:13px;font-weight:700;color:#3A1F6E;margin-bottom:10px">ภาพรวมเช็คทั้งหมด — ทั้งฐานข้อมูล</div>
+
+    <!-- KPI ตั้งแต่ 1/1/68 -->
+    <div style="font-size:13px;font-weight:700;color:#3A1F6E;margin-bottom:10px">ภาพรวมเช็ค — ตั้งแต่ 1 ม.ค. 2568</div>
     <div class="kpi-grid">
       <div class="kpi">
         <div class="label">ยอดเช็คทั้งหมด</div>
@@ -171,13 +203,14 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
       </div>
     </div>
     <div style="font-size:11px;color:#aaa;background:#f9f9f9;border-radius:8px;padding:8px 12px;margin-bottom:16px">
-      ℹ️ นับรวมเช็คทั้งหมดในฐานข้อมูล ตั้งแต่เริ่มระบบทะเบียนจนถึงปัจจุบัน
+      ℹ️ นับเฉพาะเช็คที่ออกตั้งแต่ 1 ม.ค. 2568 เป็นต้นไป — ข้อมูลก่อนหน้าไม่รวมในส่วนนี้
     </div>
+
     <!-- KPI รูปเช็ค AA -->
-    <div style="font-size:14px;font-weight:700;color:#3A1F6E;margin-bottom:10px;margin-top:4px">📎 สถานะรูปภาพเช็ค — ทั้งฐานข้อมูล</div>
+    <div style="font-size:14px;font-weight:700;color:#3A1F6E;margin-bottom:10px;margin-top:4px">📎 สถานะรูปภาพเช็ค เริ่ม 1/1/68 — ปัจจุบัน</div>
     <div class="kpi-grid" style="margin-bottom:12px;grid-template-columns:1fr">
       <div class="kpi total68">
-        <div class="label">📋 เช็คทั้งหมดในฐานข้อมูล</div>
+        <div class="label">📋 เช็คทั้งหมดตั้งแต่ 1/1/2568 — ปัจจุบัน</div>
         <div class="value fmt-num" id="kpi-total68">—</div>
         <div class="sub" id="kpi-total68-sub">มีรูป + ไม่มีรูป</div>
       </div>
@@ -204,6 +237,14 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
         <div class="sub">ควรแนบหลักฐาน</div>
       </div>
     </div>
+
+    <!-- ===== เพิ่มใหม่: แยกข้อมูลตามสถานะเช็ค (คอลัมภ์ L) + ปุ่มรายละเอียด (คอลัมภ์ M) ===== -->
+    <div class="card" style="margin-bottom:20px">
+      <h2>📋 แยกข้อมูลตามสถานะเช็ค (คอลัมภ์ L)</h2>
+      <div class="sub-title">แยกย่อยภายในแต่ละกลุ่มสถานะรูปภาพด้านบน — กด "ดูรายละเอียด" เพื่อดูเช็คแต่ละใบพร้อมหมายเหตุ/เหตุผล (คอลัมภ์ M)</div>
+      <div id="photo-breakdown"></div>
+    </div>
+
     <!-- Cash Flow + Urgent -->
     <div class="row">
       <div class="card">
@@ -227,6 +268,7 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
         <div id="urgent-list" style="display:none"></div>
       </div>
     </div>
+
     <!-- Bank + Fee -->
     <div class="row2">
       <div class="card">
@@ -240,8 +282,11 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
         <div id="fee-info"></div>
       </div>
     </div>
+
   </div>
 </div>
+
+
   <!-- ส่วนคดีเช็ค -->
   <div style="margin-bottom:16px">
     <div class="card" style="grid-column:1/-1">
@@ -266,48 +311,20 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
       </div>
     </div>
   </div>
+
 <script>
 var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxej2efdZ6h2B9Hab0YJ7Opgc85UrQFhQ3WVoWRf9BrKG5m5imH2PasmFgnzQOKAyfa/exec";
 var cashflowChartObj = null;
-function fmt(n){ return Math.round(n).toLocaleString("th-TH"); }
+
+function fmt(n){ return "฿"+Math.round(n).toLocaleString("th-TH"); }
 function fmtFull(n){
-  if(!n||isNaN(n)) return "0";
-  return Math.round(n).toLocaleString("th-TH");
+  if(!n||isNaN(n)) return "฿0";
+  return "฿"+Math.round(n).toLocaleString("th-TH");
 }
 function fmtM(n){ return fmtFull(n); }
-// ย่อจำนวนเงินสำหรับ label บนกราฟ เช่น 45K, 1.2M
-function fmtAbbrev(n){
-  if(!n) return "";
-  var v=Math.abs(n);
-  if(v>=1000000) return (n/1000000).toFixed(1).replace(/\.0$/,"")+"M";
-  if(v>=1000) return Math.round(n/1000)+"K";
-  return ""+Math.round(n);
-}
-// Plugin วาดค่าจำนวนเงินย่อบนแท่งกราฟ Cash Flow
-var barValueLabelsPlugin = {
-  id:"barValueLabels",
-  afterDatasetsDraw:function(chart){
-    var ctx=chart.ctx;
-    ctx.save();
-    ctx.font="bold 11px Sarabun, sans-serif";
-    ctx.fillStyle="#fff";
-    ctx.textAlign="center";
-    ctx.textBaseline="middle";
-    chart.data.datasets.forEach(function(dataset,dsIndex){
-      var meta=chart.getDatasetMeta(dsIndex);
-      if(meta.hidden) return;
-      meta.data.forEach(function(bar,index){
-        var val=dataset.data[index];
-        if(!val) return;
-        if(bar.height<14) return; // แท่งเล็กเกินไป ไม่แสดง label กันข้อความล้น
-        var label=fmtAbbrev(val*1000); // ค่าจริงมาจาก K -> baht
-        ctx.fillText(label,bar.x,bar.y+bar.height/2);
-      });
-    });
-    ctx.restore();
-  }
-};
+
 function setEl(id,val){var e=document.getElementById(id);if(e)e.textContent=val;}
+
 function toggleUrgent(){
   var el=document.getElementById("urgent-list");
   var btn=document.getElementById("btn-urgent");
@@ -326,6 +343,90 @@ function toggleUrgent(){
     btn.style.borderColor="#ddd";
   }
 }
+
+/* ===== เพิ่มใหม่: แยกตามสถานะเช็ค (คอลัมภ์ L) + ปุ่มรายละเอียด (คอลัมภ์ M) ===== */
+var PB_BUCKET_LABELS = {
+  hasImage:         { label:"📎 มีรูปเช็คแล้ว",        color:"#276749" },
+  noImage:          { label:"🔴 ยังไม่มีรูปเช็ค",       color:"#C53030" },
+  expiredNoImage:   { label:"⚠️ หมดอายุ — ไม่มีรูป",   color:"#B7791F" },
+  cancelledNoImage: { label:"⚠️ ยกเลิก — ไม่มีรูป",     color:"#B7791F" }
+};
+var PB_BUCKET_ORDER = ["hasImage","noImage","expiredNoImage","cancelledNoImage"];
+
+function escapeHtml(s){
+  return (s===null||s===undefined?"":String(s))
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function renderPhotoBreakdown(pb){
+  var el=document.getElementById("photo-breakdown");
+  if(!el) return;
+  if(!pb){
+    el.innerHTML='<div class="pb-empty">ยังไม่มีข้อมูลแยกตามสถานะเช็ค (รอ Code.gs อัปเดต photoBreakdown)</div>';
+    return;
+  }
+
+  var html="";
+  PB_BUCKET_ORDER.forEach(function(bucketKey){
+    var bucket=pb[bucketKey];
+    var meta=PB_BUCKET_LABELS[bucketKey];
+    if(!bucket) return;
+    var groups=bucket.groups||{};
+    var statusKeys=Object.keys(groups).sort(function(a,b){ return (groups[b].count||0)-(groups[a].count||0); });
+
+    html+='<div class="pb-group">';
+    html+='<div class="pb-group-title" style="color:'+meta.color+'">'+meta.label+' — รวม '+(bucket.total||0).toLocaleString()+' ใบ</div>';
+
+    if(statusKeys.length===0){
+      html+='<div class="pb-empty">ไม่มีข้อมูล</div>';
+    } else {
+      html+='<table class="pb-table"><thead><tr>'+
+        '<th>สถานะเช็ค (L)</th><th style="text-align:right">จำนวน (ใบ)</th><th style="text-align:right">ยอดเงิน</th><th></th>'+
+        '</tr></thead><tbody>';
+      statusKeys.forEach(function(status,idx){
+        var g=groups[status];
+        var rowId=bucketKey+"-"+idx;
+        html+='<tr>'+
+          '<td>'+escapeHtml(status)+'</td>'+
+          '<td style="text-align:right">'+(g.count||0).toLocaleString()+'</td>'+
+          '<td style="text-align:right">'+fmtFull(g.amount)+'</td>'+
+          '<td style="text-align:right"><button class="pb-detail-btn" onclick="pbToggle(\''+rowId+'\')" id="pb-btn-'+rowId+'">ดูรายละเอียด ▼</button></td>'+
+        '</tr>';
+        html+='<tr id="pb-row-'+rowId+'" style="display:none"><td colspan="4" style="padding:0">'+pbBuildDetailTable(g.items)+'</td></tr>';
+      });
+      html+='</tbody></table>';
+    }
+    html+='</div>';
+  });
+
+  el.innerHTML=html;
+}
+
+function pbBuildDetailTable(items){
+  if(!items||items.length===0) return '<div class="pb-empty">ไม่มีรายการ</div>';
+  var html='<div class="pb-detail-wrap"><table class="pb-detail-table">'+
+    '<thead><tr><th>เลขที่เช็ค</th><th>ธนาคาร</th><th style="text-align:right">จำนวนเงิน</th><th>หมายเหตุ/เหตุผล (M)</th></tr></thead><tbody>';
+  items.forEach(function(it){
+    html+='<tr>'+
+      '<td style="font-weight:600">'+escapeHtml(it.checkNo)+'</td>'+
+      '<td>'+escapeHtml(it.bank)+'</td>'+
+      '<td style="text-align:right">'+fmtFull(it.amount)+'</td>'+
+      '<td style="color:#666">'+escapeHtml(it.note||"—")+'</td>'+
+    '</tr>';
+  });
+  html+='</tbody></table></div>';
+  return html;
+}
+
+function pbToggle(rowId){
+  var row=document.getElementById("pb-row-"+rowId);
+  var btn=document.getElementById("pb-btn-"+rowId);
+  if(!row) return;
+  var showing = row.style.display==="table-row";
+  row.style.display = showing ? "none" : "table-row";
+  if(btn) btn.textContent = showing ? "ดูรายละเอียด ▼" : "ซ่อนรายละเอียด ▲";
+}
+
 function loadData(){
   document.getElementById("loading").style.display="block";
   document.getElementById("content").style.display="none";
@@ -346,29 +447,32 @@ function loadData(){
   };
   xhr.send();
 }
+
 function renderDashboard(d){
   // อัพเดทเวลา
   var now=new Date();
   document.getElementById("update-time").textContent=
     "ข้อมูล ณ "+now.toLocaleDateString("th-TH",{year:"numeric",month:"long",day:"numeric"})+" "+now.toLocaleTimeString("th-TH");
-  // KPI ภาพรวมทั้งฐานข้อมูล
-  setEl("kpi-total",fmtFull(d.totalAmount||0));
-  setEl("kpi-total-count",(d.totalCount||0).toLocaleString()+" ใบ");
-  setEl("kpi-urgent",fmtFull(d.urgentAmount||0));
-  setEl("kpi-urgent-count",(d.urgentCount||0).toLocaleString()+" ใบ");
-  setEl("kpi-follow",fmtFull(d.followAmount||0));
-  setEl("kpi-follow-count",(d.followCount||0).toLocaleString()+" ใบ");
-  setEl("kpi-normal",fmtFull(d.normalAmount||0));
-  setEl("kpi-normal-count",(d.normalCount||0).toLocaleString()+" ใบ");
-  setEl("kpi-expired",fmtFull(d.expiredAmount||0));
-  setEl("kpi-expired-count",(d.expiredCount||0).toLocaleString()+" ใบ");
-  setEl("kpi-return",fmtFull(d.returnAmount||0));
-  setEl("kpi-return-count",(d.returnCount||0).toLocaleString()+" ใบ");
-  setEl("kpi-done",fmtFull(d.doneAmount||0));
-  setEl("kpi-done-count",(d.doneCount||0).toLocaleString()+" ใบ");
-  setEl("kpi-overdue",fmtFull(d.overdueAmount||0));
-  setEl("kpi-overdue-count",(d.overdueCount||0).toLocaleString()+" ใบ");
-  // AA image KPIs (ยังคงนับตั้งแต่ 1/1/68 ตามเดิม — ไม่เกี่ยวกับส่วนภาพรวมด้านบน)
+
+  // KPI ตั้งแต่ 1/1/68
+  setEl("kpi-total",fmtFull(d.total68Amount||0));
+  setEl("kpi-total-count",(d.total68Count||0).toLocaleString()+" ใบ");
+  setEl("kpi-urgent",fmtFull(d.urgent68Amount||0));
+  setEl("kpi-urgent-count",(d.urgent68Count||0).toLocaleString()+" ใบ");
+  setEl("kpi-follow",fmtFull(d.follow68Amount||0));
+  setEl("kpi-follow-count",(d.follow68Count||0).toLocaleString()+" ใบ");
+  setEl("kpi-normal",fmtFull(d.normal68Amount||0));
+  setEl("kpi-normal-count",(d.normal68Count||0).toLocaleString()+" ใบ");
+  setEl("kpi-expired",fmtFull(d.expired68Amount||0));
+  setEl("kpi-expired-count",(d.expired68Count||0).toLocaleString()+" ใบ");
+  setEl("kpi-return",fmtFull(d.return68Amount||0));
+  setEl("kpi-return-count",(d.return68Count||0).toLocaleString()+" ใบ");
+  setEl("kpi-done",fmtFull(d.done68Amount||0));
+  setEl("kpi-done-count",(d.done68Count||0).toLocaleString()+" ใบ");
+  setEl("kpi-overdue",fmtFull(d.overdue68Amount||0));
+  setEl("kpi-overdue-count",(d.overdue68Count||0).toLocaleString()+" ใบ");
+
+  // AA image KPIs
   var totalRows = (d.hasImageCount||0)+(d.noImageCount||0);
   setEl("kpi-total68",totalRows.toLocaleString()+" ใบ");
   setEl("kpi-total68-sub","มีรูป "+(d.hasImageCount||0).toLocaleString()+" ใบ  +  ไม่มีรูป "+(d.noImageCount||0).toLocaleString()+" ใบ");
@@ -378,6 +482,10 @@ function renderDashboard(d){
   setEl("kpi-no-image-sub",totalRows>0?Math.round((d.noImageCount||0)/totalRows*100)+"%":"—");
   setEl("kpi-expired-no-image",(d.expiredNoImage||0).toLocaleString()+" ใบ");
   setEl("kpi-cancelled-no-image",(d.cancelledNoImage||0).toLocaleString()+" ใบ");
+
+  // แยกตามสถานะเช็ค (คอลัมภ์ L) + ปุ่มรายละเอียด (คอลัมภ์ M)
+  renderPhotoBreakdown(d.photoBreakdown);
+
   // Cash Flow Chart
   var cf=d.cashflow||{};
   // สร้าง 8 เดือนถัดไปจากเดือนปัจจุบัน
@@ -404,10 +512,10 @@ function renderDashboard(d){
   var urgentData=months.map(function(m){return Math.round((cf[m].urgent||0)/1000);});
   var followData=months.map(function(m){return Math.round((cf[m].follow||0)/1000);});
   var normalData=months.map(function(m){return Math.round((cf[m].normal||0)/1000);});
+
   if(cashflowChartObj) cashflowChartObj.destroy();
   cashflowChartObj=new Chart(document.getElementById("cashflowChart"),{
     type:"bar",
-    plugins:[barValueLabelsPlugin],
     data:{
       labels:labels.length?labels:["ไม่มีข้อมูล"],
       datasets:[
@@ -420,14 +528,15 @@ function renderDashboard(d){
       responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){
   var v=c.parsed.y*1000;
-  return c.dataset.label+": "+Math.round(v).toLocaleString("th-TH");
+  return c.dataset.label+": ฿"+Math.round(v).toLocaleString("th-TH");
 },title:function(items){return items[0].label;}}}},
       scales:{
         x:{stacked:true,grid:{color:"#f0f0f0"},ticks:{color:"#888",font:{size:11},autoSkip:false}},
-        y:{stacked:true,grid:{color:"#f0f0f0"},ticks:{color:"#888",font:{size:11},callback:function(v){return v+"K";}},beginAtZero:true}
+        y:{stacked:true,grid:{color:"#f0f0f0"},ticks:{color:"#888",font:{size:11},callback:function(v){return "฿"+v+"K";}},beginAtZero:true}
       }
     }
   });
+
   // Urgent List
   var ul=document.getElementById("urgent-list");
   ul.innerHTML="";
@@ -449,6 +558,7 @@ function renderDashboard(d){
       '</div>';
     });
   }
+
   // Bank List
   var banks=d.byBank||{};
   var bankArr=Object.keys(banks).map(function(k){return{name:k,amount:banks[k]};});
@@ -464,6 +574,7 @@ function renderDashboard(d){
       '<div class="bank-amt">'+fmtM(b.amount)+'</div>'+
     '</div>';
   });
+
   // Fee
   var diff=d.feeActual-d.feeCalc;
   var diffCls=diff>0?"diff-pos":"diff-neg";
@@ -475,21 +586,25 @@ function renderDashboard(d){
     '<div style="margin-top:12px;font-size:12px;color:#aaa">'+
       (Math.abs(diff)<100?'✅ ค่าธรรมเนียมตรงกัน':'⚠️ มีผลต่าง — ควรตรวจสอบ')+
     '</div>';
+
   // คดีเช็ค
   if(document.getElementById("case-list")) renderCaseList(d.caseList||[]);
+
   document.getElementById("loading").style.display="none";
   document.getElementById("content").style.display="block";
 }
+
 function renderCaseList(caseList) {
   var el = document.getElementById("case-list");
   if (!el) return;
   if (!caseList || caseList.length === 0) {
     el.innerHTML = '<div style="text-align:center;color:#aaa;padding:24px">ไม่มีข้อมูลคดีเช็ค</div>';
     setEl("case-total-count", "0 ใบ");
-    setEl("case-total-amount", "0");
+    setEl("case-total-amount", "฿0");
     setEl("case-group-count", "0 กลุ่ม");
     return;
   }
+
   // จัดกลุ่มตามผู้รับเงิน
   var groups = {};
   var totalAmount = 0;
@@ -500,49 +615,90 @@ function renderCaseList(caseList) {
     groups[key].total += item.amount;
     totalAmount += item.amount;
   });
+
   setEl("case-total-count", caseList.length.toLocaleString() + " ใบ");
   setEl("case-total-amount", fmtFull(totalAmount));
   setEl("case-group-count", Object.keys(groups).length + " กลุ่ม");
+
   var html = "";
+  var payeeIdx = 0;
   Object.keys(groups).sort().forEach(function(payee) {
     var g = groups[payee];
+    payeeIdx++;
     html += '<div class="case-group">';
     html += '<div class="case-group-header">';
     html += '<div style="display:flex;align-items:center;gap:8px">';
-    html += '<span style="font-size:17px;font-weight:700;color:#fff">'+payee+'</span>';
+    html += '<span style="font-size:14px;font-weight:700;color:#3A1F6E">'+escapeHtml(payee)+'</span>';
     html += '</div>';
     html += '<div style="display:flex;align-items:center;gap:12px">';
-    html += '<span style="font-size:12px;color:rgba(255,255,255,.75)">'+g.items.length+' ใบ</span>';
-    html += '<span style="font-size:22px;font-weight:700;color:#fff">'+fmtFull(g.total)+'</span>';
+    html += '<span style="font-size:12px;color:#888">'+g.items.length+' ใบ</span>';
+    html += '<span style="font-size:13px;font-weight:700;color:#333">'+fmtFull(g.total)+'</span>';
     html += '</div></div>';
-    html += '<table class="case-table">';
-    html += '<thead><tr>';
-    html += '<th class="col-no">เลขที่เช็ค</th><th class="col-bank">ธนาคาร</th><th class="col-date">วันที่ออกเช็ค</th><th class="col-amt">จำนวนเงิน</th><th class="col-status">สถานะคดี</th>';
-    html += '</tr></thead><tbody>';
+
+    // จัดกลุ่มย่อยตามยอดเงินจ่าย (แยกสัญญา/งวดที่ยอดซ้ำกัน)
+    var amtGroups = {};
     g.items.forEach(function(item) {
-      var badge = getCaseBadge(item.caseStatus);
-      html += '<tr>';
-      html += '<td class="col-no" style="font-weight:700">'+item.checkNo+'</td>';
-      html += '<td class="col-bank" style="color:#555">'+item.bank+'</td>';
-      html += '<td class="col-date" style="color:#555">'+item.issueDate+'</td>';
-      html += '<td class="col-amt" style="font-weight:700">'+fmtFull(item.amount)+'</td>';
-      html += '<td class="col-status"><span class="case-badge '+badge.cls+'">'+item.caseStatus+'</span></td>';
-      html += '</tr>';
+      var amtKey = Math.round((item.amount||0)*100)/100;
+      if (!amtGroups[amtKey]) amtGroups[amtKey] = { amount:item.amount, items:[], total:0 };
+      amtGroups[amtKey].items.push(item);
+      amtGroups[amtKey].total += item.amount;
     });
-    html += '</tbody></table></div>';
+    var amtKeys = Object.keys(amtGroups).sort(function(a,b){
+      return (amtGroups[b].items.length - amtGroups[a].items.length) || (amtGroups[b].amount - amtGroups[a].amount);
+    });
+
+    amtKeys.forEach(function(amtKey, amtIdx) {
+      var ag = amtGroups[amtKey];
+      var groupId = payeeIdx+"-"+amtIdx;
+      html += '<div class="amt-subgroup-header" onclick="toggleAmtGroup(\''+groupId+'\')">';
+      html += '<span class="amt-subgroup-title">ยอดเงินจ่าย '+fmtFull(ag.amount)+' บาท</span>';
+      html += '<span class="amt-subgroup-meta">'+ag.items.length+' ใบ &nbsp; รวม '+fmtFull(ag.total)+' &nbsp; <span class="amt-chevron" id="amt-chevron-'+groupId+'">▶</span></span>';
+      html += '</div>';
+
+      html += '<div id="amt-body-'+groupId+'" style="display:none">';
+      html += '<table class="case-table">';
+      html += '<thead><tr>';
+      html += '<th class="col-no">เลขที่เช็ค</th><th class="col-bank">ธนาคาร</th><th class="col-date">วันที่ออกเช็ค</th><th class="col-amt">จำนวนเงิน</th><th class="col-status">สถานะคดี</th>';
+      html += '</tr></thead><tbody>';
+
+      ag.items.forEach(function(item) {
+        var badge = getCaseBadge(item.caseStatus);
+        html += '<tr>';
+        html += '<td class="col-no" style="font-weight:700">'+escapeHtml(item.checkNo)+'</td>';
+        html += '<td class="col-bank" style="color:#555">'+escapeHtml(item.bank)+'</td>';
+        html += '<td class="col-date" style="color:#555">'+escapeHtml(item.issueDate)+'</td>';
+        html += '<td class="col-amt" style="font-weight:700">'+fmtFull(item.amount)+'</td>';
+        html += '<td class="col-status"><span class="case-badge '+badge.cls+'">'+escapeHtml(item.caseStatus)+'</span></td>';
+        html += '</tr>';
+      });
+      html += '</tbody></table></div>';
+    });
+
+    html += '</div>';
   });
+
   el.innerHTML = html;
 }
+
+function toggleAmtGroup(groupId){
+  var body=document.getElementById("amt-body-"+groupId);
+  var chevron=document.getElementById("amt-chevron-"+groupId);
+  if(!body) return;
+  var showing = body.style.display==="block";
+  body.style.display = showing ? "none" : "block";
+  if(chevron) chevron.textContent = showing ? "▶" : "▼";
+}
+
 function getCaseBadge(status) {
   if (!status) return {cls:"cb-other"};
-  // สีเขียว = ยังไม่ฟ้อง / รอ / เกินกำหนดยังไม่ฟ้อง — เช็คเงื่อนไขนี้ก่อน
-  // เพราะคำว่า "ยังไม่ฟ้อง" มีคำว่า "ฟ้อง" ปนอยู่ ถ้าเช็คเงื่อนไข "ฟ้อง" ก่อนจะจับผิดกลุ่มเสมอ
-  if (status.indexOf("ยังไม่") >= 0 || status.indexOf("ไม่ฟ้อง") >= 0 || status.indexOf("รอ") >= 0 || status.indexOf("เกินกำหนด") >= 0) return {cls:"cb-notsue"};
-  // สีแดง = คดีฟ้องเช็คแล้ว / อยู่ระหว่างดำเนินคดี
+  // สีแดง = คดีฟ้องเช็คแล้ว
   if (status.indexOf("ฟ้อง") >= 0 || status.indexOf("คดี") >= 0 || status.indexOf("ระหว่าง") >= 0 || status.indexOf("ดำเนิน") >= 0) return {cls:"cb-sue"};
+  // สีเขียว = เกินกำหนดยังไม่ฟ้อง
+  if (status.indexOf("ยังไม่") >= 0 || status.indexOf("รอ") >= 0 || status.indexOf("ไม่ฟ้อง") >= 0 || status.indexOf("เกินกำหนด") >= 0) return {cls:"cb-notsue"};
   // สีน้ำเงิน = อื่นๆ เช่น ชนะคดี จบแล้ว
   return {cls:"cb-other"};
 }
+
 loadData();
 </script>
 </body>

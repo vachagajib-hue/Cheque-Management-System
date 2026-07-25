@@ -506,15 +506,15 @@ function renderTopSummary(ts){
   setEl("ts-total", fmtFull(ts.totalAmount||0));
   setEl("ts-total-sub", (ts.totalCount||0).toLocaleString()+" ใบ");
 
-  setEl("ts-pending", (ts.pending.count||0).toLocaleString());
+  setEl("ts-pending", fmtFull(ts.pending.amount||0));
   setEl("ts-pending-sub", (ts.pending.count||0).toLocaleString()+" ใบ");
-  setEl("ts-expired", (ts.expired.count||0).toLocaleString());
+  setEl("ts-expired", fmtFull(ts.expired.amount||0));
   setEl("ts-expired-sub", (ts.expired.count||0).toLocaleString()+" ใบ");
-  setEl("ts-cashed", (ts.cashed.count||0).toLocaleString());
+  setEl("ts-cashed", fmtFull(ts.cashed.amount||0));
   setEl("ts-cashed-sub", (ts.cashed.count||0).toLocaleString()+" ใบ");
-  setEl("ts-overdue", (ts.overdue.count||0).toLocaleString());
+  setEl("ts-overdue", fmtFull(ts.overdue.amount||0));
   setEl("ts-overdue-sub", (ts.overdue.count||0).toLocaleString()+" ใบ");
-  setEl("ts-cancelled", (ts.cancelled.count||0).toLocaleString());
+  setEl("ts-cancelled", fmtFull(ts.cancelled.amount||0));
   setEl("ts-cancelled-sub", (ts.cancelled.count||0).toLocaleString()+" ใบ");
 }
 

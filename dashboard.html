@@ -220,7 +220,7 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
         <div class="label">📎 มีรูปเช็คแล้ว</div>
         <div class="value fmt-num" id="ct-has-image">—</div>
         <div class="sub" id="ct-has-image-sub">— ใบ</div>
-        <button class="pb-detail-btn" style="width:100%;margin-top:8px" onclick="ctTogglePayeeGroup('hasImage')" id="ct-btn-hasImage">ดูรายละเอียด ▼</button>
+        <button class="pb-detail-btn" style="width:100%;margin-top:8px" onclick="ctToggleHasImage()" id="ct-btn-hasImage">ดูรายละเอียด ▼</button>
       </div>
       <div class="kpi" style="background:#EBF8FF;border-left:4px solid #3182CE">
         <div class="label" style="color:#2B6CB0">🕒 เช็ครอขึ้นเงิน</div>
@@ -443,7 +443,7 @@ function renderCheckTracking(ct){
   setEl("ct-needs-followup-sub",(ct.needsFollowUp.count||0).toLocaleString()+" ใบ");
 }
 
-// มีรูปเช็คแล้ว / เช็ครอขึ้นเงิน / ขึ้นเงินแล้ว — รายละเอียดเต็ม (ชื่อผู้รับเงิน > กลุ่มยอดเงิน)
+// เช็ครอขึ้นเงิน / ขึ้นเงินแล้ว — รายละเอียดเต็ม (ชื่อผู้รับเงิน > กลุ่มยอดเงิน)
 function ctTogglePayeeGroup(bucketKey){
   var el=document.getElementById("ct-detail-"+bucketKey);
   var btn=document.getElementById("ct-btn-"+bucketKey);
@@ -451,6 +451,40 @@ function ctTogglePayeeGroup(bucketKey){
   var showing = el.style.display==="block";
   if(showing){ el.style.display="none"; if(btn) btn.textContent="ดูรายละเอียด ▼"; return; }
   el.innerHTML = '<div class="card" style="padding:0 14px 10px;overflow:hidden">'+renderPayeeGroups((CT_DATA[bucketKey]||{}).payees)+'</div>';
+  el.style.display="block";
+  if(btn) btn.textContent="ซ่อนรายละเอียด ▲";
+}
+
+// มีรูปเช็คแล้ว — จัดกลุ่ม 3 ชั้น: เหตุผล/หมายเหตุ (M) > ชื่อผู้รับเงิน > กลุ่มยอดเงิน
+// เหมือนโครงสร้าง "ยังไม่มีรูปเช็ค (ต้องติดตาม)" — ค่า M เป็นข้อความอิสระ จึงเรียงตามจำนวนใบมากไปน้อย
+function ctBuildReasonHtml(bucket){
+  var reasons=(bucket&&bucket.reasons)||{};
+  var keys=Object.keys(reasons).sort(function(a,b){ return (reasons[b].count||0)-(reasons[a].count||0); });
+  if(keys.length===0) return '<div class="pb-empty">ไม่มีข้อมูล</div>';
+  var html='<div class="card" style="padding:0;overflow:hidden">';
+  keys.forEach(function(reasonKey){
+    var g=reasons[reasonKey];
+    var uid=nextUid();
+    var label=(reasonKey&&reasonKey!=="—")?reasonKey:"ไม่มีหมายเหตุ";
+    html+='<div class="amt-subgroup-header" onclick="genericToggle(\''+uid+'\')">'+
+      '<span class="amt-subgroup-title">'+escapeHtml(label)+'</span>'+
+      '<span class="amt-subgroup-meta">'+(g.count||0).toLocaleString()+' ใบ &nbsp; '+fmtFull(g.amount)+' &nbsp; <span class="amt-chevron" id="chev-'+uid+'">▶</span></span>'+
+    '</div>';
+    html+='<div id="body-'+uid+'" style="display:none;padding:6px 14px 10px">';
+    html+=renderPayeeGroups(g.payees);
+    html+='</div>';
+  });
+  html+='</div>';
+  return html;
+}
+
+function ctToggleHasImage(){
+  var el=document.getElementById("ct-detail-hasImage");
+  var btn=document.getElementById("ct-btn-hasImage");
+  if(!el||!CT_DATA) return;
+  var showing=el.style.display==="block";
+  if(showing){ el.style.display="none"; if(btn) btn.textContent="ดูรายละเอียด ▼"; return; }
+  el.innerHTML=ctBuildReasonHtml(CT_DATA.hasImage);
   el.style.display="block";
   if(btn) btn.textContent="ซ่อนรายละเอียด ▲";
 }

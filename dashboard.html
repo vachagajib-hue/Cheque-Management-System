@@ -14,7 +14,16 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .refresh-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-family:'Sarabun',sans-serif}
 .refresh-btn:hover{background:rgba(255,255,255,.25)}
 .header-actions{display:flex;gap:10px;align-items:center}
-.year-select{background:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:13px;font-family:'Sarabun',sans-serif;cursor:pointer;color:#222}
+.year-filter-wrap{position:relative}
+.year-filter-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-family:'Sarabun',sans-serif}
+.year-filter-btn:hover{background:rgba(255,255,255,.25)}
+.year-filter-btn.active{background:#fff;color:#222;border-color:#fff}
+.year-filter-panel{position:absolute;top:110%;right:0;margin-top:6px;background:#fff;color:#222;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.25);padding:10px;min-width:190px;max-height:280px;overflow-y:auto;z-index:50}
+.year-cb-row{display:flex;align-items:center;gap:8px;padding:5px 4px;font-size:13px;cursor:pointer;border-radius:4px}
+.year-cb-row:hover{background:#f5f3ff}
+.year-cb-divider{border-top:0.5px solid #eee;margin:4px 0}
+.year-filter-apply{width:100%;margin-top:8px;background:#4A3A82;color:#fff;border:none;border-radius:6px;padding:7px;font-size:13px;cursor:pointer;font-family:'Sarabun',sans-serif}
+.year-filter-apply:hover{background:#3A1F6E}
 .quicklinks{background:#2D1760;padding:10px 24px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .ql-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;font-family:"Sarabun",sans-serif;cursor:pointer;border:none;transition:opacity .15s}
 .ql-btn:hover{opacity:.85}
@@ -145,9 +154,13 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
     <div class="sub" id="update-time">กำลังโหลดข้อมูล...</div>
   </div>
   <div class="header-actions">
-    <select class="year-select" id="year-select" onchange="loadData(this.value)">
-      <option value="all">ทุกปี (ทั้งฐานข้อมูล)</option>
-    </select>
+    <div class="year-filter-wrap">
+      <button class="year-filter-btn" id="year-filter-btn" onclick="toggleYearPanel()">ทุกปี (ทั้งฐานข้อมูล) ▾</button>
+      <div class="year-filter-panel" id="year-filter-panel" style="display:none">
+        <div id="year-filter-options"></div>
+        <button class="year-filter-apply" onclick="applyYearFilter()">ใช้ตัวกรอง</button>
+      </div>
+    </div>
     <button class="refresh-btn" onclick="loadData(CURRENT_YEAR)">🔄 รีเฟรช</button>
   </div>
 </header>
@@ -599,23 +612,77 @@ function loadData(year){
   xhr.send();
 }
 
-// เติมตัวเลือกปีใน dropdown จาก d.availableYears (คำนวณจากข้อมูลดิบทั้งหมดเสมอ ไม่ขึ้นกับปีที่กรองอยู่)
-// คงค่าที่ผู้ใช้เลือกไว้ (CURRENT_YEAR) ไม่ให้ dropdown เด้งกลับ "ทุกปี" ทุกครั้งที่โหลดใหม่
-function populateYearSelect(availableYears, selectedYear){
-  var sel=document.getElementById("year-select");
-  if(!sel) return;
-  var years=availableYears||[];
-  var html='<option value="all">ทุกปี (ทั้งฐานข้อมูล)</option>';
-  years.forEach(function(y){
-    html+='<option value="'+y+'">ปี '+y+'</option>';
-  });
-  sel.innerHTML=html;
-  sel.value=(selectedYear&&selectedYear!=="all")?String(selectedYear):"all";
+// ===== ตัวกรองปี — เช็คบ๊อกเลือกได้หลายปีพร้อมกัน =====
+function toggleYearPanel(){
+  var panel=document.getElementById("year-filter-panel");
+  if(!panel) return;
+  panel.style.display = panel.style.display==="block" ? "none" : "block";
+}
 
-  var yearLabel=(selectedYear&&selectedYear!=="all")?("ปี "+selectedYear):"ทั้งฐานข้อมูล";
+// ติ๊ก "ทุกปี" จะยกเลิกปีอื่นทั้งหมด / ติ๊กปีใดปีหนึ่งจะยกเลิก "ทุกปี" อัตโนมัติ
+function yearCheckboxChanged(cb, isAll){
+  if(isAll){
+    if(cb.checked){
+      document.querySelectorAll(".year-cb-item").forEach(function(el){ el.checked=false; });
+    }
+  } else if(cb.checked){
+    var allCb=document.getElementById("year-cb-all");
+    if(allCb) allCb.checked=false;
+  }
+}
+
+function applyYearFilter(){
+  var allCb=document.getElementById("year-cb-all");
+  var checked=[];
+  document.querySelectorAll(".year-cb-item").forEach(function(el){
+    if(el.checked) checked.push(el.value);
+  });
+  var yearsParam = ((allCb && allCb.checked) || checked.length===0) ? "all" : checked.join(",");
+  var panel=document.getElementById("year-filter-panel");
+  if(panel) panel.style.display="none";
+  loadData(yearsParam);
+}
+
+// เติมรายการเช็คบ๊อกจาก d.availableYears (คำนวณจากข้อมูลดิบทั้งหมดเสมอ ไม่ขึ้นกับปีที่กรองอยู่)
+// คงค่าที่ผู้ใช้เลือกไว้ (selectedYears) ไม่ให้พาเนลเด้งกลับ "ทุกปี" ทุกครั้งที่โหลดใหม่
+function populateYearFilter(availableYears, selectedYears){
+  var container=document.getElementById("year-filter-options");
+  if(!container) return;
+  var years=availableYears||[];
+  var isAll = !selectedYears || selectedYears==="all";
+  var selSet={};
+  if(!isAll) selectedYears.forEach(function(y){ selSet[y]=true; });
+
+  var html='<label class="year-cb-row"><input type="checkbox" id="year-cb-all"'+(isAll?' checked':'')+' onchange="yearCheckboxChanged(this,true)"> ทุกปี</label>';
+  html+='<div class="year-cb-divider"></div>';
+  years.forEach(function(y){
+    var checked = !isAll && selSet[y];
+    html+='<label class="year-cb-row"><input type="checkbox" class="year-cb-item" value="'+y+'"'+(checked?' checked':'')+' onchange="yearCheckboxChanged(this,false)"> ปี '+y+'</label>';
+  });
+  container.innerHTML=html;
+
+  var btn=document.getElementById("year-filter-btn");
+  var yearLabel;
+  if(isAll){
+    yearLabel="ทั้งฐานข้อมูล";
+    if(btn){ btn.textContent="ทุกปี (ทั้งฐานข้อมูล) ▾"; btn.classList.remove("active"); }
+  } else {
+    yearLabel="ปี "+selectedYears.join(", ");
+    if(btn){
+      btn.textContent=(selectedYears.length===1 ? "ปี "+selectedYears[0] : selectedYears.length+" ปีที่เลือก")+" ▾";
+      btn.classList.add("active");
+    }
+  }
   setEl("ts-section-title","📊 ภาพรวมเช็ค — "+yearLabel);
   setEl("ct-section-title","📎 สถานะเช็ค — "+yearLabel);
 }
+
+document.addEventListener("click", function(ev){
+  var wrap=document.querySelector(".year-filter-wrap");
+  var panel=document.getElementById("year-filter-panel");
+  if(!wrap||!panel||panel.style.display!=="block") return;
+  if(!wrap.contains(ev.target)) panel.style.display="none";
+});
 
 function renderDashboard(d){
   // อัพเดทเวลา
@@ -624,8 +691,8 @@ function renderDashboard(d){
     "ข้อมูล ณ "+now.toLocaleDateString("th-TH",{year:"numeric",month:"long",day:"numeric"})+" "+now.toLocaleTimeString("th-TH");
 
   // ตัวกรองปี — เติม dropdown จากปีที่มีข้อมูลจริง + คงค่าที่เลือกไว้
-  CURRENT_YEAR = d.selectedYear || "all";
-  populateYearSelect(d.availableYears, d.selectedYear);
+  CURRENT_YEAR = (d.selectedYears && d.selectedYears!=="all") ? d.selectedYears.join(",") : "all";
+  populateYearFilter(d.availableYears, d.selectedYears);
 
   // ภาพรวมเช็ค — ทั้งฐานข้อมูล (6 กล่องไม่ซ้อนทับกัน)
   renderTopSummary(d.topSummary);

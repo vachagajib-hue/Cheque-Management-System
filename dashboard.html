@@ -13,6 +13,8 @@ header h1{font-size:20px;font-weight:700}
 header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .refresh-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-family:'Sarabun',sans-serif}
 .refresh-btn:hover{background:rgba(255,255,255,.25)}
+.header-actions{display:flex;gap:10px;align-items:center}
+.year-select{background:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:13px;font-family:'Sarabun',sans-serif;cursor:pointer;color:#222}
 .quicklinks{background:#2D1760;padding:10px 24px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .ql-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;font-family:"Sarabun",sans-serif;cursor:pointer;border:none;transition:opacity .15s}
 .ql-btn:hover{opacity:.85}
@@ -142,7 +144,12 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
     <h1>📊 Dashboard ทะเบียนเช็คสั่งจ่าย</h1>
     <div class="sub" id="update-time">กำลังโหลดข้อมูล...</div>
   </div>
-  <button class="refresh-btn" onclick="loadData()">🔄 รีเฟรช</button>
+  <div class="header-actions">
+    <select class="year-select" id="year-select" onchange="loadData(this.value)">
+      <option value="all">ทุกปี (ทั้งฐานข้อมูล)</option>
+    </select>
+    <button class="refresh-btn" onclick="loadData(CURRENT_YEAR)">🔄 รีเฟรช</button>
+  </div>
 </header>
 <div class="quicklinks">
   <span class="ql-label">ลิงก์ด่วน:</span>
@@ -159,7 +166,7 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
   <div id="content" style="display:none">
 
     <!-- ภาพรวมเช็ค — ทั้งฐานข้อมูล (6 กล่องไม่ซ้อนทับกัน) -->
-    <div style="font-size:13px;font-weight:700;color:#3A1F6E;margin-bottom:10px">📊 ภาพรวมเช็ค — ทั้งฐานข้อมูล</div>
+    <div style="font-size:13px;font-weight:700;color:#3A1F6E;margin-bottom:10px" id="ts-section-title">📊 ภาพรวมเช็ค — ทั้งฐานข้อมูล</div>
     <div class="kpi-grid" style="grid-template-columns:1fr;margin-bottom:12px">
       <div class="kpi total68">
         <div class="label">ยอดเช็คทั้งหมด</div>
@@ -207,7 +214,7 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
     <div id="ts-detail-cancelled" style="display:none;margin-bottom:16px"></div>
 
     <!-- สถานะเช็ค — ทั้งฐานข้อมูล (4 กล่องไม่ซ้อนทับกัน รวม = จำนวนเช็คทั้งหมด) -->
-    <div style="font-size:14px;font-weight:700;color:#3A1F6E;margin-bottom:10px;margin-top:4px">📎 สถานะเช็ค — ทั้งฐานข้อมูล</div>
+    <div style="font-size:14px;font-weight:700;color:#3A1F6E;margin-bottom:10px;margin-top:4px" id="ct-section-title">📎 สถานะเช็ค — ทั้งฐานข้อมูล</div>
     <div class="kpi-grid" style="margin-bottom:12px;grid-template-columns:1fr">
       <div class="kpi total68">
         <div class="label">📋 เช็คทั้งหมดในฐานข้อมูล</div>
@@ -567,11 +574,15 @@ function tsTogglePayeeGroup(bucketKey){
   if(btn) btn.textContent="ซ่อนรายละเอียด ▲";
 }
 
-function loadData(){
+var CURRENT_YEAR = "all"; // ตัวกรองปีที่เลือกอยู่ — "all" = ทั้งฐานข้อมูล
+
+function loadData(year){
+  CURRENT_YEAR = year || CURRENT_YEAR || "all";
   document.getElementById("loading").style.display="block";
   document.getElementById("content").style.display="none";
   var xhr=new XMLHttpRequest();
-  xhr.open("GET",SCRIPT_URL+"?action=dashboard",true);
+  var url=SCRIPT_URL+"?action=dashboard"+(CURRENT_YEAR&&CURRENT_YEAR!=="all" ? "&year="+encodeURIComponent(CURRENT_YEAR) : "");
+  xhr.open("GET",url,true);
   xhr.timeout=60000;
   xhr.onreadystatechange=function(){
     if(xhr.readyState!==4)return;
@@ -579,13 +590,31 @@ function loadData(){
       var d=JSON.parse(xhr.responseText);
       renderDashboard(d);
     }catch(e){
-      document.getElementById("loading").innerHTML="<div style='color:#E53E3E'>โหลดข้อมูลไม่สำเร็จ: "+e.message+"<br><button onclick='loadData()' style='margin-top:12px;padding:8px 16px;cursor:pointer'>ลองใหม่</button></div>";
+      document.getElementById("loading").innerHTML="<div style='color:#E53E3E'>โหลดข้อมูลไม่สำเร็จ: "+e.message+"<br><button onclick='loadData(CURRENT_YEAR)' style='margin-top:12px;padding:8px 16px;cursor:pointer'>ลองใหม่</button></div>";
     }
   };
   xhr.ontimeout=function(){
-    document.getElementById("loading").innerHTML="<div style='color:#E53E3E'>หมดเวลา — <button onclick='loadData()' style='margin-top:12px;padding:8px 16px;cursor:pointer'>ลองใหม่</button></div>";
+    document.getElementById("loading").innerHTML="<div style='color:#E53E3E'>หมดเวลา — <button onclick='loadData(CURRENT_YEAR)' style='margin-top:12px;padding:8px 16px;cursor:pointer'>ลองใหม่</button></div>";
   };
   xhr.send();
+}
+
+// เติมตัวเลือกปีใน dropdown จาก d.availableYears (คำนวณจากข้อมูลดิบทั้งหมดเสมอ ไม่ขึ้นกับปีที่กรองอยู่)
+// คงค่าที่ผู้ใช้เลือกไว้ (CURRENT_YEAR) ไม่ให้ dropdown เด้งกลับ "ทุกปี" ทุกครั้งที่โหลดใหม่
+function populateYearSelect(availableYears, selectedYear){
+  var sel=document.getElementById("year-select");
+  if(!sel) return;
+  var years=availableYears||[];
+  var html='<option value="all">ทุกปี (ทั้งฐานข้อมูล)</option>';
+  years.forEach(function(y){
+    html+='<option value="'+y+'">ปี '+y+'</option>';
+  });
+  sel.innerHTML=html;
+  sel.value=(selectedYear&&selectedYear!=="all")?String(selectedYear):"all";
+
+  var yearLabel=(selectedYear&&selectedYear!=="all")?("ปี "+selectedYear):"ทั้งฐานข้อมูล";
+  setEl("ts-section-title","📊 ภาพรวมเช็ค — "+yearLabel);
+  setEl("ct-section-title","📎 สถานะเช็ค — "+yearLabel);
 }
 
 function renderDashboard(d){
@@ -593,6 +622,10 @@ function renderDashboard(d){
   var now=new Date();
   document.getElementById("update-time").textContent=
     "ข้อมูล ณ "+now.toLocaleDateString("th-TH",{year:"numeric",month:"long",day:"numeric"})+" "+now.toLocaleTimeString("th-TH");
+
+  // ตัวกรองปี — เติม dropdown จากปีที่มีข้อมูลจริง + คงค่าที่เลือกไว้
+  CURRENT_YEAR = d.selectedYear || "all";
+  populateYearSelect(d.availableYears, d.selectedYear);
 
   // ภาพรวมเช็ค — ทั้งฐานข้อมูล (6 กล่องไม่ซ้อนทับกัน)
   renderTopSummary(d.topSummary);

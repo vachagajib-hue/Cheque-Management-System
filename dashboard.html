@@ -384,35 +384,53 @@ function genericToggle(uid){
   if(chevron) chevron.textContent=showing?"▶":"▼";
 }
 
-// แสดงรายการที่จัดกลุ่มตามยอดเงินเท่ากัน (พับ/ขยายได้) เรียงวันที่น้อยไปมากในแต่ละกลุ่ม
+// แสดงรายการที่จัดกลุ่มตามยอดเงินเท่ากัน — แสดงตารางเลขที่เช็คทันที ไม่ต้องคลิกขยายอีกชั้น
+// (ตัดปุ่มคลิก/ลูกศรออกแล้ว — ให้ตารางเลขที่เช็คแสดงอยู่ใต้ป้ายยอดเงินเสมอ)
+// กลุ่มที่มีเช็คใบเดียว (ยอดไม่ซ้ำใคร) จะไม่มีป้าย "ยอดเงินจ่าย" คั่นเลย รวมกันแสดงในตารางเดียว
+// ท้ายสุด เรียงตามวันที่ (เหมือนวิธีที่ใช้ในส่วนคดีเช็ค)
 // opts.showPayee: แสดงคอลัมน์ชื่อผู้รับเงิน, opts.showNote: แสดงคอลัมน์หมายเหตุ (M)
 function renderAmtGroupTable(amountGroups, opts){
   opts=opts||{};
-  var keys=Object.keys(amountGroups||{}).sort(function(a,b){ return (amountGroups[b].count||0)-(amountGroups[a].count||0); });
+  var groups=amountGroups||{};
+  var keys=Object.keys(groups).sort(function(a,b){ return (groups[b].count||0)-(groups[a].count||0); });
   if(keys.length===0) return '<div class="pb-empty">ไม่มีข้อมูล</div>';
+
+  var theadCells='<th>เลขที่เช็ค</th>';
+  if(opts.showPayee) theadCells+='<th>ชื่อผู้รับเงิน</th>';
+  theadCells+='<th>วันที่</th><th style="text-align:right">ยอดเงิน</th>';
+  if(opts.showNote) theadCells+='<th>หมายเหตุ (M)</th>';
+  var thead='<thead><tr>'+theadCells+'</tr></thead>';
+
+  function rowHtml(it){
+    var tds='<td style="font-weight:600">'+escapeHtml(it.checkNo)+'</td>';
+    if(opts.showPayee) tds+='<td>'+escapeHtml(it.payee)+'</td>';
+    tds+='<td>'+escapeHtml(it.date)+'</td><td style="text-align:right">'+fmtFull(it.amount)+'</td>';
+    if(opts.showNote) tds+='<td style="color:#666">'+escapeHtml(it.note||"—")+'</td>';
+    return '<tr>'+tds+'</tr>';
+  }
+
   var html="";
+  var soloItems=[];
   keys.forEach(function(amtKey){
-    var g=amountGroups[amtKey];
-    var uid=nextUid();
-    html+='<div class="amt-subgroup-header" onclick="genericToggle(\''+uid+'\')">'+
-      '<span class="amt-subgroup-title">ยอดเงินจ่าย '+fmtFull(g.amount)+' บาท</span>'+
-      '<span class="amt-subgroup-meta">'+(g.count||0).toLocaleString()+' ใบ &nbsp; รวม '+fmtFull(g.total)+' &nbsp; <span class="amt-chevron" id="chev-'+uid+'">▶</span></span>'+
-    '</div>';
-    html+='<div id="body-'+uid+'" style="display:none">';
-    html+='<table class="pb-detail-table"><thead><tr><th>เลขที่เช็ค</th>';
-    if(opts.showPayee) html+='<th>ชื่อผู้รับเงิน</th>';
-    html+='<th>วันที่</th><th style="text-align:right">ยอดเงิน</th>';
-    if(opts.showNote) html+='<th>หมายเหตุ (M)</th>';
-    html+='</tr></thead><tbody>';
-    (g.items||[]).forEach(function(it){
-      html+='<tr><td style="font-weight:600">'+escapeHtml(it.checkNo)+'</td>';
-      if(opts.showPayee) html+='<td>'+escapeHtml(it.payee)+'</td>';
-      html+='<td>'+escapeHtml(it.date)+'</td><td style="text-align:right">'+fmtFull(it.amount)+'</td>';
-      if(opts.showNote) html+='<td style="color:#666">'+escapeHtml(it.note||"—")+'</td>';
-      html+='</tr>';
-    });
-    html+='</tbody></table></div>';
+    var g=groups[amtKey];
+    if((g.count||0)>1){
+      html+='<div class="amt-subgroup-header" style="cursor:default">'+
+        '<span class="amt-subgroup-title">ยอดเงินจ่าย '+fmtFull(g.amount)+' บาท</span>'+
+        '<span class="amt-subgroup-meta">'+(g.count||0).toLocaleString()+' ใบ &nbsp; รวม '+fmtFull(g.total)+'</span>'+
+      '</div>';
+      html+='<table class="pb-detail-table">'+thead+'<tbody>';
+      (g.items||[]).forEach(function(it){ html+=rowHtml(it); });
+      html+='</tbody></table>';
+    } else {
+      soloItems.push((g.items||[])[0]);
+    }
   });
+  if(soloItems.length>0){
+    soloItems.sort(function(a,b){ return (a.dateTs||0)-(b.dateTs||0); });
+    html+='<table class="pb-detail-table">'+thead+'<tbody>';
+    soloItems.forEach(function(it){ html+=rowHtml(it); });
+    html+='</tbody></table>';
+  }
   return html;
 }
 

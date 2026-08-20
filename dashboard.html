@@ -22,6 +22,7 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
 .year-cb-row{display:flex;align-items:center;gap:8px;padding:5px 4px;font-size:13px;cursor:pointer;border-radius:4px}
 .year-cb-row:hover{background:#f5f3ff}
 .year-cb-divider{border-top:0.5px solid #eee;margin:4px 0}
+.month-cb-grid{display:grid;grid-template-columns:1fr 1fr}
 .year-filter-apply{width:100%;margin-top:8px;background:#4A3A82;color:#fff;border:none;border-radius:6px;padding:7px;font-size:13px;cursor:pointer;font-family:'Sarabun',sans-serif}
 .year-filter-apply:hover{background:#3A1F6E}
 .quicklinks{background:#2D1760;padding:10px 24px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
@@ -161,7 +162,14 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
         <button class="year-filter-apply" onclick="applyYearFilter()">ใช้ตัวกรอง</button>
       </div>
     </div>
-    <button class="refresh-btn" onclick="loadData(CURRENT_YEAR)">🔄 รีเฟรช</button>
+    <div class="year-filter-wrap">
+      <button class="year-filter-btn" id="month-filter-btn" onclick="toggleMonthPanel()">ทุกเดือน ▾</button>
+      <div class="year-filter-panel" id="month-filter-panel" style="display:none">
+        <div id="month-filter-options"></div>
+        <button class="year-filter-apply" onclick="applyMonthFilter()">ใช้ตัวกรอง</button>
+      </div>
+    </div>
+    <button class="refresh-btn" onclick="loadData(CURRENT_YEAR, CURRENT_MONTH)">🔄 รีเฟรช</button>
   </div>
 </header>
 <div class="quicklinks">
@@ -300,8 +308,9 @@ header .sub{font-size:13px;opacity:.7;margin-top:3px}
       </div>
       <div class="card">
         <h2>ค่าธรรมเนียมเช็คคืน</h2>
-        <div class="sub-title">เปรียบเทียบยอดคำนวณ vs ธนาคารหักจริง</div>
+        <div class="sub-title">เฉพาะรายการที่ธนาคารหักค่าธรรมเนียมจริง</div>
         <div id="fee-info"></div>
+        <div id="fee-detail" style="display:none;margin-top:10px"></div>
       </div>
     </div>
 
@@ -571,6 +580,34 @@ function ctToggleStatus(idx){
 
 /* ===== ภาพรวมเช็ค — ทั้งฐานข้อมูล (6 กล่องไม่ซ้อนทับกัน) ===== */
 var TS_DATA = null;
+var FEE_DATA = null;
+
+// ค่าธรรมเนียมเช็คคืน — ตารางรายการที่ธนาคารหักจริงต่อใบ
+function feeToggleDetail(){
+  var el=document.getElementById("fee-detail");
+  var btn=document.getElementById("fee-detail-btn");
+  if(!el||!FEE_DATA) return;
+  var showing=el.style.display==="block";
+  if(showing){ el.style.display="none"; if(btn) btn.textContent="ดูรายละเอียด ▼"; return; }
+  var items=FEE_DATA.items||[];
+  var html;
+  if(items.length===0){
+    html='<div class="pb-empty">ไม่มีรายการ</div>';
+  } else {
+    html='<table class="pb-detail-table"><thead><tr><th>เลขที่เช็ค</th><th>ธนาคาร</th><th>ผู้รับเงิน</th><th>วันที่</th><th style="text-align:right">ค่าธรรมเนียมที่หัก</th></tr></thead><tbody>';
+    items.forEach(function(it){
+      html+='<tr><td style="font-weight:600">'+escapeHtml(it.checkNo)+'</td>'+
+        '<td>'+escapeHtml(it.bank)+'</td>'+
+        '<td>'+escapeHtml(it.payee)+'</td>'+
+        '<td>'+escapeHtml(it.date)+'</td>'+
+        '<td style="text-align:right">'+fmtFull(it.feeActual)+'</td></tr>';
+    });
+    html+='</tbody></table>';
+  }
+  el.innerHTML=html;
+  el.style.display="block";
+  if(btn) btn.textContent="ซ่อนรายละเอียด ▲";
+}
 
 function renderTopSummary(ts){
   TS_DATA = ts;
@@ -605,14 +642,20 @@ function tsTogglePayeeGroup(bucketKey){
   if(btn) btn.textContent="ซ่อนรายละเอียด ▲";
 }
 
-var CURRENT_YEAR = "all"; // ตัวกรองปีที่เลือกอยู่ — "all" = ทั้งฐานข้อมูล
+var CURRENT_YEAR = "all";  // ตัวกรองปีที่เลือกอยู่ — "all" = ทั้งฐานข้อมูล
+var CURRENT_MONTH = "all"; // ตัวกรองเดือนที่เลือกอยู่ — "all" = ทุกเดือน (กล่องแยกจากปี)
+var MONTH_LABELS = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
 
-function loadData(year){
+function loadData(year, month){
   CURRENT_YEAR = year || CURRENT_YEAR || "all";
+  CURRENT_MONTH = month || CURRENT_MONTH || "all";
   document.getElementById("loading").style.display="block";
   document.getElementById("content").style.display="none";
   var xhr=new XMLHttpRequest();
-  var url=SCRIPT_URL+"?action=dashboard"+(CURRENT_YEAR&&CURRENT_YEAR!=="all" ? "&year="+encodeURIComponent(CURRENT_YEAR) : "");
+  var qs="action=dashboard";
+  if(CURRENT_YEAR && CURRENT_YEAR!=="all") qs+="&year="+encodeURIComponent(CURRENT_YEAR);
+  if(CURRENT_MONTH && CURRENT_MONTH!=="all") qs+="&month="+encodeURIComponent(CURRENT_MONTH);
+  var url=SCRIPT_URL+"?"+qs;
   xhr.open("GET",url,true);
   xhr.timeout=60000;
   xhr.onreadystatechange=function(){
@@ -621,16 +664,16 @@ function loadData(year){
       var d=JSON.parse(xhr.responseText);
       renderDashboard(d);
     }catch(e){
-      document.getElementById("loading").innerHTML="<div style='color:#E53E3E'>โหลดข้อมูลไม่สำเร็จ: "+e.message+"<br><button onclick='loadData(CURRENT_YEAR)' style='margin-top:12px;padding:8px 16px;cursor:pointer'>ลองใหม่</button></div>";
+      document.getElementById("loading").innerHTML="<div style='color:#E53E3E'>โหลดข้อมูลไม่สำเร็จ: "+e.message+"<br><button onclick='loadData(CURRENT_YEAR,CURRENT_MONTH)' style='margin-top:12px;padding:8px 16px;cursor:pointer'>ลองใหม่</button></div>";
     }
   };
   xhr.ontimeout=function(){
-    document.getElementById("loading").innerHTML="<div style='color:#E53E3E'>หมดเวลา — <button onclick='loadData(CURRENT_YEAR)' style='margin-top:12px;padding:8px 16px;cursor:pointer'>ลองใหม่</button></div>";
+    document.getElementById("loading").innerHTML="<div style='color:#E53E3E'>หมดเวลา — <button onclick='loadData(CURRENT_YEAR,CURRENT_MONTH)' style='margin-top:12px;padding:8px 16px;cursor:pointer'>ลองใหม่</button></div>";
   };
   xhr.send();
 }
 
-// ===== ตัวกรองปี — เช็คบ๊อกเลือกได้หลายปีพร้อมกัน =====
+// ===== ตัวกรองปี — เช็คบ๊อกเลือกได้หลายปีพร้อมกัน (กล่องที่ 1 แยกจากเดือน) =====
 function toggleYearPanel(){
   var panel=document.getElementById("year-filter-panel");
   if(!panel) return;
@@ -649,6 +692,7 @@ function yearCheckboxChanged(cb, isAll){
   }
 }
 
+// กด "ใช้ตัวกรอง" ในกล่องปี — ใช้ค่าปีจากพาเนลนี้ ร่วมกับเดือนที่เลือกไว้แล้ว (CURRENT_MONTH) เดิม
 function applyYearFilter(){
   var allCb=document.getElementById("year-cb-all");
   var checked=[];
@@ -658,7 +702,7 @@ function applyYearFilter(){
   var yearsParam = ((allCb && allCb.checked) || checked.length===0) ? "all" : checked.join(",");
   var panel=document.getElementById("year-filter-panel");
   if(panel) panel.style.display="none";
-  loadData(yearsParam);
+  loadData(yearsParam, CURRENT_MONTH);
 }
 
 // เติมรายการเช็คบ๊อกจาก d.availableYears (คำนวณจากข้อมูลดิบทั้งหมดเสมอ ไม่ขึ้นกับปีที่กรองอยู่)
@@ -666,6 +710,7 @@ function applyYearFilter(){
 function populateYearFilter(availableYears, selectedYears){
   var container=document.getElementById("year-filter-options");
   if(!container) return;
+  LAST_SELECTED_YEARS = selectedYears || "all";
   var years=availableYears||[];
   var isAll = !selectedYears || selectedYears==="all";
   var selSet={};
@@ -680,26 +725,97 @@ function populateYearFilter(availableYears, selectedYears){
   container.innerHTML=html;
 
   var btn=document.getElementById("year-filter-btn");
-  var yearLabel;
   if(isAll){
-    yearLabel="ทั้งฐานข้อมูล";
     if(btn){ btn.textContent="ทุกปี (ทั้งฐานข้อมูล) ▾"; btn.classList.remove("active"); }
-  } else {
-    yearLabel="ปี "+selectedYears.join(", ");
-    if(btn){
-      btn.textContent=(selectedYears.length===1 ? "ปี "+selectedYears[0] : selectedYears.length+" ปีที่เลือก")+" ▾";
-      btn.classList.add("active");
-    }
+  } else if(btn){
+    btn.textContent=(selectedYears.length===1 ? "ปี "+selectedYears[0] : selectedYears.length+" ปีที่เลือก")+" ▾";
+    btn.classList.add("active");
   }
-  setEl("ts-section-title","📊 ภาพรวมเช็ค — "+yearLabel);
-  setEl("ct-section-title","📎 สถานะเช็ค — "+yearLabel);
+  updateSectionTitles();
 }
 
+// ===== ตัวกรองเดือน — เช็คบ๊อกเลือกได้หลายเดือนพร้อมกัน (กล่องที่ 2 แยกจากปี) =====
+function toggleMonthPanel(){
+  var panel=document.getElementById("month-filter-panel");
+  if(!panel) return;
+  panel.style.display = panel.style.display==="block" ? "none" : "block";
+}
+
+function monthCheckboxChanged(cb, isAll){
+  if(isAll){
+    if(cb.checked){
+      document.querySelectorAll(".month-cb-item").forEach(function(el){ el.checked=false; });
+    }
+  } else if(cb.checked){
+    var allCb=document.getElementById("month-cb-all");
+    if(allCb) allCb.checked=false;
+  }
+}
+
+// กด "ใช้ตัวกรอง" ในกล่องเดือน — ใช้ค่าเดือนจากพาเนลนี้ ร่วมกับปีที่เลือกไว้แล้ว (CURRENT_YEAR) เดิม
+function applyMonthFilter(){
+  var allCb=document.getElementById("month-cb-all");
+  var checked=[];
+  document.querySelectorAll(".month-cb-item").forEach(function(el){
+    if(el.checked) checked.push(el.value);
+  });
+  var monthsParam = ((allCb && allCb.checked) || checked.length===0) ? "all" : checked.join(",");
+  var panel=document.getElementById("month-filter-panel");
+  if(panel) panel.style.display="none";
+  loadData(CURRENT_YEAR, monthsParam);
+}
+
+// เติมเช็คบ๊อก 12 เดือน (คงที่เสมอ ไม่ขึ้นกับข้อมูล) — คงค่าที่เลือกไว้ (selectedMonths) ไม่ให้พาเนลเด้งกลับ
+function populateMonthFilter(selectedMonths){
+  var container=document.getElementById("month-filter-options");
+  if(!container) return;
+  LAST_SELECTED_MONTHS = selectedMonths || "all";
+  var isAll = !selectedMonths || selectedMonths==="all";
+  var selSet={};
+  if(!isAll) selectedMonths.forEach(function(m){ selSet[m]=true; });
+
+  var html='<label class="year-cb-row"><input type="checkbox" id="month-cb-all"'+(isAll?' checked':'')+' onchange="monthCheckboxChanged(this,true)"> ทุกเดือน</label>';
+  html+='<div class="year-cb-divider"></div>';
+  html+='<div class="month-cb-grid">';
+  MONTH_LABELS.forEach(function(label, idx){
+    var m=idx+1;
+    var checked = !isAll && selSet[m];
+    html+='<label class="year-cb-row"><input type="checkbox" class="month-cb-item" value="'+m+'"'+(checked?' checked':'')+' onchange="monthCheckboxChanged(this,false)"> '+label+'</label>';
+  });
+  html+='</div>';
+  container.innerHTML=html;
+
+  var btn=document.getElementById("month-filter-btn");
+  if(isAll){
+    if(btn){ btn.textContent="ทุกเดือน ▾"; btn.classList.remove("active"); }
+  } else if(btn){
+    var names=selectedMonths.map(function(m){ return MONTH_LABELS[m-1]; });
+    btn.textContent=(names.length===1 ? names[0] : names.length+" เดือนที่เลือก")+" ▾";
+    btn.classList.add("active");
+  }
+  updateSectionTitles();
+}
+
+// รวม label ปี+เดือนที่กำลังกรองอยู่ ใช้แสดงหัวข้อกล่อง KPI ทั้งสองส่วน
+function updateSectionTitles(){
+  var yearIsAll = !LAST_SELECTED_YEARS || LAST_SELECTED_YEARS==="all";
+  var monthIsAll = !LAST_SELECTED_MONTHS || LAST_SELECTED_MONTHS==="all";
+  var parts=[];
+  if(!yearIsAll) parts.push("ปี "+LAST_SELECTED_YEARS.join(", "));
+  if(!monthIsAll) parts.push(LAST_SELECTED_MONTHS.map(function(m){ return MONTH_LABELS[m-1]; }).join(", "));
+  var label = parts.length ? parts.join(" • ") : "ทั้งฐานข้อมูล";
+  setEl("ts-section-title","📊 ภาพรวมเช็ค — "+label);
+  setEl("ct-section-title","📎 สถานะเช็ค — "+label);
+}
+var LAST_SELECTED_YEARS = "all";
+var LAST_SELECTED_MONTHS = "all";
+
 document.addEventListener("click", function(ev){
-  var wrap=document.querySelector(".year-filter-wrap");
-  var panel=document.getElementById("year-filter-panel");
-  if(!wrap||!panel||panel.style.display!=="block") return;
-  if(!wrap.contains(ev.target)) panel.style.display="none";
+  document.querySelectorAll(".year-filter-wrap").forEach(function(wrap){
+    var panel=wrap.querySelector(".year-filter-panel");
+    if(!panel||panel.style.display!=="block") return;
+    if(!wrap.contains(ev.target)) panel.style.display="none";
+  });
 });
 
 function renderDashboard(d){
@@ -711,6 +827,8 @@ function renderDashboard(d){
   // ตัวกรองปี — เติม dropdown จากปีที่มีข้อมูลจริง + คงค่าที่เลือกไว้
   CURRENT_YEAR = (d.selectedYears && d.selectedYears!=="all") ? d.selectedYears.join(",") : "all";
   populateYearFilter(d.availableYears, d.selectedYears);
+  CURRENT_MONTH = (d.selectedMonths && d.selectedMonths!=="all") ? d.selectedMonths.join(",") : "all";
+  populateMonthFilter(d.selectedMonths);
 
   // ภาพรวมเช็ค — ทั้งฐานข้อมูล (6 กล่องไม่ซ้อนทับกัน)
   renderTopSummary(d.topSummary);
@@ -807,17 +925,13 @@ function renderDashboard(d){
     '</div>';
   });
 
-  // Fee
-  var diff=d.feeActual-d.feeCalc;
-  var diffCls=diff>0?"diff-pos":"diff-neg";
-  var diffSign=diff>0?"+":"";
+  // ค่าธรรมเนียมเช็คคืน — เฉพาะรายการที่ธนาคารหักจริง (ตัด "ควรจ่าย 0.2%" ออกแล้ว)
+  FEE_DATA = d.returnedFeeBreakdown || {count:0, totalFeeActual:0, items:[]};
   document.getElementById("fee-info").innerHTML=
-    '<div class="fee-row"><span class="lbl">ค่าธรรมเนียมที่ควรจ่าย (0.2%)</span><span class="val">'+fmt(d.feeCalc)+'</span></div>'+
-    '<div class="fee-row"><span class="lbl">ยอดที่ธนาคารหักจริง</span><span class="val">'+fmt(d.feeActual)+'</span></div>'+
-    '<div class="fee-row"><span class="lbl">ผลต่าง</span><span class="val '+diffCls+'">'+diffSign+fmt(diff)+'</span></div>'+
-    '<div style="margin-top:12px;font-size:12px;color:#aaa">'+
-      (Math.abs(diff)<100?'✅ ค่าธรรมเนียมตรงกัน':'⚠️ มีผลต่าง — ควรตรวจสอบ')+
-    '</div>';
+    '<div class="fee-row"><span class="lbl">ยอดที่ธนาคารหักจริงรวม</span><span class="val">'+fmt(FEE_DATA.totalFeeActual)+'</span></div>'+
+    '<div class="fee-row"><span class="lbl">จำนวนรายการ</span><span class="val">'+(FEE_DATA.count||0).toLocaleString()+' ใบ</span></div>'+
+    '<button class="pb-detail-btn" id="fee-detail-btn" style="width:100%;margin-top:8px" onclick="feeToggleDetail()">ดูรายละเอียด ▼</button>';
+  document.getElementById("fee-detail").style.display="none";
 
   // คดีเช็ค
   if(document.getElementById("case-list")) renderCaseList(d.caseList||[]);
